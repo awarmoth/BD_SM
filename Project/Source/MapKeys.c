@@ -106,11 +106,11 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
     {
         switch ( toupper(ThisEvent.EventParam))
         {
-          // this sample is just a dummy so it posts a ES_NO_EVENT
-            case 'O' : ThisEvent.EventType = ES_NO_EVENT; 
+          // This posts an ES_COMMAND to the LOC_SM with a parameter value of 12 (0b1100)
+            case '1' : ThisEvent.EventType = ES_NO_EVENT; 
                        break;
         }
-        PostMasterSM(ThisEvent);
+
     }
     
   return ReturnEvent;

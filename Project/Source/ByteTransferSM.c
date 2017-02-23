@@ -90,7 +90,7 @@ static ByteTransferState_t CurrentState;
 static uint8_t ByteCounter;
 //array of values written back by the LOC
 //will need to check to see if static arrays are valid
-static uint16_t BytesArray[5];
+static uint8_t BytesArray[5];
 
 /*------------------------------ Module Code ------------------------------*/
 
@@ -152,6 +152,10 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 					MakeTransition = true;
 				//Set NextState to BT_Wait4EOT
 					NextState = BT_Wait4EOT;
+					//Write the first byte command to the SPI Module
+						//uint8_t QueryVal = ((uint8_t)CurrentEvent.EventParam);
+						//QueryLOC(QueryVal);
+					
 				}
 			//End ES_Command block
 			}
@@ -181,7 +185,11 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Store value written by LOC in BytesArray element corresponding to ByteCounter - 1
-					BytesArray[ByteCounter-1] = CurrentEvent.EventParam;
+				//EventParam is a uint16_t, so we have to cast it down to a uint8_t
+					BytesArray[ByteCounter-1] = ((uint8_t)CurrentEvent.EventParam);
+				//Write the next byte command to the SPI Module
+					//uint8_t QueryVal = 0; //Bytes 2-5 are always zeros
+					//QueryLOC(QueryVal);
 				}
 			
 			//ElseIf CurrentEvent is ES_EOT and ByteCounter is 5
@@ -190,7 +198,8 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Store value written by LOC in BytesArray element corresponding to ByteCounter - 1
-					BytesArray[ByteCounter-1] = CurrentEvent.EventParam;
+				//EventParam is a uint16_t, so we have to cast it down to a uint8_t
+					BytesArray[ByteCounter-1] = ((uint8_t)CurrentEvent.EventParam);
 				//Set NextState to BT_Wait4Timeout
 					NextState = BT_Wait4Timeout;
 				}

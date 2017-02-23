@@ -79,6 +79,7 @@ static uint8_t MyPriority;
 
 bool InitLOC_SM(uint8_t Priority)
 {
+		TERMIO_Init();
 	//local variable ThisEvent
 		ES_Event ThisEvent;
 	//Initialize MyPriority to Priority

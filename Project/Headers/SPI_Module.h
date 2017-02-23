@@ -25,7 +25,7 @@
 
 void InitSPI_Comm(void);
 
-void QueryLOC(void);
+void QueryLOC(uint8_t QueryVal);
 
 
 #endif
