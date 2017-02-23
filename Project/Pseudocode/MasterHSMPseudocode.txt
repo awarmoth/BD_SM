@@ -1,4 +1,4 @@
-module level variables: MyPriority, CurrentState
+module level variables: MyPriority, CurrentState, TeamColor, GameState
 LOCState_t: Waiting2Start, Constructing
 Module level functions: DuringWaiting2Start, DuringConstructing
 
@@ -49,9 +49,20 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 		
 		If CurrentEvent is not an ES_NO_EVENT
 			If CurrentEvent is ES_LOC_COMPLETE
-				
-				If
-			End ES_Command block	
+				Get response bytes from LOC
+				SetSB1_Byte(getSB1_Byte())
+				SetSB2_Byte(getSB2_Byte())
+				SetSB3_Byte(getSB3_Byte())
+				Set GameState to getGameState
+				If GameState is WAITING_FOR_START
+					Set MakeTransition to true
+				Else
+					Set MakeTransition to true
+					Set NextState to Constructing
+				EndIf
+			Else If Event is ES_TEAM_SWITCH // from event checker
+				Set MakeTransition to true
+			EndIf
 		EndIf
 	
 	End Waiting2Start block
@@ -61,8 +72,8 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 		Run DuringConstructing and store the output in CurrentEvent
 		
 		If CurrentEvent is not an ES_NO_EVENT
-			If CurrentEvent is ES_Ready2Write
-				Post ES_MasterComplete to the MasterSM
+			If CurrentEvent is ES_NORMAL_GAME_COMPLETE
+				Post ES_START_FREE_4_ALL to Master
 				Set MakeTransition to true
 				Set NextState to Waiting2Start
 			End ES_Ready2Write block
