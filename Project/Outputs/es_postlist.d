@@ -16,4 +16,4 @@
 .\outputs\es_postlist.o: .\Headers\ES_Events.h
 .\outputs\es_postlist.o: .\Headers\ES_ServiceHeaders.h
 .\outputs\es_postlist.o: .\Headers\MapKeys.h
-.\outputs\es_postlist.o: .\Headers\TopHSMTemplate.h
+.\outputs\es_postlist.o: .\Headers\LOC_HSM.h

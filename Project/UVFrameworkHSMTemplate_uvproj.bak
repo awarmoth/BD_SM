@@ -428,11 +428,6 @@
               <FilePath>.\Source\MapKeys.c</FilePath>
             </File>
             <File>
-              <FileName>HSMTemplate.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\HSMTemplate.c</FilePath>
-            </File>
-            <File>
               <FileName>MasterHSM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\MasterHSM.c</FilePath>
@@ -446,6 +441,11 @@
               <FileName>hardware.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>ConstructionSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ConstructionSM.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -548,11 +548,6 @@
               <FilePath>.\Headers\termio.h</FilePath>
             </File>
             <File>
-              <FileName>HSMTemplate.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\HSMTemplate.h</FilePath>
-            </File>
-            <File>
               <FileName>MapKeys.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\MapKeys.h</FilePath>
@@ -576,6 +571,16 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\hardware.h</FilePath>
+            </File>
+            <File>
+              <FileName>ConstructionSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ConstructionSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>ByteTransferSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ByteTransferSM.h</FilePath>
             </File>
           </Files>
         </Group>

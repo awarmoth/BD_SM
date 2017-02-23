@@ -12,21 +12,42 @@
 
  History
  When           Who     What/Why
- -------------- ---     --------
+ --------------
+ 02/22/17 21:59 bag      Began coding
  02/16/17 21:04 asw      Began converting template to LOC_HSM
 ****************************************************************************/
 /*----------------------------- Include Files -----------------------------*/
 /* include header files for this state machine as well as any machines at the
    next lower level in the hierarchy that are sub-machines to this machine
 */
+// Framework inclusions
 #include "ES_Configure.h"
 #include "ES_Framework.h"
+#include "ES_DeferRecall.h"
+
+// Hardware definitions
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_sysctl.h"
+#include "inc/hw_timer.h"
+#include "inc/hw_nvic.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/gpio.h"
+#include "driverlib/timer.h"
+
+//module includes
 #include "LOC_HSM.h"
+#include "ByteTransferSM.h"
+#include "SPI_Module.h"
+#include "MasterHSM.h"
 
 /*----------------------------- Module Defines ----------------------------*/
 
 /*---------------------------- Module Functions ---------------------------*/
-static ES_Event DuringStateOne( ES_Event Event);
+static ES_Event DuringLOC_Waiting( ES_Event Event);
+static ES_Event DuringLOC_Transmitting( ES_Event Event);
 
 /*---------------------------- Module Variables ---------------------------*/
 // everybody needs a state variable, though if the top level state machine
@@ -39,39 +60,47 @@ static uint8_t MyPriority;
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
  Function
-     InitMasterSM
+     InitLOC_SM
 
  Parameters
-     uint8_t : the priorty of this service
+     uint8_t : the priority of this service
 
  Returns
      boolean, False if error in initialization, True otherwise
 
  Description
      Saves away the priority,  and starts
-     the top level state machine
+		 the LOC master state machine
  Notes
 
  Author
-     J. Edward Carryer, 02/06/12, 22:06
+ Brett Glasner, 02/22/17, 21:53
 ****************************************************************************/
-bool InitLOC_SM ( uint8_t Priority )
+
+bool InitLOC_SM(uint8_t Priority)
 {
-  ES_Event ThisEvent;
-
-  MyPriority = Priority;  // save our priority
-
-  ThisEvent.EventType = ES_ENTRY;
-  // Start the Master State machine
-
-  StartLOC_SM( ThisEvent );
-
-  return true;
+		TERMIO_Init();
+	//local variable ThisEvent
+		ES_Event ThisEvent;
+	//Initialize MyPriority to Priority
+		MyPriority = Priority;
+	
+	//Initialize ThisEvent to ES_ENTRY
+		ThisEvent.EventType = ES_ENTRY;
+	
+	//Initialize the SPI module
+/***InitSPI_Comm();***************/
+	
+	//Call StartLOC_SM with ThisEvent as the passed parameter
+		StartLOC_SM(ThisEvent);
+	//Return true
+		return true;
 }
+
 
 /****************************************************************************
  Function
-     PostMasterSM
+     PostLOC_SM
 
  Parameters
      ES_Event ThisEvent , the event to post to the queue
@@ -80,20 +109,22 @@ bool InitLOC_SM ( uint8_t Priority )
      boolean False if the post operation failed, True otherwise
 
  Description
-     Posts an event to this state machine's queue
+     Posts an event to the LOC HSM event queue
  Notes
 
  Author
-     J. Edward Carryer, 10/23/11, 19:25
+Brett Glasner, 02/22/17, 22:00
 ****************************************************************************/
 bool PostLOC_SM( ES_Event ThisEvent )
 {
+	//Return ThisEvent posted successfully to the service associated with MyPriority
   return ES_PostToService( MyPriority, ThisEvent);
 }
 
+
 /****************************************************************************
  Function
-    RunMasterSM
+    RunLOC_SM
 
  Parameters
    ES_Event: the event to process
@@ -102,64 +133,107 @@ bool PostLOC_SM( ES_Event ThisEvent )
    ES_Event: an event to return
 
  Description
-   the run function for the top level state machine 
+   the run function for the LOC HSM top level state machine 
  Notes
    uses nested switch/case to implement the machine.
  Author
-   J. Edward Carryer, 02/06/12, 22:09
+   Brett Glasner, 02/22/17, 22:03
 ****************************************************************************/
 ES_Event RunLOC_SM( ES_Event CurrentEvent )
 {
-   bool MakeTransition = false;/* are we making a state transition? */
-   LOC_State_t NextState = CurrentState;
-   ES_Event EntryEventKind = { ES_ENTRY, 0 };// default to normal entry to new state
-   ES_Event ReturnEvent = { ES_NO_EVENT, 0 }; // assume no error
+	//local variable MakeTransition
+		bool MakeTransition;
+	//local variable NextState
+		LOC_State_t NextState;
+	//local variable ReturnEvent
+		ES_Event ReturnEvent;
+	//local variable EntryEvent
+		ES_Event EntryEvent;
+	//local variable Event2Post
+		ES_Event Event2Post;
 
-    switch ( CurrentState )
-   {
-       case STATE_ONE :       // If current state is state one
-         // Execute During function for state one. ES_ENTRY & ES_EXIT are
-         // processed here allow the lowere level state machines to re-map
-         // or consume the event
-         CurrentEvent = DuringStateOne(CurrentEvent);
-         //process any events
-         if ( CurrentEvent.EventType != ES_NO_EVENT ) //If an event is active
-         {
-            switch (CurrentEvent.EventType)
-            {
-               case ES_TIMEOUT : //If event is event one
-                  // Execute action function for state one : event one
-                  NextState = STATE_TWO;//Decide what the next state will be
-                  // for internal transitions, skip changing MakeTransition
-                  MakeTransition = true; //mark that we are taking a transition
-                  // if transitioning to a state with history change kind of entry
-                  EntryEventKind.EventType = ES_ENTRY_HISTORY;
-                  // optionally, consume or re-map this event for the upper
-                  // level state machine
-                  ReturnEvent.EventType = ES_NO_EVENT;
-                  break;
-                // repeat cases as required for relevant events
-            }
-         }
-         break;
-      // repeat state pattern as required for other states
-    }
-    //   If we are making a state transition
-    if (MakeTransition == true)
-    {
-       //   Execute exit function for current state
-       CurrentEvent.EventType = ES_EXIT;
-       RunLOC_SM(CurrentEvent);
+	//Initialize MakeTransition to false
+		MakeTransition = false;
+	//Initialize NextState to CurrentState
+		NextState = CurrentState;
+	//Initialize EntryEvent to ES_ENTRY
+		EntryEvent.EventType = ES_ENTRY;
+	//Initialize ReturnEvent to ES_NO_EVENT
+		ReturnEvent.EventType = ES_NO_EVENT;
 
-       CurrentState = NextState; //Modify state variable
-
-       // Execute entry function for new state
-       // this defaults to ES_ENTRY
-       RunLOC_SM(EntryEventKind);
-     }
-   // in the absence of an error the top level state machine should
-   // always return ES_NO_EVENT, which we initialized at the top of func
-   return(ReturnEvent);
+		switch(CurrentState)
+		{
+			
+		//If CurrentState is LOC_Waiting
+			case LOC_Waiting:
+	
+			//Run DuringWaiting and store the output in CurrentEvent
+				CurrentEvent = DuringLOC_Waiting(CurrentEvent);
+			
+			//If CurrentEvent is not an ES_NO_EVENT
+				if(CurrentEvent.EventType != ES_NO_EVENT)
+				{
+				//If CurrentEvent is ES_Command
+					if(CurrentEvent.EventType == ES_COMMAND)
+					{
+					//Post an ES_Command event with the same event parameter to the LOC_SM
+						PostLOC_SM(CurrentEvent);
+					//Set MakeTransition to true
+						MakeTransition = true;
+					//Set NextState to Transmitting
+						NextState = LOC_Transmitting;
+					}
+					//End ES_Command block	
+				}
+				break;
+			//End Waiting block
+				
+				
+		//If CurrentState is LOC_Transmitting
+			case LOC_Transmitting:
+		
+			//Run DuringTransmitting and store the output in CurrentEvent
+				CurrentEvent = DuringLOC_Transmitting(CurrentEvent);
+			
+			//If CurrentEvent is not an ES_NO_EVENT
+				if(CurrentEvent.EventType != ES_NO_EVENT)
+				{
+				//If CurrentEvent is ES_Ready2Write
+					if(CurrentEvent.EventType == ES_READY_2_WRITE)
+					{
+					//Post ES_LOC_Complete to the MasterSM
+						Event2Post.EventType = ES_LOC_COMPLETE;
+						PostMasterSM(Event2Post);
+					//Set MakeTransition to true
+						MakeTransition = true;
+					//Set NextState to Waiting
+						NextState = LOC_Waiting;
+					}
+				//End ES_Ready2Write block
+				}
+				break;
+			//End Transmitting block
+				
+		}//end switch
+		
+	//If MakeTransition is true
+		if(MakeTransition)
+		{
+	
+		//Set CurrentEvent to ES_EXIT
+			CurrentEvent.EventType = ES_EXIT;
+		//Run LOC_SM with CurrentEvent to allow lower level SMs to exit
+			RunLOC_SM(CurrentEvent);
+		
+		//Set CurrentState to NextState
+			CurrentState = NextState;
+		//RunLOC_SM with EntryEvent to allow lower level SMs to enter
+			RunLOC_SM(EntryEvent);
+		
+		}
+	
+	//Return ReturnEvent
+		return ReturnEvent;
 }
 /****************************************************************************
  Function
@@ -180,13 +254,10 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 ****************************************************************************/
 void StartLOC_SM ( ES_Event CurrentEvent )
 {
-  // if there is more than 1 state to the top level machine you will need 
-  // to initialize the state variable
-  CurrentState = STATE_ONE;
-  // now we need to let the Run function init the lower level state machines
-  // use LocalEvent to keep the compiler from complaining about unused var
-  RunLOC_SM(CurrentEvent);
-  return;
+	//Set CurrentState to LOC_Waiting
+	CurrentState = LOC_Waiting;
+	//Call RunLOC_SM with CurrentEvent as the passed parameter to initialize lower level SMs
+	RunLOC_SM(CurrentEvent);
 }
 
 
@@ -194,39 +265,49 @@ void StartLOC_SM ( ES_Event CurrentEvent )
  private functions
  ***************************************************************************/
 
-static ES_Event DuringStateOne( ES_Event Event)
+static ES_Event DuringLOC_Waiting(ES_Event ThisEvent)
 {
-    ES_Event ReturnEvent = Event; // assme no re-mapping or comsumption
+	//local event ReturnEvent
+	ES_Event ReturnEvent;
+	//Initialize ReturnEvent to ThisEvent
+	ReturnEvent = ThisEvent;
+	//If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY do nothing
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY)){}
+		
+	//ElseIf ThisEvent is ES_EXIT do nothing
+	else if(ThisEvent.EventType == ES_EXIT){}
 
-    // process ES_ENTRY, ES_ENTRY_HISTORY & ES_EXIT events
-    if ( (Event.EventType == ES_ENTRY) ||
-         (Event.EventType == ES_ENTRY_HISTORY) )
-    {
-        // implement any entry actions required for this state machine
-        
-        // after that start any lower level machines that run in this state
-        //StartLowerLevelSM( Event );
-        // repeat the StartxxxSM() functions for concurrent state machines
-        // on the lower level
-    }
-    else if ( Event.EventType == ES_EXIT )
-    {
-        // on exit, give the lower levels a chance to clean up first
-        //RunLowerLevelSM(Event);
-        // repeat for any concurrently running state machines
-        // now do any local exit functionality
-      
-    }else
-    // do the 'during' function for this state
-    {
-        // run any lower level state machine
-        // ReturnEvent = RunLowerLevelSM(Event);
-      
-        // repeat for any concurrent lower level machines
-      
-        // do any activity that is repeated as long as we are in this state
-    }
-    // return either Event, if you don't want to allow the lower level machine
-    // to remap the current event, or ReturnEvent if you do want to allow it.
-    return(ReturnEvent);
+	//Else do nothing
+	else{}
+	
+	//Return ReturnEvent
+		return ReturnEvent;
+}
+
+
+static ES_Event DuringLOC_Transmitting(ES_Event ThisEvent)
+{
+	//local event ReturnEvent
+	ES_Event ReturnEvent;
+	//Initialize ReturnEvent to ThisEvent
+	ReturnEvent = ThisEvent;
+	//If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
+		//Start ByteTransferSM
+		StartByteTransferSM(ThisEvent);
+	}
+	
+	//ElseIf ThisEvent is ES_EXIT do nothing
+	else if(ThisEvent.EventType == ES_EXIT){}
+	
+	//Else
+	else
+	{
+		//Run ByteTransferSM and store output in ReturnEvent
+		ReturnEvent = RunByteTransferSM(ThisEvent);
+	}
+	
+	//Return ReturnEvent
+	return ReturnEvent;
 }

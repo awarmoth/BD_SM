@@ -7,7 +7,7 @@
 #define LOC_HSM_H
 
 // State definitions for use with the query function
-typedef enum { STATE_ONE, STATE_TWO, STATE_THREE } LOC_State_t ;
+typedef enum {LOC_Waiting, LOC_Transmitting} LOC_State_t ;
 
 // Public Function Prototypes
 

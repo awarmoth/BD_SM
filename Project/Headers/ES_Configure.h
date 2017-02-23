@@ -53,11 +53,11 @@
 // These are the definitions for Service 1
 #if NUM_SERVICES > 1
 // the header file with the public function prototypes
-#define SERV_1_HEADER "TopHSMTemplate.h"
+#define SERV_1_HEADER "LOC_HSM.h"
 // the name of the Init function
-#define SERV_1_INIT InitMasterSM
+#define SERV_1_INIT InitLOC_SM
 // the name of the run function
-#define SERV_1_RUN RunMasterSM
+#define SERV_1_RUN RunLOC_SM
 // How big should this services Queue be?
 #define SERV_1_QUEUE_SIZE 3
 #endif
@@ -257,6 +257,10 @@ typedef enum {  ES_NO_EVENT = 0,
                 ES_ENTRY_HISTORY,
                 ES_EXIT,
                 /* User-defined events start here */
+								ES_EOT,
+								ES_COMMAND,
+								ES_READY_2_WRITE,
+								ES_LOC_COMPLETE,
 								ES_START,
 								ES_TEAM_SWITCH} ES_EventTyp_t ;
 
@@ -264,12 +268,12 @@ typedef enum {  ES_NO_EVENT = 0,
 // These are the definitions for the Distribution lists. Each definition
 // should be a comma separated list of post functions to indicate which
 // services are on that distribution list.
-#define NUM_DIST_LISTS 1
+#define NUM_DIST_LISTS 0
 #if NUM_DIST_LISTS > 0 
-#define DIST_LIST0 PostMapKeys, PostMasterSM
+#define DIST_LIST0 PostMapKeys
 #endif
 #if NUM_DIST_LISTS > 1 
-#define DIST_LIST1 PostTemplateFSM, TemplateFSM
+#define DIST_LIST1 PostTemplateFSM
 #endif
 #if NUM_DIST_LISTS > 2 
 #define DIST_LIST2 PostTemplateFSM
@@ -305,7 +309,7 @@ typedef enum {  ES_NO_EVENT = 0,
 // Unlike services, any combination of timers may be used and there is no
 // priority in servicing them
 #define TIMER_UNUSED ((pPostFunc)0)
-#define TIMER0_RESP_FUNC TIMER_UNUSED
+#define TIMER0_RESP_FUNC PostLOC_SM
 #define TIMER1_RESP_FUNC TIMER_UNUSED
 #define TIMER2_RESP_FUNC TIMER_UNUSED
 #define TIMER3_RESP_FUNC TIMER_UNUSED
@@ -329,6 +333,6 @@ typedef enum {  ES_NO_EVENT = 0,
 // the timer number matches where the timer event will be routed
 // These symbolic names should be changed to be relevant to your application 
 
-#define SERVICE0_TIMER 15
+#define LOC_TIMER 0
 
 #endif /* CONFIGURE_H */
