@@ -1,4 +1,4 @@
-module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, OldScore, BallCount
+module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, Score, BallCount
 ShootingState_t: AlignToGoal, Firing, WaitForShotResult, WaitForScoreUpdate, AlignToTape
 Module level functions: DuringAlignToGoal, DuringFiring, DuringWaitForShotResult, DuringWaitForScoreUpdate
 
@@ -89,13 +89,19 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		
 		If CurrentEvent is not ES_NO_EVENT
 			If CurrentEvent is ES_LOC_COMPLETE
+				Get response bytes from LOC
+				SetSB1_Byte(getSB1_Byte())
+				SetSB2_Byte(getSB2_Byte())
+				SetSB3_Byte(getSB3_Byte())
+
 				Set MakeTransition to true
 				Initialize NewScore to getScore
-				If NewScore = OldScore
+				If NewScore = Score
 					Set NextState to Firing
 				Else
 					Set NextState to AlignToTape
 				EndIf
+				Score = NewScore
 			EndIf
 		
 		Else
