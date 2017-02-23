@@ -1,0 +1,131 @@
+module level variables: MyPriority, CurrentState
+LOCState_t: Waiting, Transmitting
+Module level functions: DuringWaiting, DuringTransmitting
+
+bool InitLOC_SM(uint8_t Priority)
+{
+	local variable ThisEvent
+	Initialize MyPriority to Priority
+	Initialize ThisEvent to ES_NO_EVENT
+	Initialize the SPI module
+	
+	Call StartLOC_SM with ThisEvent as the passed parameter
+	
+	Return true
+}
+End InitLOC_SM
+
+
+bool PostLOC_SM(ES_Event ThisEvent)
+{
+	Return ThisEvent posted successfully to the service associated with MyPriority
+}
+End PostLOC_SM
+
+
+void StartLOC_SM(ES_Event CurrentEvent)
+{
+	Set CurrentState to Waiting
+	Call RunLOC_SM with CurrentEvent as the passed parameter to initialize lower level SMs
+}
+End StartLOC_SM
+
+
+ES_Event RunLOC_SM(ES_Event CurrentEvent)
+{
+	local variable MakeTransition
+	local variable NextState
+	local variable ReturnEvent
+	local variable EntryEvent
+	
+	Initialize MakeTransition to false
+	Initialize NextState to CurrentState
+	Initialize EntryEvent to ES_ENTRY
+	Initialize ReturnEvent to ES_NO_EVENT
+	
+	If CurrentState is Waiting
+		
+		Run DuringWaiting and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_Command
+				Post an ES_Command event with the same event parameter to the LOC_SM
+				Set MakeTransition to true
+				Set NextState to Transmitting
+			End ES_Command block	
+		EndIf
+	
+	End Waiting block
+	
+	If CurrentState is Transmitting
+	
+		Run DuringTransmitting and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_Ready2Write
+				Post ES_LOC_Complete to the MasterSM
+				Set MakeTransition to true
+				Set NextState to Waiting
+			End ES_Ready2Write block
+		EndIf
+		
+	End Transmitting block
+	
+	If MakeTransition is true
+	
+		Set CurrentEvent to ES_EXIT
+		Run LOC_SM with CurrentEvent to allow lower level SMs to exit
+		
+		Set CurrentState to NextState
+		RunLOC_SM with EntryEvent to allow lower level SMs to enter
+		
+	EndIf
+	
+	Return ReturnEvent
+}
+End RunLOC_SM
+
+
+static ES_Event DuringWaiting(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		//do nothing
+	
+	ElseIf ThisEvent is ES_EXIT
+		//do nothing
+	
+	Else
+		//do nothing
+	EndIf
+	
+	Return ReturnEvent
+}
+End DuringWaiting
+
+
+
+static ES_Event DuringTransmitting(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Start ByteTransferSM
+	EndIf
+	
+	ElseIf ThisEvent is ES_EXIT
+		//do nothing
+	EndIf
+	
+	Else
+		Run ByteTransferSM and store output in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
+}
+

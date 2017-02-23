@@ -1,0 +1,187 @@
+Module level variables: TargetStation, LastStation, Direction, CurrentState
+DrivingAlongTape enum states: Waiting, DrivingToStation, Driving to Reload
+Module functions: DuringWaiting, DuringDrivingToStation, DuringDrivingToReload
+
+void StartDrivingAlongTapeSM(ES_Event CurrentEvent)
+{
+	If CurrentEvent is not ES_ENTRY_HISTORY
+		Set CurrentState to Waiting
+	Endif
+	
+	Call RunDrivingAlongTapeSM with CurrentEvent as the event parameter
+}
+End StartDrivingAlongTapeSM
+
+
+
+ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
+{
+	local variable MakeTransition
+	local variable NextState
+	local variable EntryEvent
+	local variable ReturnEvent
+	
+	Initialize MakeTransition to false
+	Initialize NextState to CurrentState
+	Initialize EntryEvent to ES_ENTRY by default
+	Initialize ReturnEvent to CurrentEvent assuming no consuming of event
+	
+	If CurrentState is Waiting //NOTE CORRECT STATE MACHINE TO NOT TURN ON TAPE CONTROL ON WAITING EXIT
+		
+		Call DuringWaiting and set CurrentEvent to its return value
+		
+		If CurrentEvent is not an ES_NO_EVENT
+		
+			If CurrentEvent is ES_DriveAlongTape
+			
+				If TargetStation is LastStation //module variables aren't set until exit runs
+					Set MakeTransition to true				
+					Set ReturnEvent to ES_ArrivedAtStation
+				Endif
+				
+				If TargetStation is not LastStation and TargetStation is not supply depot //module variables aren't set until exit runs
+					Set NextState to DrivingToStation
+					Set MakeTransition to true
+					Set ReturnEvent to ES_NO_EVENT
+					Enable wire following control law
+					Start driving
+				Endif
+				
+				If TargetStation is supply depot //module variables aren't set until exit runs
+					Set NextState to DrivingToReload
+					Set MakeTransition to true
+					Set ReturnEvent to ES_NO_EVENT
+					Enable wire following control law
+					Start driving
+				Endif
+			
+			End ES_DriveAlongTape block
+			
+		Endif
+		Else set ReturnEvent to ES_NO_EVENT
+		
+	End Waiting block
+	
+	If CurrentState is DrivingToStation
+		
+		Call DuringDrivingToStation and set CurrentEvent to its return value
+		
+		If CurrentEvent is not an ES_NO_EVENT
+		
+			If CurrentEvent is ES_StationDetected
+			
+				If LastStation - Direction is TargetStation
+					Set MakeTransition to true	
+					Stop driving
+					Disable wire following control law
+					Set ReturnEvent to ES_ArrivedAtStation
+				Endif
+				
+				//DO THESE NEED TO BE ELSE IFs?
+				If LastStation - Direction is not TargetStation
+					Set MakeTransition to true
+					Set ReturnEvent to ES_NO_EVENT
+				Endif
+			
+			End ES_StationDetected block
+			
+		Endif
+		Else set ReturnEvent to ES_NO_EVENT
+		
+	End DrivingToStation block
+	
+	If CurrentState is DrivingToReload
+		
+		Call DuringDrivingToReload and set CurrentEvent to its return value
+		
+		If CurrentEvent is not an ES_NO_EVENT
+		
+			If CurrentEvent is ES_Front_Bump_Detected
+				Set MakeTransition to true	
+				Stop driving
+				Disable wire following control law
+				Set ReturnEvent to ES_ArrivedAtReload			
+			End ES_Front_Bump_Detected block
+			
+		Endif
+		Else set ReturnEvent to ES_NO_EVENT
+	
+	End DrivingToReload block
+	
+	If MakeTransition is true
+		
+		Set CurrentEvent to ES_EXIT
+		Call RunDrivingAlongTapeSM with CurrentEvent as the event parameter
+					
+		Set CurrentState to NextState
+		Call RunDrivingAlongTapeSM with EntryEvent as the event parameter
+			
+	Endif
+	
+	Return ReturnEvent
+}
+End RunDrivingAlongTapeSM
+
+
+
+static ES_Event DuringWaiting(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent assuming no re-mapping or consumption
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Set LastStation to getLastStation
+		//Probably want to initialize module variables here as well
+	EndIf
+	
+	ElseIf ThisEvent is ES_EXIT
+		//Probably want to switch these initializations to occur after ES_ENTRY
+		Set TargetStation to getTargetStation
+		Set LastStation to getLastStation
+		Set Direction from sign(LastStation - TargetStation)
+		Set ReturnEvent to ES_NO_EVENT
+	EndIf
+	
+	Return ReturnEvent
+}
+End DuringWaiting
+
+
+
+static ES_Event DuringDrivingToStation(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent assuming no re-mapping or consumption
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+
+	EndIf
+	
+	ElseIf ThisEvent is ES_EXIT
+		Set LastStation to (LastStation - Direction)
+	EndIf
+	
+	Return ReturnEvent
+}
+End DuringDrivingToStation
+
+
+static ES_Event DuringDrivingToReload(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent assuming no re-mapping or consumption
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+
+	EndIf
+	
+	ElseIf ThisEvent is ES_EXIT
+		Set LastStation to supply depot
+	EndIf
+	
+	Return ReturnEvent
+}
+End DuringDrivingToReload
