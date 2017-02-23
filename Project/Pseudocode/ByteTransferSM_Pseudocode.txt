@@ -12,7 +12,7 @@ void StartByteTransferSM(ES_Event CurrentEvent)
 End StartByteTransferSM
 
 
-ES_Event RunByteTransferSM(ES_Event CurrentEvent
+ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 {
 	local variable MakeTransition
 	local variable NextState
@@ -91,7 +91,7 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent
 End RunByteTransferSM
 
 
-ES_Event DuringWait2Start(ES_Event ThisEvent)
+static ES_Event DuringWait2Start(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
@@ -113,7 +113,7 @@ ES_Event DuringWait2Start(ES_Event ThisEvent)
 End DuringWait2Start
 
 
-ES_Event DuringWaitEOT(ES_Event ThisEvent)
+static ES_Event DuringWaitEOT(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
@@ -131,12 +131,11 @@ ES_Event DuringWaitEOT(ES_Event ThisEvent)
 	EndIf
 	
 	Return ReturnEvent
-	
 }
 End DuringWait4EOT
 
 
-ES_Event DuringWait4Timeout(ES_Event ThisEvent)
+static ES_Event DuringWait4Timeout(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	

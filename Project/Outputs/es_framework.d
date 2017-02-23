@@ -21,4 +21,4 @@
 .\outputs\es_framework.o: .\Headers\ES_LookupTables.h
 .\outputs\es_framework.o: .\Headers\ES_ServiceHeaders.h
 .\outputs\es_framework.o: .\Headers\MapKeys.h
-.\outputs\es_framework.o: .\Headers\TopHSMTemplate.h
+.\outputs\es_framework.o: .\Headers\LOC_HSM.h
