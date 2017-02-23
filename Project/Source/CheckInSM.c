@@ -86,6 +86,9 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
+					// Get response bytes from LOC
+					SetRR_Byte(getRR_Byte());
+					SetRS_Byte(getRS_Byte());
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					// If ResponseReady = not ready
@@ -188,6 +191,9 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent == ES_LOC_COMPLETE)
 				{
+					// Get response bytes from LOC
+					SetRR_Byte(getRR_Byte());
+					SetRS_Byte(getRS_Byte());
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					// If ResponseReady = not ready
@@ -289,11 +295,16 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		// Period = getPeriod // ISR is constantly updating
 		Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
-		Byte2Write = 0b1000+getPeriodCode(Period);
+		Byte2Write = 0b1000 0000+getPeriodCode(Period);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
 		PostLOC(Event2Post);
+		// Reinitialize variables
+		BadResponseCounter = 0;
+		ResponseReady = RESPONSE_NOT_READY;
+
+
 	}
 	// EndIf
 	
