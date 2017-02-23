@@ -1,299 +1,189 @@
-/****************************************************************************
- Module
-   MasterHSM.c
+module level variables: MyPriority, CurrentState, TeamColor, GameState
+MasterState_t: Waiting2Start, Constructing, Free4All, GameComplete
+Module level functions: DuringWaiting2Start, DuringConstructing, DuringFree4All, DuringGameComplete
 
- Revision
-   1.0.0
-
- Description
-   This is the Hierarchical state machine for managing the game
-
- Notes
-
- History
- When           Who     What/Why
- -------------- ---     --------
- 02/16/17 21:00 asw      Began converting template to MasterHSM
-****************************************************************************/
-/*----------------------------- Include Files -----------------------------*/
-/* include header files for this state machine as well as any machines at the
-   next lower level in the hierarchy that are sub-machines to this machine
-*/
-#include "ES_Configure.h"
-#include "ES_Framework.h"
-#include "MasterHSM.h"
-
-/*----------------------------- Module Defines ----------------------------*/
-
-/*---------------------------- Module Functions ---------------------------*/
-static ES_Event DuringStateOne( ES_Event Event);
-
-/*---------------------------- Module Variables ---------------------------*/
-// everybody needs a state variable, though if the top level state machine
-// is just a single state container for orthogonal regions, you could get
-// away without it
-static MasterState_t CurrentState;
-// with the introduction of Gen2, we need a module level Priority var as well
-static uint8_t MyPriority;
-
-/*------------------------------ Module Code ------------------------------*/
-/****************************************************************************
- Function
-     InitMasterSM
-
- Parameters
-     uint8_t : the priorty of this service
-
- Returns
-     boolean, False if error in initialization, True otherwise
-
- Description
-     Saves away the priority,  and starts
-     the top level state machine
- Notes
-
-****************************************************************************/
-bool InitMasterSM ( uint8_t Priority )
+bool InitMasterSM(uint8_t Priority)
 {
-  ES_Event ThisEvent;
+	local variable ThisEvent
+	Initialize MyPriority to Priority
+	Initialize ThisEvent to ES_NO_EVENT
+	Initialize the SPI module
+	
+	Call StartMasterSM with ThisEvent as the passed parameter
+	
+	Return true
+}
+End InitMasterSM
 
-  MyPriority = Priority;  // save our priority
 
-  ThisEvent.EventType = ES_ENTRY;
-  // Start the Master State machine
+bool PostMasterSM(ES_Event ThisEvent)
+{
+	Return ThisEvent posted successfully to the service associated with MyPriority
+}
+End PostMasterSM
 
-  StartMasterSM( ThisEvent );
 
-  return true;
+void StartMasterSM(ES_Event CurrentEvent)
+{
+	Set CurrentState to Waiting2Start
+	Call RunMasterSM with CurrentEvent as the passed parameter to initialize lower level SMs
+}
+End StartMasterSM
+
+
+ES_Event RunMasterSM(ES_Event CurrentEvent)
+{
+	local variable MakeTransition
+	local variable NextState
+	local variable ReturnEvent
+	local variable EntryEvent
+	
+	Initialize MakeTransition to false
+	Initialize NextState to CurrentState
+	Initialize EntryEvent to ES_ENTRY
+	Initialize ReturnEvent to ES_NO_EVENT
+	
+	If CurrentState is Waiting2Start
+		
+		Run DuringWaiting2Start and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_LOC_COMPLETE
+				Get response bytes from LOC
+				SetSB1_Byte(getSB1_Byte())
+				SetSB2_Byte(getSB2_Byte())
+				SetSB3_Byte(getSB3_Byte())
+				Set GameState to getGameState
+				If GameState is WAITING_FOR_START
+					Set MakeTransition to true
+				Else
+					Set MakeTransition to true
+					Set NextState to Constructing
+				EndIf
+			Else If Event is ES_TEAM_SWITCH // from event checker
+				Set MakeTransition to true
+			EndIf
+		EndIf
+	
+	End Waiting2Start block
+	
+	If CurrentState is Constructing
+	
+		Run DuringConstructing and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_NORMAL_GAME_COMPLETE
+				Post ES_START_FREE_4_ALL to Master
+				Set MakeTransition to true
+				Set NextState to Free4All
+			Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
+				Post ES_START_FREE_4_ALL to Master
+				Set MakeTransition to true
+				Set NextState to Free4All
+			EndIf
+		EndIf
+		
+	End Free4All block
+	
+		If CurrentState is Free4All
+	
+		Run DuringConstructing and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_FREE_4_ALL_COMPLETE
+				Set MakeTransition to true
+				Set NextState to GameComplete
+			Else If CurrentEvent is ES_TIMEOUT from FREE_4_ALL_TIMER
+				Set MakeTransition to true
+				Set NextState to GameComplete
+			EndIf
+		EndIf
+		
+	End Free4All block
+	
+	If MakeTransition is true
+	
+		Set CurrentEvent to ES_EXIT
+		Run MasterSM with CurrentEvent to allow lower level SMs to exit
+		
+		Set CurrentState to NextState
+		RunMasterSM with EntryEvent to allow lower level SMs to enter
+		
+	EndIf
+	
+	Return ReturnEvent
+}
+End RunMasterSM
+
+
+static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	local event Event2Post
+	local uint8_t Byte2Write
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Set TeamColor to getTeamColor
+		Turn on respective LEDs
+		Set Event2Post type to ES_COMMAND
+		Set Byte2Write to status byte
+		Post Event2Post to LOC_HSM
+	
+	Return ReturnEvent
+}
+End DuringWaiting2Start
+
+
+
+static ES_Event DuringConstructing(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Start ConstructingSM
+		Start GAME_TIMER
+	EndIf
+	
+	Else
+		Run ConstructingSM and store output in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
 }
 
-/****************************************************************************
- Function
-     PostMasterSM
-
- Parameters
-     ES_Event ThisEvent , the event to post to the queue
-
- Returns
-     boolean False if the post operation failed, True otherwise
-
- Description
-     Posts an event to this state machine's queue
- Notes
-
-****************************************************************************/
-bool PostMasterSM( ES_Event ThisEvent )
+static ES_Event DuringFree4All(ES_Event ThisEvent)
 {
-  return ES_PostToService( MyPriority, ThisEvent);
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Start ConstructingSM
+		Start FREE_4_ALL_TIMER
+	EndIf
+	
+	Else
+		Run Free4AllSM and store output in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
 }
 
-/****************************************************************************
- Function
-    RunMasterSM
-
- Parameters
-   ES_Event: the event to process
-
- Returns
-   ES_Event: an event to return
-
- Description
-   the run function for the top level state machine 
- Notes
-   uses nested switch/case to implement the machine.
-
-****************************************************************************/
-ES_Event RunMasterSM( ES_Event CurrentEvent )
+static ES_Event DuringGameComplete(ES_Event ThisEvent)
 {
-   bool MakeTransition = false;/* are we making a state transition? */
-   MasterState_t NextState = CurrentState;
-   ES_Event EntryEventKind = { ES_ENTRY, 0 };// default to normal entry to new state
-   ES_Event ReturnEvent = { ES_NO_EVENT, 0 }; // assume no error
-
-    switch ( CurrentState )
-   {
-       case WaitingToStart :       // If current state is WaitingToStart
-         // Execute During function for WaitingToStart. ES_ENTRY & ES_EXIT are
-         // processed here allow the lower level state machines to re-map
-         // or consume the event
-         CurrentEvent = DuringStateOne(CurrentEvent);
-         //process any events
-         if ( CurrentEvent.EventType != ES_NO_EVENT ) //If an event is active
-         {
-					  if ( CurrentEvent.EventType == ES_START ) //If an event is active
-					  {
-            //If event is start
-							// Execute action function for WaitingToStart: event one
-							NextState = Constructing;//Decide what the next state will be
-							// for internal transitions, skip changing MakeTransition
-							MakeTransition = true; //mark that we are taking a transition
-							// optionally, consume or re-map this event for the upper
-							// level state machine
-							ReturnEvent.EventType = ES_NO_EVENT;
-						}
-						if ( CurrentEvent.EventType == ES_TEAM_SWITCH ) //If an event is active
-					  {
-            //If event is start
-							// Execute action function for WaitingToStart: event one
-							NextState = WaitingToStart;//Decide what the next state will be
-							// for internal transitions, skip changing MakeTransition
-							MakeTransition = true; //mark that we are taking a transition
-							// optionally, consume or re-map this event for the upper
-							// level state machine
-							ReturnEvent.EventType = ES_NO_EVENT;
-						}
-         }
-         break;
-				 
-       case Constructing :       // If current state is Constructing
-         // Execute During function for Constructing. ES_ENTRY & ES_EXIT are
-         // processed here allow the lower level state machines to re-map
-         // or consume the event
-         CurrentEvent = DuringStateOne(CurrentEvent);
-         //process any events
-         if ( CurrentEvent.EventType != ES_NO_EVENT ) //If an event is active
-         {
-					  if ( CurrentEvent.EventType == ES_START ) //If an event is active
-					  {
-            //If event is start
-							// Execute action function for Constructing: event one
-							NextState = Constructing;//Decide what the next state will be
-							// for internal transitions, skip changing MakeTransition
-							MakeTransition = true; //mark that we are taking a transition
-							// optionally, consume or re-map this event for the upper
-							// level state machine
-							ReturnEvent.EventType = ES_NO_EVENT;
-						}
-						if ( CurrentEvent.EventType == ES_TEAM_SWITCH ) //If an event is active
-					  {
-            //If event is start
-							// Execute action function for Constructing: event one
-							NextState = WaitingToStart;//Decide what the next state will be
-							// for internal transitions, skip changing MakeTransition
-							MakeTransition = true; //mark that we are taking a transition
-							// optionally, consume or re-map this event for the upper
-							// level state machine
-							ReturnEvent.EventType = ES_NO_EVENT;
-						}
-         }
-         break;
-				 
-       case GameComplete :       // If current state is GameComplete
-         // Execute During function for GameComplete. ES_ENTRY & ES_EXIT are
-         // processed here allow the lower level state machines to re-map
-         // or consume the event
-         CurrentEvent = DuringStateOne(CurrentEvent);
-         //process any events
-         if ( CurrentEvent.EventType != ES_NO_EVENT ) //If an event is active
-         {
-					  if ( CurrentEvent.EventType == ES_START ) //If an event is active
-					  {
-            //If event is start
-							// Execute action function for GameComplete: event one
-							NextState = Constructing;//Decide what the next state will be
-							// for internal transitions, skip changing MakeTransition
-							MakeTransition = true; //mark that we are taking a transition
-							// optionally, consume or re-map this event for the upper
-							// level state machine
-							ReturnEvent.EventType = ES_NO_EVENT;
-						}
-						if ( CurrentEvent.EventType == ES_TEAM_SWITCH ) //If an event is active
-					  {
-            //If event is start
-							// Execute action function for GameComplete: event one
-							NextState = WaitingToStart;//Decide what the next state will be
-							// for internal transitions, skip changing MakeTransition
-							MakeTransition = true; //mark that we are taking a transition
-							// optionally, consume or re-map this event for the upper
-							// level state machine
-							ReturnEvent.EventType = ES_NO_EVENT;
-						}
-         }
-         break;
-				 // repeat state pattern as required for other states
-    }
-    //   If we are making a state transition
-    if (MakeTransition == true)
-    {
-       //   Execute exit function for current state
-       CurrentEvent.EventType = ES_EXIT;
-       RunMasterSM(CurrentEvent);
-
-       CurrentState = NextState; //Modify state variable
-
-       // Execute entry function for new state
-       // this defaults to ES_ENTRY
-       RunMasterSM(EntryEventKind);
-     }
-   // in the absence of an error the top level state machine should
-   // always return ES_NO_EVENT, which we initialized at the top of func
-   return(ReturnEvent);
-}
-/****************************************************************************
- Function
-     StartMasterSM
-
- Parameters
-     ES_Event CurrentEvent
-
- Returns
-     nothing
-
- Description
-     Does any required initialization for this state machine
- Notes
-
-
-****************************************************************************/
-void StartMasterSM ( ES_Event CurrentEvent )
-{
-  // if there is more than 1 state to the top level machine you will need 
-  // to initialize the state variable
-  CurrentState = WaitingToStart;
-  // now we need to let the Run function init the lower level state machines
-  // use LocalEvent to keep the compiler from complaining about unused var
-  RunMasterSM(CurrentEvent);
-  return;
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Turn off hardware/peripherals
+		Stop functions/idle
+	EndIf
+	
+	Return ReturnEvent
 }
 
-
-/***************************************************************************
- private functions
- ***************************************************************************/
-
-static ES_Event DuringStateOne( ES_Event Event)
-{
-    ES_Event ReturnEvent = Event; // assme no re-mapping or comsumption
-
-    // process ES_ENTRY, ES_ENTRY_HISTORY & ES_EXIT events
-    if ( (Event.EventType == ES_ENTRY) ||
-         (Event.EventType == ES_ENTRY_HISTORY) )
-    {
-        // implement any entry actions required for this state machine
-        
-        // after that start any lower level machines that run in this state
-        //StartLowerLevelSM( Event );
-        // repeat the StartxxxSM() functions for concurrent state machines
-        // on the lower level
-    }
-    else if ( Event.EventType == ES_EXIT )
-    {
-        // on exit, give the lower levels a chance to clean up first
-        //RunLowerLevelSM(Event);
-        // repeat for any concurrently running state machines
-        // now do any local exit functionality
-      
-    }else
-    // do the 'during' function for this state
-    {
-        // run any lower level state machine
-        // ReturnEvent = RunLowerLevelSM(Event);
-      
-        // repeat for any concurrent lower level machines
-      
-        // do any activity that is repeated as long as we are in this state
-    }
-    // return either Event, if you don't want to allow the lower level machine
-    // to remap the current event, or ReturnEvent if you do want to allow it.
-    return(ReturnEvent);
-}
