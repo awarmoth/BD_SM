@@ -1,4 +1,4 @@
-// Readbility Defines
+// Readability Defines
 	// Standard Configuration for timers
 	// Inverted Configurations for timers
 	// System clock frequency

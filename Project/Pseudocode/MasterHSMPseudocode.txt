@@ -1,0 +1,130 @@
+module level variables: MyPriority, CurrentState
+LOCState_t: Waiting2Start, Constructing
+Module level functions: DuringWaiting2Start, DuringConstructing
+
+bool InitMasterSM(uint8_t Priority)
+{
+	local variable ThisEvent
+	Initialize MyPriority to Priority
+	Initialize ThisEvent to ES_NO_EVENT
+	Initialize the SPI module
+	
+	Call StartMasterSM with ThisEvent as the passed parameter
+	
+	Return true
+}
+End InitMasterSM
+
+
+bool PostMasterSM(ES_Event ThisEvent)
+{
+	Return ThisEvent posted successfully to the service associated with MyPriority
+}
+End PostMasterSM
+
+
+void StartMasterSM(ES_Event CurrentEvent)
+{
+	Set CurrentState to Waiting2Start
+	Call RunMasterSM with CurrentEvent as the passed parameter to initialize lower level SMs
+}
+End StartMasterSM
+
+
+ES_Event RunMasterSM(ES_Event CurrentEvent)
+{
+	local variable MakeTransition
+	local variable NextState
+	local variable ReturnEvent
+	local variable EntryEvent
+	
+	Initialize MakeTransition to false
+	Initialize NextState to CurrentState
+	Initialize EntryEvent to ES_ENTRY
+	Initialize ReturnEvent to ES_NO_EVENT
+	
+	If CurrentState is Waiting2Start
+		
+		Run DuringWaiting2Start and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_LOC_COMPLETE
+				
+				If
+			End ES_Command block	
+		EndIf
+	
+	End Waiting2Start block
+	
+	If CurrentState is Constructing
+	
+		Run DuringConstructing and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_Ready2Write
+				Post ES_MasterComplete to the MasterSM
+				Set MakeTransition to true
+				Set NextState to Waiting2Start
+			End ES_Ready2Write block
+		EndIf
+		
+	End Constructing block
+	
+	If MakeTransition is true
+	
+		Set CurrentEvent to ES_EXIT
+		Run MasterSM with CurrentEvent to allow lower level SMs to exit
+		
+		Set CurrentState to NextState
+		RunMasterSM with EntryEvent to allow lower level SMs to enter
+		
+	EndIf
+	
+	Return ReturnEvent
+}
+End RunMasterSM
+
+
+static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		//do nothing
+	
+	ElseIf ThisEvent is ES_EXIT
+		//do nothing
+	
+	Else
+		//do nothing
+	EndIf
+	
+	Return ReturnEvent
+}
+End DuringWaiting2Start
+
+
+
+static ES_Event DuringConstructing(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Start ByteTransferSM
+	EndIf
+	
+	ElseIf ThisEvent is ES_EXIT
+		//do nothing
+	EndIf
+	
+	Else
+		Run ByteTransferSM and store output in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
+}
+
