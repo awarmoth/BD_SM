@@ -73,8 +73,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			}
 			// 	EndIf	
 
-			// End Reporting_1 block
-			break;
+		// End Reporting_1 block
+		break;
 		
 		// If CurrentState is WaitForResponse_1
 		case(WaitForResponse_1):
@@ -147,8 +147,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			}
 			// EndIf
 			
-			// End WaitForResponse_1 block
-			break;
+		// End WaitForResponse_1 block
+		break;
 
 		// If CurrentState is Reporting_2
 		case ( Reporting_2 ):		
@@ -175,8 +175,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			}
 			// EndIf
 			
-			// End Reporting_2 block
-			break;
+		// End Reporting_2 block
+		break;
 		
 		// If CurrentState is WaitForResponse_2
 		case (WaitForResponse_2):
@@ -247,8 +247,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			}
 			// 	EndIf
 				
-			// End WaitForResponse_2 block
-			break;
+		// End WaitForResponse_2 block
+		break;
 	}
 	
 	// If MakeTransition is true
@@ -293,7 +293,7 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostToLOC(Event2Post);
+		PostLOC(Event2Post);
 	}
 	// EndIf
 	
@@ -320,7 +320,7 @@ ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostToLOC(Event2Post);
+		PostLOC(Event2Post);
 	}
 	// EndIf
 
@@ -352,7 +352,7 @@ ES_Event DuringReporting_2(ES_Event ThisEvent)
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostToLOC(Event2Post);
+		PostLOC(Event2Post);
 	}
 	// EndIf
 	
@@ -374,12 +374,12 @@ ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if (ThisEvent.EventType == ES_ENTRY || ThisEvent.EventType == ES_ENTRY_HISTORY)
 	{
-		// Set Byte2Write to report query response byte
+		// Set Byte2Write to query response byte
 		Byte2Write = 0b0111 0000;
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostToLOC(Event2Post);
+		PostLOC(Event2Post);
 	}
 	// EndIf
 
