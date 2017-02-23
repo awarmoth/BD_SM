@@ -1,0 +1,158 @@
+module level variables: MyPriority, CurrentState, ResponseReady,ReportStatus,BadResponseCounter
+CheckInState_t: Reporting_1, WaitForResponse_1, Reporting_2, WaitForResponse_2
+Module level functions: DuringReporting_1, DuringWaitForResponse_1, DuringReporting_2, DuringWaitForResponse_2
+
+
+void StartCheckInSM(ES_Event CurrentEvent)
+{
+	Set CurrentState to Wait2Start
+	Run CheckInSM with CurrentEvent to initialize lower level SMs
+}
+End StartCheckInSM
+
+
+ES_Event RunCheckInSM(ES_Event CurrentEvent
+{
+	local variable MakeTransition
+	local variable NextState
+	local variable EntryEvent
+	local variable ReturnEvent
+	
+	Initialize MakeTransition to false
+	Initialize NextState to CurrentState
+	Initialize EntryEvent to ES_ENTRY
+	Initialize ReturnEvent to CurrentEvent to assume no consumption of event
+	
+	If CurrentState is Wait2Start
+	
+		Run DuringWait2Start and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_Command
+				Set MakeTransition to true
+				Set NextState to Wait4EOT
+			End ES_Command block
+				
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End Wait2Start block
+	
+	If CurrentState is Wait4EOT
+	
+		Run DuringWait4EOT and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_EOT and ByteCounter is less than 5
+				Set MakeTransition to true
+			
+			ElseIf CurrentEvent is ES_EOT and ByteCounter is 5
+				Set MakeTransition to true
+				Set NextState to Wait4Timeout
+			EndIf
+		EndIf
+		
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End Wait4EOT block
+	
+	If CurrentState is Wait4Timeout
+	
+		Run DuringWait4Timeout and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_TIMEOUT
+				Set MakeTransition to true
+				Transform ReturnEvent to ES_Ready2Write
+			EndIf
+		
+		Else 
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End Wait4Timeout block
+	
+	If MakeTransition is true
+	
+		Set CurrentEvent to ES_EXIT
+		Run CheckInSM with CurrentEvent to allow lower level SMs to exit
+		
+		Set CurrentState to NextState
+		Run CheckInSM with EntryEvent to allow lower level SMs to enter
+		
+	EndIf
+	
+	Return ReturnEvent
+}
+End RunCheckInSM
+
+
+ES_Event DuringWait2Start(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		//do nothing
+		
+	ElseIf ThisEvent is ES_EXIT
+		Reset the ByteCounter
+		
+	Else
+		//do nothing
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringWait2Start
+
+
+ES_Event DuringWaitEOT(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Write command to SPI module
+		Increment ByteCounter
+		
+	ElseIf ThisEvent is ES_EXIT
+		Read byte values sent back from LOC and store results in module variables
+		
+	Else
+		//do nothing
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringWait4EOT
+
+
+ES_Event DuringWait4Timeout(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Start CheckIn timer for 2ms
+		
+	ElseIf ThisEvent is ES_EXIT
+		//do nothing
+		
+	Else
+		//do nothing
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringWait4Timeout
+
