@@ -1,17 +1,17 @@
-module level variables: MyPriority, CurrentState, ResponseReady,ReportStatus,BadResponseCounter
+module level variables: MyPriority, CurrentState, ResponseReady, ReportStatus, BadResponseCounter = 0, Byte2Write
 CheckInState_t: Reporting_1, WaitForResponse_1, Reporting_2, WaitForResponse_2
 Module level functions: DuringReporting_1, DuringWaitForResponse_1, DuringReporting_2, DuringWaitForResponse_2
 
 
 void StartCheckInSM(ES_Event CurrentEvent)
 {
-	Set CurrentState to Wait2Start
-	Run CheckInSM with CurrentEvent to initialize lower level SMs
+	Set CurrentState to Reporting_1
+	Run CheckInSM with CurrentEvent
 }
 End StartCheckInSM
 
 
-ES_Event RunCheckInSM(ES_Event CurrentEvent
+ES_Event RunCheckInSM(ES_Event CurrentEvent)
 {
 	local variable MakeTransition
 	local variable NextState
@@ -23,57 +23,105 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent
 	Initialize EntryEvent to ES_ENTRY
 	Initialize ReturnEvent to CurrentEvent to assume no consumption of event
 	
-	If CurrentState is Wait2Start
+	If CurrentState is Reporting_1
 	
-		Run DuringWait2Start and store the output in CurrentEvent
+		Run DuringReporting_1 and store the output in CurrentEvent
 		
 		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_Command
+			If CurrentEvent is ES_LOC_COMPLETE
 				Set MakeTransition to true
-				Set NextState to Wait4EOT
-			End ES_Command block
+				Set NextState to WaitForResponse_1
+			End ES_LOC_COMPLETE block
 				
 		Else
 			Set ReturnEvent to ES_NO_EVENT
 		EndIf
 		
-	End Wait2Start block
+	End Reporting_1 block
 	
-	If CurrentState is Wait4EOT
+	If CurrentState is WaitForResponse_1
 	
-		Run DuringWait4EOT and store the output in CurrentEvent
+		Run DuringWaitForResponse_1 and store the output in CurrentEvent
 		
 		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_EOT and ByteCounter is less than 5
-				Set MakeTransition to true
-			
-			ElseIf CurrentEvent is ES_EOT and ByteCounter is 5
-				Set MakeTransition to true
-				Set NextState to Wait4Timeout
+			If CurrentEvent is ES_LOC_COMPLETE
+				Set ResponseReady to getResponseReady
+				If ResponseReady = not ready
+					Set MakeTransition to true
+					Transform ReturnEvent to ES_NO_EVENT
+				Else If BadResponseCounter > MaxBadResponses
+					Transform ReturnEvent to ES_Reorient
+				Else
+					Set Report Status to getReportStatus
+					If ReportStatus = ACK
+						Reset BadResponseCounter
+						Set MakeTransition to true
+						Set NextState to Reporting_2
+					Else If ReportStatus = NACK
+						Increment BadResponseCounter
+						Set MakeTransition to true
+						Set NextState to Reporting_1
+					Else // report status = inactive
+						Transform ReturnEvent to ES_Reorient
+					EndIf
+				EndIf
 			EndIf
-		EndIf
 		
 		Else
 			Set ReturnEvent to ES_NO_EVENT
 		EndIf
 		
-	End Wait4EOT block
+	End WaitForResponse_1 block
+
+	If CurrentState is Reporting_2
 	
-	If CurrentState is Wait4Timeout
-	
-		Run DuringWait4Timeout and store the output in CurrentEvent
+		Run DuringReporting_2 and store the output in CurrentEvent
 		
 		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_TIMEOUT
+			If CurrentEvent is ES_LOC_COMPLETE
 				Set MakeTransition to true
-				Transform ReturnEvent to ES_Ready2Write
-			EndIf
-		
-		Else 
+				Set NextState to WaitForResponse_2
+			End ES_LOC_COMPLETE block
+				
+		Else
 			Set ReturnEvent to ES_NO_EVENT
 		EndIf
 		
-	End Wait4Timeout block
+	End Reporting_2 block
+	
+	If CurrentState is WaitForResponse_2
+	
+		Run DuringWaitForResponse_2 and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_LOC_COMPLETE
+				Set ResponseReady to getResponseReady
+				If ResponseReady = not ready
+					Set MakeTransition to true
+					Transform ReturnEvent to ES_NO_EVENT
+				Else If BadResponseCounter > MaxBadResponses
+					Transform ReturnEvent to ES_Reorient
+				Else
+					Set ReportStatus to getReportStatus
+					If ReportStatus = ACK
+						Transform ReturnEvent to ES_Goal_Ready
+						Set ReturnEvent paramater to getLocation //from Report Status byte
+					Else If ReportStatus = NACK
+						Increment BadResponseCounter
+						Set MakeTransition to true
+						Set NextState to Reporting_2
+					Else // report status = inactive
+						Transform ReturnEvent to ES_Reorient
+					EndIf
+				EndIf
+			EndIf
+		
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End WaitForResponse_2 block
+	
 	
 	If MakeTransition is true
 	
@@ -90,69 +138,72 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent
 End RunCheckInSM
 
 
-ES_Event DuringWait2Start(ES_Event ThisEvent)
+ES_Event DuringReporting_1(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
 	Initialize ReturnEvent to ThisEvent
 	
 	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		//do nothing
-		
-	ElseIf ThisEvent is ES_EXIT
-		Reset the ByteCounter
-		
-	Else
-		//do nothing
+		Frequency = getFrequency // ISR is constantly updating
+		Set Byte2Write to report byte based on Frequency
+		Post ES_Command to LOC w/ parameter: Byte2Write
 	EndIf
 	
 	Return ReturnEvent
 	
 }
-End DuringWait2Start
+End DuringReporting_1
 
 
-ES_Event DuringWaitEOT(ES_Event ThisEvent)
+ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
 	Initialize ReturnEvent to ThisEvent
 	
 	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Write command to SPI module
-		Increment ByteCounter
-		
-	ElseIf ThisEvent is ES_EXIT
-		Read byte values sent back from LOC and store results in module variables
-		
-	Else
-		//do nothing
+		Set Byte2Write to report query response byte
+		Post ES_Command to LOC w/ parameter: Byte2Write
 	EndIf
 	
 	Return ReturnEvent
 	
 }
-End DuringWait4EOT
+End DuringWaitForResponse_1
 
 
-ES_Event DuringWait4Timeout(ES_Event ThisEvent)
+ES_Event DuringReporting_2(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
 	Initialize ReturnEvent to ThisEvent
 	
 	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Start CheckIn timer for 2ms
-		
-	ElseIf ThisEvent is ES_EXIT
-		//do nothing
-		
-	Else
-		//do nothing
+		Frequency = getFrequency // ISR is constantly updating
+		Set Byte2Write to report byte based on Frequency
+		Post ES_Command to LOC w/ parameter: Byte2Write
 	EndIf
 	
 	Return ReturnEvent
 	
 }
-End DuringWait4Timeout
+End DuringReporting_2
+
+
+ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Set Byte2Write to report query response byte
+		Post ES_Command to LOC w/ parameter: Byte2Write
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringWaitForResponse_2
 
