@@ -1,25 +1,25 @@
-module level variables: TargetStation, LastStation, Direction, CurrentState
-DrivingAlongTape enum states: Waiting, DrivingToStation, Driving to Reload
-module functions: DuringWaiting, DuringDrivingToStation, DuringDrivingToReload
+module level variables: ResponseReady, ReportStatus, BadResponseCounter, CurrentState
+CheckIn enum states: Reporting_1, WaitForResponse_1, Reporting_2
+module functions: DuringReporting_1, DuringWaitForResponse_1, DuringReporting_2
 
 
 //NEED TO ASK TAs ABOUT WHAT TO DO IF YOU GET AN ES_NO_EVENT OUT OF YOUR DURING FUNCTION
 //RIGHT NOW THIS IS CODED AS SPECIFIED IN THE STATE CHART
 //HOWEVER COMMENTS WERE ADDED AS POSSIBLE AMENDMENTS/CONCERNS FOR THE STATE CHART
 
-void StartDrivingAlongTapeSM(ES_Event CurrentEvent)
+void StartCheckInSM(ES_Event CurrentEvent)
 {
 	If CurrentEvent is not ES_ENTRY_HISTORY
-		Set CurrentState to Waiting
+		Set CurrentState to Reporting_1
 	Endif
 	
-	Call RunDrivingAlongTapeSM with CurrentEvent as the event parameter
+	Call RunCheckInSM with CurrentEvent as the event parameter
 }
-End StartDrivingAlongTapeSM
+End StartCheckInSM
 
 
 
-ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
+ES_Event RunCheckInSM(ES_Event CurrentEvent)
 {
 	local variable MakeTransition
 	local variable NextState
@@ -29,31 +29,31 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 	Initialize MakeTransition to false
 	Initialize NextState to CurrentState
 	Initialize EntryEvent to ES_ENTRY by default
-	Initialize ReturnEvent to CurrentEvent assuming no consuming of event //ASK ABOUT THIS BECAUSE I DON'T BUY IT
+	Initialize ReturnEvent to CurrentEvent assuming no consuming of event
 	
-	If CurrentState is Waiting //NOTE CORRECT STATE MACHINE TO NOT TURN ON TAPE CONTROL ON WAITING EXIT
+	If CurrentState is Reporting_1 //NOTE CORRECT STATE MACHINE TO NOT TURN ON TAPE CONTROL ON Reporting_1 EXIT
 		
-		Call DuringWaiting and set CurrentEvent to its return value
+		Call DuringReporting_1 and set CurrentEvent to its return value
 		
 		If CurrentEvent is not an ES_NO_EVENT
 		
 			If CurrentEvent is ES_DriveAlongTape
 			
-				If TargetStation is LastStation //module variables aren't set until exit runs
+				If ResponseReady is LastStation //module variables aren't set until exit runs
 					Set MakeTransition to true				
 					Set ReturnEvent to ES_ArrivedAtStation
 				Endif
 				
-				If TargetStation is not LastStation and TargetStation is not supply depot //module variables aren't set until exit runs
-					Set NextState to DrivingToStation
+				If ResponseReady is not LastStation and ResponseReady is not supply depot //module variables aren't set until exit runs
+					Set NextState to WaitForResponse_1
 					Set MakeTransition to true
 					Set ReturnEvent to ES_NO_EVENT
 					Enable wire following control law
 					Start driving
 				Endif
 				
-				If TargetStation is supply depot //module variables aren't set until exit runs
-					Set NextState to DrivingToReload
+				If ResponseReady is supply depot //module variables aren't set until exit runs
+					Set NextState to Reporting_2
 					Set MakeTransition to true
 					Set ReturnEvent to ES_NO_EVENT
 					Enable wire following control law
@@ -64,17 +64,17 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 			
 		Endif
 		
-	End Waiting block
+	End Reporting_1 block
 	
-	If CurrentState is DrivingToStation
+	If CurrentState is WaitForResponse_1
 		
-		Call DuringDrivingToStation and set CurrentEvent to its return value
+		Call DuringWaitForResponse_1 and set CurrentEvent to its return value
 		
 		If CurrentEvent is not an ES_NO_EVENT
 		
 			If CurrentEvent is ES_StationDetected
 			
-				If LastStation - Direction is TargetStation
+				If LastStation - Direction is ResponseReady
 					Set MakeTransition to true	
 					Stop driving
 					Disable wire following control law
@@ -82,7 +82,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 				Endif
 				
 				//DO THESE NEED TO BE ELSE IFs?
-				If LastStation - Direction is not TargetStation
+				If LastStation - Direction is not ResponseReady
 					Set MakeTransition to true
 					Set ReturnEvent to ES_NO_EVENT
 				Endif
@@ -91,11 +91,11 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 			
 		Endif
 		
-	End DrivingToStation block
+	End WaitForResponse_1 block
 	
-	If CurrentState is DrivingToReload
+	If CurrentState is Reporting_2
 		
-		Call DuringDrivingToReload and set CurrentEvent to its return value
+		Call DuringReporting_2 and set CurrentEvent to its return value
 		
 		If CurrentEvent is not an ES_NO_EVENT
 		
@@ -108,25 +108,25 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 			
 		Endif
 	
-	End DrivingToReload block
+	End Reporting_2 block
 	
 	If MakeTransition is true
 		
 		Set CurrentEvent to ES_EXIT
-		Call RunDrivingAlongTapeSM with CurrentEvent as the event parameter
+		Call RunCheckInSM with CurrentEvent as the event parameter
 					
 		Set CurrentState to NextState
-		Call RunDrivingAlongTapeSM with EntryEvent as the event parameter
+		Call RunCheckInSM with EntryEvent as the event parameter
 			
 	Endif
 	
 	Return ReturnEvent
 }
-End RunDrivingAlongTapeSM
+End RunCheckInSM
 
 
 
-ES_Event DuringWaiting(ES_Event ThisEvent)
+ES_Event DuringReporting_1(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
@@ -139,9 +139,9 @@ ES_Event DuringWaiting(ES_Event ThisEvent)
 	
 	ElseIf ThisEvent is ES_EXIT
 		//Probably want to switch these initializations to occur after ES_ENTRY
-		Set TargetStation to getTargetStation
+		Set ResponseReady to getResponseReady
 		Set LastStation to getLastStation
-		Set Direction from sign(LastStation - TargetStation)
+		Set Direction from sign(LastStation - ResponseReady)
 		Set ReturnEvent to ES_NO_EVENT
 	EndIf
 	
@@ -151,11 +151,11 @@ ES_Event DuringWaiting(ES_Event ThisEvent)
 	
 	Return ReturnEvent
 }
-End DuringWaiting
+End DuringReporting_1
 
 
 
-ES_Event DuringDrivingToStation(ES_Event ThisEvent)
+ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
@@ -176,10 +176,10 @@ ES_Event DuringDrivingToStation(ES_Event ThisEvent)
 	
 	Return ReturnEvent
 }
-End DuringDrivingToStation
+End DuringWaitForResponse_1
 
 
-ES_Event DuringDrivingToReload(ES_Event ThisEvent)
+ES_Event DuringReporting_2(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
@@ -200,4 +200,4 @@ ES_Event DuringDrivingToReload(ES_Event ThisEvent)
 	
 	Return ReturnEvent
 }
-End DuringDrivingToReload
+End DuringReporting_2
