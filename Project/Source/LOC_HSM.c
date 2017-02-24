@@ -167,24 +167,31 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 		//If CurrentState is LOC_Waiting
 			case LOC_Waiting:
 	
-			//Run DuringWaiting and store the output in CurrentEvent
+				//Run DuringWaiting and store the output in CurrentEvent
 				CurrentEvent = DuringLOC_Waiting(CurrentEvent);
 			
-			//If CurrentEvent is not an ES_NO_EVENT
+				//If CurrentEvent is not an ES_NO_EVENT
 				if(CurrentEvent.EventType != ES_NO_EVENT)
 				{
-				//If CurrentEvent is ES_Command
+					//If CurrentEvent is ES_Command
 					if(CurrentEvent.EventType == ES_COMMAND)
 					{
-					//Post an ES_Command event with the same event parameter to the LOC_SM
+						//Post an ES_Command event with the same event parameter to the LOC_SM
 						PostLOC_SM(CurrentEvent);
-					//Set MakeTransition to true
+						//Set MakeTransition to true
 						MakeTransition = true;
-					//Set NextState to Transmitting
+						//Set NextState to Transmitting
 						NextState = LOC_Transmitting;
 					}
 					//End ES_Command block	
 				}
+				// 	Else
+				else
+				{
+					// Set ReturnEvent to ES_NO_EVENT
+					ReturnEvent = ES_NO_EVENT;
+				}
+				// 	EndIf	
 				break;
 			//End Waiting block
 				
@@ -211,6 +218,13 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 					}
 				//End ES_Ready2Write block
 				}
+				// 	Else
+				else
+				{
+					// Set ReturnEvent to ES_NO_EVENT
+					ReturnEvent = ES_NO_EVENT;
+				}
+				// 	EndIf	
 				break;
 			//End Transmitting block
 				
