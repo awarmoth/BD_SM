@@ -6,6 +6,9 @@
  #define REPORT_COMMAND 0b1000 0000
  #define QUERY_RESPONSE_COMMAND 0b0111 0000
 
+ #define GREEN 0
+ #define RED 1
+
  #define CHECK_SHOOT_GREEN_MASK BIT7HI
  #define CHECK_SHOOT_GREEN_RIGHT_SHIFT 7
 
@@ -47,5 +50,8 @@
  #define STATION_THREE 3
  #define START 4
 
+ #define GOAL_ONE 1
+ #define GOAL_TWO 2
+ #define GOAL_THREE 3
  
  

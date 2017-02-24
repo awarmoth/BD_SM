@@ -180,9 +180,9 @@ ES_Event DuringDrivingAlongTape(ES_Event ThisEvent)
 	Initialize ReturnEvent to ThisEvent
 	
 	If ThisEvent is ES_ENTRY
-		Start DrivingAlongTapeSM with ThisEvent and result in ReturnEvent
+		Start DrivingAlongTapeSM with ThisEvent
 	Else If ThisEvent is ES_EXIT
-		Run DrivingAlongTapeSM with ThisEvent and result in ReturnEvent
+		Run DrivingAlongTapeSM with ThisEvent
 		Turn off motors/control
 	Else
 		Run DrivingAlongTapeSM with ThisEvent and store result in ReturnEvent
@@ -201,9 +201,9 @@ ES_Event DuringCheckIn(ES_Event ThisEvent)
 	Initialize ReturnEvent to ThisEvent
 	
 	If ThisEvent is ES_ENTRY
-		Start CheckInSM with ThisEvent and result in ReturnEvent
+		Start CheckInSM with ThisEvent
 	Else If ThisEvent is ES_EXIT
-		Run CheckInSM with ThisEvent and result in ReturnEvent
+		Run CheckInSM with ThisEvent
 	Else
 		Run CheckInSM with ThisEvent and store result in ReturnEvent
 	EndIf
@@ -221,9 +221,9 @@ ES_Event DuringShooting(ES_Event ThisEvent)
 	Initialize ReturnEvent to ThisEvent
 	
 	If ThisEvent is ES_ENTRY
-		Start ShootingSM with ThisEvent and result in ReturnEvent
+		Start ShootingSM with ThisEvent
 	Else If ThisEvent is ES_EXIT
-		Run ShootingSM with ThisEvent and result in ReturnEvent
+		Run ShootingSM with ThisEvent
 	Else
 		Run ShootingSM with ThisEvent and store result in ReturnEvent
 	EndIf
