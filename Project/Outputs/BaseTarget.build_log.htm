@@ -3,7 +3,7 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-Z:\ME218b\218b Project\Project\UVFrameworkHSMTemplate.uvproj
+\\testarossa\Users$\bglasner\My Documents\The_Framework\Project\UVFrameworkHSMTemplate.uvproj
 Project File Date:  02/23/2017
 
 <h2>Output:</h2>
@@ -20,9 +20,6 @@ Source\SPI_Module.c(182): warning:  #550-D: variable "ThisEvent" was set but nev
         ES_Event ThisEvent;
 Source\SPI_Module.c: 1 warning, 0 errors
 compiling ByteTransferSM.c...
-Source\ByteTransferSM.c(93): warning:  #550-D: variable "BytesArray" was set but never used
-  static uint8_t BytesArray[5];
-Source\ByteTransferSM.c: 1 warning, 0 errors
 assembling startup_rvmdk.S...
 compiling ES_CheckEvents.c...
 compiling ES_DeferRecall.c...
@@ -39,6 +36,16 @@ compiling retarget.c...
 compiling termio.c...
 compiling uartstdio.c...
 linking...
-Program Size: Code=4396 RO-data=1028 RW-data=56 ZI-data=2208  
+Program Size: Code=4976 RO-data=1096 RW-data=56 ZI-data=2208  
 After Build - User command #1: fromelf --bin --output .\Outputs\BaseTarget.bin .\Outputs\BaseTarget.axf
-".\Outputs\BaseTarget.axf" - 0 Error(s), 3 Warning(s).
+".\Outputs\BaseTarget.axf" - 0 Error(s), 2 Warning(s).
+Load "\\\\testarossa\\Users$\\bglasner\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.
+ retarget.c...
+compiling termio.c...
+compiling uartstdio.c...
+".\Outputs\BaseTarget.axf" - 2 Error(s), 3 Warning(s).
+Target not created

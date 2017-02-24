@@ -148,6 +148,7 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 			//If CurrentEvent is ES_Command
 				if(CurrentEvent.EventType == ES_COMMAND) //IF WE ONLY WRITE 1 BYTE AT A TIME, HOW SHOULD WE PASS THE DATA WE WANT TO WRITE?
 				{
+					printf("New Command = %d\r\n", CurrentEvent.EventParam);
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Set NextState to BT_Wait4EOT
@@ -182,6 +183,7 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 			//If CurrentEvent is ES_EOT and ByteCounter is less than 5
 				if((CurrentEvent.EventType == ES_EOT) && (ByteCounter < 5))
 				{
+					printf("ES_EOT, Byte Written = %d, ByteCounter = %d\r\n", CurrentEvent.EventParam, ByteCounter);
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Store value written by LOC in BytesArray element corresponding to ByteCounter - 1
@@ -195,6 +197,7 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 			//ElseIf CurrentEvent is ES_EOT and ByteCounter is 5
 				else if((CurrentEvent.EventType == ES_EOT) && (ByteCounter == 5))
 				{
+					printf("ES_EOT, Byte Written = %d, ByteCounter = %d\r\n", CurrentEvent.EventParam, ByteCounter);
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Store value written by LOC in BytesArray element corresponding to ByteCounter - 1
@@ -227,6 +230,8 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 			//If CurrentEvent is ES_TIMEOUT
 				if(CurrentEvent.EventType == ES_TIMEOUT)
 				{
+					printf("LOC_TIMER Timed out\r\n");
+					printf("Byte1 = %d | Byte2 = %d | Byte3 = %d | Byte4 = %d | Byte5 = %d\r\n", BytesArray[0], BytesArray[1], BytesArray[2], BytesArray[3], BytesArray[4]);
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Transform ReturnEvent to ES_Ready2Write
