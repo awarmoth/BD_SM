@@ -176,15 +176,8 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 					//If CurrentEvent is ES_Command
 					if(CurrentEvent.EventType == ES_COMMAND)
 					{
-<<<<<<< HEAD
 						printf("Moving to Transmitting %d\r\n", CurrentEvent.EventParam);
-					//Post an ES_Command event with the same event parameter to the LOC_SM
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 399f642d893e407ccddf6b15794553b6a2f76f41
 						//Post an ES_Command event with the same event parameter to the LOC_SM
->>>>>>> DeionBranch
 						PostLOC_SM(CurrentEvent);
 						//Set MakeTransition to true
 						MakeTransition = true;
@@ -218,7 +211,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 					{
 					//Post ES_LOC_Complete to the MasterSM
 						Event2Post.EventType = ES_LOC_COMPLETE;
-						PostMasterSM(Event2Post);
+					// PostMasterSM(Event2Post);
 					//Set MakeTransition to true
 						MakeTransition = true;
 					//Set NextState to Waiting
