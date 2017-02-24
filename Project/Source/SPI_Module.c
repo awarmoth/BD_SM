@@ -57,9 +57,9 @@
 
 // Module defines
 #define BITS_PER_NIBBLE 4
-#define CLOCK_PRE_DIVISOR 2
+#define CLOCK_PRE_DIVISOR 50
 #define SCR_POS 8
-#define SERIAL_CLOCK_RATE 22
+#define SERIAL_CLOCK_RATE 59
 #define QUERY_INPUT (0xAA)
 
 
@@ -131,12 +131,12 @@ void InitSPI_Comm(void)
 	
 	//Configure the SSI clock source to the system clock
 	HWREG(SSI0_BASE+SSI_O_CC) = (~SSI_CC_CS_M & HWREG(SSI0_BASE+SSI_O_CC)) + SSI_CC_CS_SYSPLL;
-	//Configure the clock pre-scaler to a value of 2 (CPSDVSR = 2)
+	//Configure the clock pre-scaler to a value of 50 (CPSDVSR = 50)
 	HWREG(SSI0_BASE+SSI_O_CPSR) = (HWREG(SSI0_BASE+SSI_O_CPSR) & ~SSI_CPSR_CPSDVSR_M) + CLOCK_PRE_DIVISOR;
 	
-	//Configure clock rate (SCR = 22), phase & polarity (SPH = 1, SPO = 1), mode (FRF = 0), 
+	//Configure clock rate (SCR = 59), phase & polarity (SPH = 1, SPO = 1), mode (FRF = 0), 
 	//data size (DSS = 8 bits, must be right justified?)
-	HWREG(SSI0_BASE+SSI_O_CR0) = (HWREG(SSI0_BASE+SSI_O_CR0) & ~SSI_CR0_SCR_M) + (SERIAL_CLOCK_RATE<<SCR_POS); //Set SCR to 22
+	HWREG(SSI0_BASE+SSI_O_CR0) = (HWREG(SSI0_BASE+SSI_O_CR0) & ~SSI_CR0_SCR_M) + (SERIAL_CLOCK_RATE<<SCR_POS); //Set SCR to 59
 	HWREG(SSI0_BASE+SSI_O_CR0) |= (SSI_CR0_SPH | SSI_CR0_SPO); //Set SPH = 1, SPO = 1
 	HWREG(SSI0_BASE+SSI_O_CR0) = (HWREG(SSI0_BASE+SSI_O_CR0) & ~(SSI_CR0_FRF_M)) + SSI_CR0_FRF_MOTO; //Set FRF = 0
 	HWREG(SSI0_BASE+SSI_O_CR0) = (HWREG(SSI0_BASE+SSI_O_CR0) & ~(SSI_CR0_DSS_M)) + SSI_CR0_DSS_8; //Set data size = 8 bits
@@ -183,7 +183,7 @@ void EOT_Response_ISR(void)
 	ThisEvent.EventType = ES_EOT;
 	ThisEvent.EventParam = command;
 	//Post to LOC_SM
-	//PostLOC_SM(ThisEvent);
+	PostLOC_SM(ThisEvent);
 	
 }
 
@@ -207,14 +207,11 @@ void EOT_Response_ISR(void)
 ****************************************************************************/
 void QueryLOC(uint8_t QueryVal)
 {
-	//printf("QUERYING \r\n");
 	//enable the interrupt in the NVIC
 	
-	
-	//write 0xAA to the SSI Data Register
+	//write QueryVal to the SSI Data Register
 	HWREG(SSI0_BASE+SSI_O_DR) = (HWREG(SSI0_BASE+SSI_O_DR) & ~SSI_DR_DATA_M) + QueryVal;
 	HWREG(NVIC_EN0) |= BIT7HI;
-	//printf("Query Val = %d\r\n",(HWREG(SSI0_BASE+SSI_O_DR) & ~SSI_DR_DATA_M) + QUERY_INPUT);
 }
 
 

@@ -80,20 +80,20 @@ static uint8_t MyPriority;
 bool InitLOC_SM(uint8_t Priority)
 {
 		TERMIO_Init();
-	//local variable ThisEvent
+		//local variable ThisEvent
 		ES_Event ThisEvent;
-	//Initialize MyPriority to Priority
+		//Initialize MyPriority to Priority
 		MyPriority = Priority;
 	
-	//Initialize ThisEvent to ES_ENTRY
+		//Initialize ThisEvent to ES_ENTRY
 		ThisEvent.EventType = ES_ENTRY;
 	
-	//Initialize the SPI module
-/***InitSPI_Comm();***************/
+		//Initialize the SPI module
+		InitSPI_Comm();
 	
-	//Call StartLOC_SM with ThisEvent as the passed parameter
+		//Call StartLOC_SM with ThisEvent as the passed parameter
 		StartLOC_SM(ThisEvent);
-	//Return true
+		//Return true
 		return true;
 }
 
@@ -141,99 +141,100 @@ bool PostLOC_SM( ES_Event ThisEvent )
 ****************************************************************************/
 ES_Event RunLOC_SM( ES_Event CurrentEvent )
 {
-	//local variable MakeTransition
+		//local variable MakeTransition
 		bool MakeTransition;
-	//local variable NextState
+		//local variable NextState
 		LOC_State_t NextState;
-	//local variable ReturnEvent
+		//local variable ReturnEvent
 		ES_Event ReturnEvent;
-	//local variable EntryEvent
+		//local variable EntryEvent
 		ES_Event EntryEvent;
-	//local variable Event2Post
+		//local variable Event2Post
 		ES_Event Event2Post;
 
-	//Initialize MakeTransition to false
+		//Initialize MakeTransition to false
 		MakeTransition = false;
-	//Initialize NextState to CurrentState
+		//Initialize NextState to CurrentState
 		NextState = CurrentState;
-	//Initialize EntryEvent to ES_ENTRY
+		//Initialize EntryEvent to ES_ENTRY
 		EntryEvent.EventType = ES_ENTRY;
-	//Initialize ReturnEvent to ES_NO_EVENT
+		//Initialize ReturnEvent to ES_NO_EVENT
 		ReturnEvent.EventType = ES_NO_EVENT;
 
 		switch(CurrentState)
 		{
 			
-		//If CurrentState is LOC_Waiting
+			//If CurrentState is LOC_Waiting
 			case LOC_Waiting:
 	
-			//Run DuringWaiting and store the output in CurrentEvent
+				//Run DuringWaiting and store the output in CurrentEvent
 				CurrentEvent = DuringLOC_Waiting(CurrentEvent);
 			
-			//If CurrentEvent is not an ES_NO_EVENT
+				//If CurrentEvent is not an ES_NO_EVENT
 				if(CurrentEvent.EventType != ES_NO_EVENT)
 				{
-				//If CurrentEvent is ES_Command
+					//If CurrentEvent is ES_Command
 					if(CurrentEvent.EventType == ES_COMMAND)
 					{
 						printf("Moving to Transmitting %d\r\n", CurrentEvent.EventParam);
-					//Post an ES_Command event with the same event parameter to the LOC_SM
+						//Post an ES_Command event with the same event parameter to the LOC_SM
 						PostLOC_SM(CurrentEvent);
-					//Set MakeTransition to true
+						//Set MakeTransition to true
 						MakeTransition = true;
-					//Set NextState to Transmitting
+						//Set NextState to Transmitting
 						NextState = LOC_Transmitting;
 					}
 					//End ES_Command block	
 				}
 				break;
-			//End Waiting block
+				//End Waiting block
 				
 				
-		//If CurrentState is LOC_Transmitting
+			//If CurrentState is LOC_Transmitting
 			case LOC_Transmitting:
 		
-			//Run DuringTransmitting and store the output in CurrentEvent
+				//Run DuringTransmitting and store the output in CurrentEvent
 				CurrentEvent = DuringLOC_Transmitting(CurrentEvent);
 			
-			//If CurrentEvent is not an ES_NO_EVENT
+				//If CurrentEvent is not an ES_NO_EVENT
 				if(CurrentEvent.EventType != ES_NO_EVENT)
 				{
-				//If CurrentEvent is ES_Ready2Write
+					//If CurrentEvent is ES_Ready2Write
 					if(CurrentEvent.EventType == ES_READY_2_WRITE)
 					{
-					//Post ES_LOC_Complete to the MasterSM
+						//Post ES_LOC_Complete to the MasterSM
 						Event2Post.EventType = ES_LOC_COMPLETE;
-						PostMasterSM(Event2Post);
-					//Set MakeTransition to true
+						//
+						//PostMasterSM(Event2Post);
+						//Set MakeTransition to true
 						MakeTransition = true;
-					//Set NextState to Waiting
+						//Set NextState to Waiting
 						NextState = LOC_Waiting;
 					}
 				//End ES_Ready2Write block
 				}
 				break;
-			//End Transmitting block
+				//End Transmitting block
 				
 		}//end switch
 		
-	//If MakeTransition is true
+		//If MakeTransition is true
 		if(MakeTransition)
 		{
 	
-		//Set CurrentEvent to ES_EXIT
+			//Set CurrentEvent to ES_EXIT
 			CurrentEvent.EventType = ES_EXIT;
-		//Run LOC_SM with CurrentEvent to allow lower level SMs to exit
+			//Run LOC_SM with CurrentEvent to allow lower level SMs to exit
 			RunLOC_SM(CurrentEvent);
 		
-		//Set CurrentState to NextState
+			//Set CurrentState to NextState
 			CurrentState = NextState;
-		//RunLOC_SM with EntryEvent to allow lower level SMs to enter
+			//RunLOC_SM with EntryEvent to allow lower level SMs to enter
 			RunLOC_SM(EntryEvent);
 		
 		}
 	
-	//Return ReturnEvent
+		//Return ReturnEvent
 		return ReturnEvent;
 }
 /****************************************************************************
@@ -281,7 +282,7 @@ static ES_Event DuringLOC_Waiting(ES_Event ThisEvent)
 	//Else do nothing
 	else{}
 	
-	//Return ReturnEvent
+		//Return ReturnEvent
 		return ReturnEvent;
 }
 
