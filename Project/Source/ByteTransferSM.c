@@ -390,6 +390,9 @@ static ES_Event DuringWait4Timeout(ES_Event ThisEvent)
 	
 }
 
+/*
+Getter Functions
+*/
 
 uint8_t getByte2(void)
 {
@@ -414,3 +417,27 @@ uint8_t getByte5(void)
 	return BytesArray[4];
 }
 
+uint8_t getSB1_Byte(void)
+{
+	return getByte3();
+}
+
+uint8_t getSB2_Byte(void)
+{
+	return getByte4();
+}
+
+uint8_t getSB3_Byte(void)
+{
+	return getByte5();
+}
+
+uint8_t getRS_Byte(void)
+{
+	return getByte3();
+}
+
+uint8_t getRR_Byte(void)
+{
+	return getByte4();
+}

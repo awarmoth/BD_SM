@@ -1,8 +1,19 @@
+#include "MasterHSM.h"
+
+#include "constants.h"
+
+
 // module level variables: MyPriority, CurrentState, TeamColor, GameState
 static uint8_t myPriority;
 static MasterState_t CurrentState;
 static uint8_t TeamColor;
 static uint8_t GameState;
+// Most recent LOC responses
+static uint8_t SB1_Byte;
+static uint8_t SB2_Byte;
+static uint8_t SB3_Byte;
+static uint8_t RR_Byte;
+static uint8_t RS_Byte;
 
 bool InitMasterSM(uint8_t Priority)
 {
@@ -74,9 +85,9 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					// Get response bytes from LOC
-					SetSB1_Byte(getSB1_Byte());
-					SetSB2_Byte(getSB2_Byte());
-					SetSB3_Byte(getSB3_Byte());
+					SB1_Byte = getSB1_Byte();
+					SB2_Byte = getSB2_Byte();
+					SB3_Byte = getSB3_Byte();
 					// Set GameState to getGameState
 					GameState = getGameState();
 					// If GameState is WAITING_FOR_START
@@ -313,3 +324,62 @@ static ES_Event DuringGameComplete(ES_Event ThisEvent)
 	return ReturnEvent;
 }
 
+void SetSB1_Byte(uint8_t Byte2Write) {
+	SB1_Byte = Byte2Write;
+}
+
+void SetSB2_Byte(uint8_t Byte2Write) {
+	SB2_Byte = Byte2Write;
+}
+
+void SetSB3_Byte(uint8_t Byte2Write) {
+	SB3_Byte = Byte2Write;
+}
+
+void SetRS_Byte(uint8_t Byte2Write) {
+	RS_Byte = Byte2Write;
+}
+
+void SetRR_Byte(uint8_t Byte2Write) {
+	RR_Byte = Byte2Write;
+}
+
+uint8_t getTeamColor(void) {
+	return TeamColor;
+}
+
+uint8_t getCheckShootGreen(void) {
+	return SB1_Byte & CHECK_SHOOT_GREEN_MASK >> CHECK_SHOOT_GREEN_RIGHT_SHIFT;
+}
+
+uint8_t getActiveStageGreen(void) {
+	return SB1_Byte & GREEN_STAGE_ACTIVE_MASK >> GREEN_STAGE_ACTIVE_RIGHT_SHIFT;
+}
+
+uint8_t getActiveGoalGreen(void) {
+	return SB1_Byte & GREEN_GOAL_ACTIVE_MASK >> GREEN_GOAL_ACTIVE_RIGHT_SHIFT;
+}
+
+uint8_t getCheckShootRed(void) {
+	return SB1_Byte & CHECK_SHOOT_RED_MASK >> CHECK_SHOOT_RED_RIGHT_SHIFT;
+}
+
+uint8_t getActiveStageRed(void) {
+	return SB1_Byte & RED_STAGE_ACTIVE_MASK >> RED_STAGE_ACTIVE_RIGHT_SHIFT;
+}
+
+uint8_t getActiveGoalRed(void) {
+	return SB1_Byte & RED_GOAL_ACTIVE_MASK >> RED_GOAL_ACTIVE_RIGHT_SHIFT;
+}
+
+uint8_t getScoreGreen(void) {
+	return SB2_Byte & GREEN_SCORE_MASK;
+}
+
+uint8_t getScoreRed(void) {
+	return SB2_Byte & RED_SCORE_MASK;
+
+}
+uint8_t getGameState(void) {
+	return SB3_Byte & GAME_STATUS_MASK >> GAME_STATUS_RIGHT_SHIFT;
+}

@@ -1,3 +1,8 @@
+#include "MasterHSM.h"
+#include "CheckInSM.h"
+
+#include "constants.h"
+
 // module level variables: 
  static uint8_t MyPriority;
  static CheckInState_t CurrentState;
