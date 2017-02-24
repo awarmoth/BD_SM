@@ -267,7 +267,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 		// Set CurrentState to NextState
 		CurrentState = NextState;
 		// Run CheckInSM with EntryEvent to allow lower level SMs to enter
-		RunCheckInSM(CurrentEvent);
+		RunCheckInSM(EntryEvent);
 	}
 	// EndIf
 	
