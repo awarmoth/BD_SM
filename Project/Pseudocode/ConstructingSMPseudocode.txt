@@ -157,13 +157,14 @@ End RunConstructingSM
 ES_Event DuringGettingTargetStation(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
+	local variable Event2Post
 	
 	Initialize ReturnEvent to ThisEvent
 	
 	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Frequency = getFrequency // ISR is constantly updating
-		Set Byte2Write to report byte based on Frequency
-		Post ES_Command to LOC w/ parameter: Byte2Write
+		Set Event2Post type to ES_Command
+		Set Event2Post param to STATUS_COMMAND
+		Post Event2Post to LOC_SM
 	EndIf
 	
 	Return ReturnEvent
@@ -178,9 +179,13 @@ ES_Event DuringDrivingAlongTape(ES_Event ThisEvent)
 	
 	Initialize ReturnEvent to ThisEvent
 	
-	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Set Byte2Write to report query response byte
-		Post ES_Command to LOC w/ parameter: Byte2Write
+	If ThisEvent is ES_ENTRY
+		Start DrivingAlongTapeSM with ThisEvent and result in ReturnEvent
+	Else If ThisEvent is ES_EXIT
+		Run DrivingAlongTapeSM with ThisEvent and result in ReturnEvent
+		Turn off motors/control
+	Else
+		Run DrivingAlongTapeSM with ThisEvent and store result in ReturnEvent
 	EndIf
 	
 	Return ReturnEvent
@@ -189,22 +194,24 @@ ES_Event DuringDrivingAlongTape(ES_Event ThisEvent)
 End DuringDrivingAlongTape
 
 
-ES_Event DuringConstructing(ES_Event ThisEvent)
+ES_Event DuringCheckIn(ES_Event ThisEvent)
 {
 	local variable ReturnEvent
 	
 	Initialize ReturnEvent to ThisEvent
 	
-	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Frequency = getFrequency // ISR is constantly updating
-		Set Byte2Write to report byte based on Frequency
-		Post ES_Command to LOC w/ parameter: Byte2Write
+	If ThisEvent is ES_ENTRY
+		Start CheckInSM with ThisEvent and result in ReturnEvent
+	Else If ThisEvent is ES_EXIT
+		Run CheckInSM with ThisEvent and result in ReturnEvent
+	Else
+		Run CheckInSM with ThisEvent and store result in ReturnEvent
 	EndIf
 	
 	Return ReturnEvent
 	
 }
-End DuringConstructing
+End DuringCheckIn
 
 
 ES_Event DuringShooting(ES_Event ThisEvent)
@@ -213,13 +220,35 @@ ES_Event DuringShooting(ES_Event ThisEvent)
 	
 	Initialize ReturnEvent to ThisEvent
 	
-	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Set Byte2Write to report query response byte
-		Post ES_Command to LOC w/ parameter: Byte2Write
+	If ThisEvent is ES_ENTRY
+		Start ShootingSM with ThisEvent and result in ReturnEvent
+	Else If ThisEvent is ES_EXIT
+		Run ShootingSM with ThisEvent and result in ReturnEvent
+	Else
+		Run ShootingSM with ThisEvent and store result in ReturnEvent
 	EndIf
 	
 	Return ReturnEvent
 	
 }
 End DuringShooting
+
+ES_Event DuringReloading(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	local variable Event2Post
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Set Event2Post type to ES_RELOAD_START
+		Post Event2Post to ReloadService
+	Else If ThisEvent is ES_EXIT
+		If normalgame timeout flag set, post ES_Norm_Game_Complete to Master
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringReloading
 
