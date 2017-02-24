@@ -2,7 +2,6 @@
 ".\outputs\hsmtemplatemain.o"
 ".\outputs\eventcheckers.o"
 ".\outputs\mapkeys.o"
-".\outputs\masterhsm.o"
 ".\outputs\loc_hsm.o"
 ".\outputs\hardware.o"
 ".\outputs\constructionsm.o"

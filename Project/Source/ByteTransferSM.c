@@ -154,8 +154,8 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 				//Set NextState to BT_Wait4EOT
 					NextState = BT_Wait4EOT;
 					//Write the first byte command to the SPI Module
-						//uint8_t QueryVal = ((uint8_t)CurrentEvent.EventParam);
-						//QueryLOC(QueryVal);
+						uint8_t QueryVal = ((uint8_t)CurrentEvent.EventParam);
+						QueryLOC(QueryVal);
 					
 				}
 			//End ES_Command block
@@ -190,8 +190,8 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 				//EventParam is a uint16_t, so we have to cast it down to a uint8_t
 					BytesArray[ByteCounter-1] = ((uint8_t)CurrentEvent.EventParam);
 				//Write the next byte command to the SPI Module
-					//uint8_t QueryVal = 0; //Bytes 2-5 are always zeros
-					//QueryLOC(QueryVal);
+					uint8_t QueryVal = 0; //Bytes 2-5 are always zeros
+					QueryLOC(QueryVal);
 				}
 			
 			//ElseIf CurrentEvent is ES_EOT and ByteCounter is 5
@@ -337,8 +337,6 @@ static ES_Event DuringWait4EOT(ES_Event ThisEvent)
 		if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 		{
 			
-		//Write command to SPI module
-			/**************** HOW DO WE KNOW WHAT VALUE TO WRITE HERE??????????????***************/
 			
 		//Increment ByteCounter
 			ByteCounter++;
@@ -391,3 +389,28 @@ static ES_Event DuringWait4Timeout(ES_Event ThisEvent)
 		return ReturnEvent;
 	
 }
+
+
+uint8_t getByte2(void)
+{
+	return BytesArray[1];
+}
+
+
+uint8_t getByte3(void)
+{
+	return BytesArray[2];
+}
+
+
+uint8_t getByte4(void)
+{
+	return BytesArray[3];
+}
+
+
+uint8_t getByte5(void)
+{
+	return BytesArray[4];
+}
+

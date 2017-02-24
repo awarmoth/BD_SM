@@ -447,6 +447,16 @@
               <FileType>1</FileType>
               <FilePath>.\Source\ConstructionSM.c</FilePath>
             </File>
+            <File>
+              <FileName>SPI_Module.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\SPI_Module.c</FilePath>
+            </File>
+            <File>
+              <FileName>ByteTransferSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ByteTransferSM.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -581,6 +591,11 @@
               <FileName>ByteTransferSM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ByteTransferSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>SPI_Module.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\SPI_Module.h</FilePath>
             </File>
           </Files>
         </Group>
