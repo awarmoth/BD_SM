@@ -41,5 +41,11 @@
  #define REPORT_STATUS_MASK (BIT6HI | BIT7HI)
  #define REPORT_STATUS_RIGHT_SHIFT 6
 
+ #define RELOAD 0
+ #define STATION_ONE 1
+ #define STATION_TWO 2
+ #define STATION_THREE 3
+ #define START 4
+
  
  

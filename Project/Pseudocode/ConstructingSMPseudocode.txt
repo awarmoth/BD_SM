@@ -1,7 +1,7 @@
-module level variables: MyPriority, CurrentState, TeamColor, BallCount = 3, TargetStation, LastStation = 4, 
+module level variables: MyPriority, CurrentState, TeamColor, BallCount = 3, TargetStation, LastStation = START, 
 TargetGoal, Score, GameTimeoutFlag
-ConstructingState_t: GettingTargetStation, DrivingAlongTape, Constructing, Shooting, Reloading
-Module level functions: DuringGettingTargetStation, DuringDrivingAlongTape, DuringConstructing, DuringShooting, DuringReloading
+ConstructingState_t: GettingTargetStation, DrivingAlongTape, CheckIn, Shooting, Reloading
+Module level functions: DuringGettingTargetStation, DuringDrivingAlongTape, DuringCheckIn, DuringShooting, DuringReloading
 
 
 void StartConstructingSM(ES_Event CurrentEvent)
@@ -56,72 +56,57 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 		If CurrentEvent is not ES_NO_EVENT
 			If CurrentEvent is ES_ARRIVED_AT_STATION
 				Set MakeTransition to true
-					Transform ReturnEvent to ES_NO_EVENT
-				Else If BadResponseCounter > MaxBadResponses
-					Transform ReturnEvent to ES_Reorient
-				Else
-					Set Report Status to getReportStatus
-					If ReportStatus = ACK
-						Reset BadResponseCounter
-						Set MakeTransition to true
-						Set NextState to Constructing
-					Else If ReportStatus = NACK
-						Increment BadResponseCounter
-						Set MakeTransition to true
-						Set NextState to GettingTargetStation
-					Else // report status = inactive
-						Transform ReturnEvent to ES_Reorient
-					EndIf
-				EndIf
+				Set NextState to CheckIn
+			Else if CurrentEvent is ES_ARRIVED_AT_RELOAD
+				Set MakeTransition to true
+				Set NextState to Reloading
+				Post ES_RELOAD_START to ReloadService
 			EndIf
-		
+	
 		Else
 			Set ReturnEvent to ES_NO_EVENT
 		EndIf
 		
 	End DrivingAlongTape block
 
-	If CurrentState is Constructing
+	If CurrentState is CheckIn
 	
-		Run DuringConstructing and store the output in CurrentEvent
+		Run DuringCheckIn and store the output in CurrentEvent
 		
 		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_LOC_COMPLETE
+			If CurrentEvent is ES_REORIENT
+				Set MakeTransition to true
+				Set NextState to DrivingAlongTape
+				Set Event2Post type to ES_DRIVE_ALONG_TAPE
+				Set Event2Post param to RELOAD
+				Post Event2Post to Master
+			Else If CurrentEvent is ES_GOAL_READY
+				TargetGoal = CurrentEvent Param
 				Set MakeTransition to true
 				Set NextState to Shooting
-			End ES_LOC_COMPLETE block
-				
+			EndIf
+
 		Else
 			Set ReturnEvent to ES_NO_EVENT
 		EndIf
 		
-	End Constructing block
+	End CheckIn block
 	
 	If CurrentState is Shooting
 	
 		Run DuringShooting and store the output in CurrentEvent
 		
 		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_LOC_COMPLETE
-				Set ResponseReady to getResponseReady
-				If ResponseReady = not ready
+			If CurrentEvent is ES_SHOOTING_COMPLETE or ES_TIMEOUT from SHOOTING_TIMER
+				If BallCount = 0
 					Set MakeTransition to true
-					Transform ReturnEvent to ES_NO_EVENT
-				Else If BadResponseCounter > MaxBadResponses
-					Transform ReturnEvent to ES_Reorient
+					Set NextState to DrivingAlongTape
+					Set Event2Post type to ES_DRIVE_ALONG_TAPE
+					Set Event2Post param to RELOAD
+					Post Event2Post to Master
 				Else
-					Set ReportStatus to getReportStatus
-					If ReportStatus = ACK
-						Transform ReturnEvent to ES_Goal_Ready
-						Set ReturnEvent paramater to getLocation //from Report Status byte
-					Else If ReportStatus = NACK
-						Increment BadResponseCounter
-						Set MakeTransition to true
-						Set NextState to Constructing
-					Else // report status = inactive
-						Transform ReturnEvent to ES_Reorient
-					EndIf
-				EndIf
+					Set MakeTransition to true
+					Set NextState to GettingTargetStation
 			EndIf
 		
 		Else
@@ -129,6 +114,29 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 		EndIf
 		
 	End Shooting block
+
+	If CurrentState is Reloading
+	
+		Run DuringReloading and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_RELOAD_COMPLETE
+				If BallCount < 5
+					Set MakeTransition to true
+				Else
+					Set MakeTransition to true
+					Set NextState to GettingTargetStation
+				EndIf
+			Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
+				Set GameTimeoutFlag
+				Set ReturnEvent to ES_NO_EVENT
+			EndIf
+
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End Reloading block
 	
 	
 	If MakeTransition is true
