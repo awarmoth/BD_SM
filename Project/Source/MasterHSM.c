@@ -212,74 +212,104 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 // End RunMasterSM
 
 
-// static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
-// {
+static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
+{
 	// local event ReturnEvent
+	ES_Event ReturnEvent;
 	// local event Event2Post
+	ES_Event Event2Post;
 	// local uint8_t Byte2Write
-	
+	uint8_t Byte2Write;
 	// Initialize ReturnEvent to ThisEvent
-	
+	ReturnEvent = ThisEvent;
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
 		// Set TeamColor to getTeamColor
+		TeamColor = getTeamColor();
 		// Turn on respective LEDs
+		TurnOnLEDs(TeamColor);
 		// Set Event2Post type to ES_COMMAND
+		Event2Post.EventType = ES_COMMAND;
 		// Set Byte2Write to status byte
+		Byte2Write = STATUS_COMMAND;
 		// Post Event2Post to LOC_HSM
-	
+		PostLOC_SM(Event2Post);
+	}
 	// Return ReturnEvent
-// }
+	return ReturnEvent;
+}
 // End DuringWaiting2Start
 
 
 
-// static ES_Event DuringConstructing(ES_Event ThisEvent)
-// {
+static ES_Event DuringConstructing(ES_Event ThisEvent)
+{
 	// local event ReturnEvent
-	
+	ES_Event ReturnEvent;
 	// Initialize ReturnEvent to ThisEvent
-	
+	ReturnEvent = ThisEvent;
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
 		// Start ConstructingSM
+		StartConstructingSM(ThisEvent);
 		// Start GAME_TIMER
-	// EndIf
-	
+		ES_Timer_InitTimer(GAME_TIMER,GAME_TIMEOUT);
+	}
 	// Else
+	else
+	{
 		// Run ConstructingSM and store output in ReturnEvent
+		ReturnEvent = ConstructingSM(ThisEvent);
+	}
 	// EndIf
 	
 	// Return ReturnEvent
-// }
+	return ReturnEvent;
+}
 
-// static ES_Event DuringFree4All(ES_Event ThisEvent)
-// {
+static ES_Event DuringFree4All(ES_Event ThisEvent)
+{
 	// local event ReturnEvent
-	
+	ES_Event ReturnEvent;
 	// Initialize ReturnEvent to ThisEvent
-	
+	ReturnEvent = ThisEvent;
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		// Start ConstructingSM
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
+		// Start Free4AllSM
+		StartFree4AllSM(ThisEvent);
 		// Start FREE_4_ALL_TIMER
-	// EndIf
-	
+		ES_Timer_InitTimer(FREE_4_ALL_TIMER, FREE_4_ALL_TIMEOUT);
+	}
 	// Else
+	else
+	{
 		// Run Free4AllSM and store output in ReturnEvent
+		ReturnEvent = RunFree4AllSM(ThisEvent);
+	}
 	// EndIf
 	
 	// Return ReturnEvent
-// }
+	return ReturnEvent;
+}
 
-// static ES_Event DuringGameComplete(ES_Event ThisEvent)
-// {
+static ES_Event DuringGameComplete(ES_Event ThisEvent)
+{
 	// local event ReturnEvent
-	
+	ES_Event ReturnEvent;
 	// Initialize ReturnEvent to ThisEvent
-	
+	ReturnEvent = ThisEvent;
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
 		// Turn off hardware/peripherals
 		// Stop functions/idle
+	}
 	// EndIf
 	
 	// Return ReturnEvent
-// }
+	return ReturnEvent;
+}
 
