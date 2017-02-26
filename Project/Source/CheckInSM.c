@@ -19,8 +19,8 @@
  #define RESPONSE_READY 0xAA
  
  #define ACK 0
- #define NACK 0b10
- #define INACTIVE 0b11
+ #define NACK 0x02
+ #define INACTIVE 0x03
 
 
 void StartCheckInSM(ES_Event CurrentEvent)
@@ -303,7 +303,7 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		// Period = getPeriod // ISR is constantly updating
 		//Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
-		Byte2Write = 0b10000000;
+		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
@@ -337,7 +337,7 @@ ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Set Byte2Write to report query response byte
-		Byte2Write = 0b01110000;
+		Byte2Write = QUERY_RESPONSE_COMMAND;
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
@@ -369,7 +369,7 @@ ES_Event DuringReporting_2(ES_Event ThisEvent)
 		// Period = getPeriod // ISR is constantly updating
 		// Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
-			Byte2Write = 0b10000000;
+		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
@@ -398,7 +398,7 @@ ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Set Byte2Write to query response byte
-		Byte2Write = 0b01110000;
+		Byte2Write = QUERY_RESPONSE_COMMAND;
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;

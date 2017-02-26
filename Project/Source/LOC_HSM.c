@@ -150,7 +150,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 	//local variable EntryEvent
 		ES_Event EntryEvent;
 	//local variable Event2Post
-		ES_Event Event2Post;
+	ES_Event Event2Post;
 
 	//Initialize MakeTransition to false
 		MakeTransition = false;

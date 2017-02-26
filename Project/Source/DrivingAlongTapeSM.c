@@ -236,7 +236,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 		case Driving2Station:
 		{
 			// Call DuringDrivingToStation and set CurrentEvent to its return value
-			CurrentEvent = Driving2Station(CurrentEvent);
+			CurrentEvent = DuringDriving2Station(CurrentEvent);
 		
 			// If CurrentEvent is not an ES_NO_EVENT
 			if(CurrentEvent.EventType != ES_NO_EVENT)
@@ -300,7 +300,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					/*****************Stop driving******************/
 					
 					// Set ReturnEvent to ES_ArrivedAtReload	
-					ReturnEvent = ES_ARRIVED_AT_RELOAD;
+					ReturnEvent.EventType = ES_ARRIVED_AT_RELOAD;
 				}					
 				// End ES_Front_Bump_Detected block
 			}
@@ -422,7 +422,7 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	else if(ThisEvent.EventType == ES_EXIT)
 	{
 		// Set LastStation to (LastStation - Direction)
-		LastStation = (LastStation - Direction) //update LastStation to be the station we just passed
+		LastStation = (LastStation - Direction); //update LastStation to be the station we just passed
 	}
 	// EndIf
 	
