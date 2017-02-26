@@ -1,4 +1,8 @@
 #include "MasterHSM.h"
+#include "SPI_Module.h"
+#include "ByteTransferSM.h"
+#include "LOC_HSM.h"
+#include "ConstructingSM.h"
 
 #include "constants.h"
 
@@ -9,7 +13,6 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "ES_DeferRecall.h"
-#include "ES_ShortTimer.h"
 
 // the headers to access the GPIO subsystem
 #include "inc/hw_memmap.h"
@@ -59,10 +62,11 @@ bool InitMasterSM(uint8_t Priority)
 	// Initialize ThisEvent to ES_NO_EVENT
 	ThisEvent.EventType = ES_NO_EVENT;
 	// Initialize the SPI module
-	InitSPI_Comm();
+	if (!SM_TEST) InitSPI_Comm();
 	// Call StartMasterSM with ThisEvent as the passed parameter
 	StartMasterSM(ThisEvent);
 	// Return true
+	if (SM_TEST) GameState = GAME_STARTED;
 	return true;
 }
 // End InitMasterSM
@@ -71,7 +75,7 @@ bool InitMasterSM(uint8_t Priority)
 bool PostMasterSM(ES_Event ThisEvent)
 {
 	// Return ThisEvent posted successfully to the service associated with MyPriority
-	return ES_PostToService( MyPriority, ThisEvent);
+	return ES_PostToService( myPriority, ThisEvent);
 }
 // End PostMasterSM
 
@@ -103,14 +107,15 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	// Initialize NextState to CurrentState
 	NextState = CurrentState;
 	// Initialize EntryEvent to ES_ENTRY
-	EntryEvent = ES_ENTRY;
+	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to ES_NO_EVENT
-	ReturnEvent = ES_NO_EVENT;
+	ReturnEvent.EventType = ES_NO_EVENT;
 	
 	switch (CurrentState)
 	{
 		// If CurrentState is Waiting2Start
 		case(Waiting2Start):
+		if (SM_TEST) printf("Master: Waiting2Start\r\n");
 		// Run DuringWaiting2Start and store the output in CurrentEvent
 			CurrentEvent = DuringWaiting2Start(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
@@ -119,12 +124,14 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
+					if (!SM_TEST) {
 					// Get response bytes from LOC
-					SB1_Byte = getSB1_Byte();
-					SB2_Byte = getSB2_Byte();
-					SB3_Byte = getSB3_Byte();
-					// Set GameState to getGameState
-					GameState = getGameState();
+						SB1_Byte = getSB1_Byte();
+						SB2_Byte = getSB2_Byte();
+						SB3_Byte = getSB3_Byte();
+						// Set GameState to getGameState
+						GameState = getGameState();
+					}
 					// If GameState is WAITING_FOR_START
 					if (GameState == WAITING_FOR_START)
 					{	
@@ -153,7 +160,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent = ES_NO_EVENT;
+				ReturnEvent.EventType = ES_NO_EVENT;
 			}
 			// 	EndIf	
 		break;
@@ -161,6 +168,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	
 		// If CurrentState is Constructing
 		case(Constructing):
+			if (SM_TEST) printf("Master: Constructing\r\n");
 			// Run DuringConstructing and store the output in CurrentEvent
 			CurrentEvent = DuringConstructing(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
@@ -180,7 +188,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				}
 				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
 				else if ((CurrentEvent.EventType == ES_TIMEOUT) &&
-						(CurrentEvent.EventParam = GAME_TIMER))
+						(CurrentEvent.EventParam == GAME_TIMER))
 				{
 					// Post ES_START_FREE_4_ALL to Master
 					ES_Event Event2Post;
@@ -197,7 +205,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent = ES_NO_EVENT;
+				ReturnEvent.EventType = ES_NO_EVENT;
 			}
 			// 	EndIf
 			break;
@@ -205,8 +213,9 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	
 		// If CurrentState is Free4All
 		case (Free4All):
+			if (SM_TEST) printf("Master: Free4All\r\n");
 			// Run DuringConstructing and store the output in CurrentEvent
-			CurrentEvent = DuringConstructing(CurrentEvent)
+			CurrentEvent = DuringConstructing(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
 			if (CurrentEvent.EventType == ES_NO_EVENT)
 			{
@@ -220,12 +229,13 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				}
 				// Else If CurrentEvent is ES_TIMEOUT from FREE_4_ALL_TIMER
 				else if ((CurrentEvent.EventType == ES_TIMEOUT) &&
-						(CurrentEvent.EventParam = FREE_4_ALL_TIMER))
+						(CurrentEvent.EventParam == FREE_4_ALL_TIMER))
 				{
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to GameComplete
 					NextState = GameComplete;
+					if (SM_TEST) printf("Master: GameComplete\r\n");
 				}
 				// EndIf
 			}
@@ -233,17 +243,17 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent = ES_NO_EVENT;
+				ReturnEvent.EventType = ES_NO_EVENT;
 			}
 			// 	EndIf
 		break;
 		// End Free4All block
-	
+	}
 	// If MakeTransition is true
 	if (MakeTransition == true)
 	{
 		// Set CurrentEvent to ES_EXIT
-		CurrentEvent = ES_EXIT;
+		CurrentEvent.EventType = ES_EXIT;
 		// Run MasterSM with CurrentEvent to allow lower level SMs to exit
 		RunMasterSM(CurrentEvent);
 		// Set CurrentState to NextState
@@ -274,7 +284,7 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 		// Set TeamColor to getTeamColor
 		TeamColor = getTeamColor();
 		// Turn on respective LEDs
-		TurnOnLEDs(TeamColor);
+		//TurnOnLEDs(TeamColor);
 		// Set Event2Post type to ES_COMMAND
 		Event2Post.EventType = ES_COMMAND;
 		// Set Byte2Write to status byte
@@ -309,7 +319,7 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 	else
 	{
 		// Run ConstructingSM and store output in ReturnEvent
-		ReturnEvent = ConstructingSM(ThisEvent);
+		ReturnEvent = RunConstructingSM(ThisEvent);
 	}
 	// EndIf
 	
@@ -327,15 +337,15 @@ static ES_Event DuringFree4All(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Start Free4AllSM
-		StartFree4AllSM(ThisEvent);
+		//StartFree4AllSM(ThisEvent);
 		// Start FREE_4_ALL_TIMER
-		ES_Timer_InitTimer(FREE_4_ALL_TIMER, FREE_4_ALL_TIMEOUT);
+		//ES_Timer_InitTimer(FREE_4_ALL_TIMER, FREE_4_ALL_TIMEOUT);
 	}
 	// Else
 	else
 	{
 		// Run Free4AllSM and store output in ReturnEvent
-		ReturnEvent = RunFree4AllSM(ThisEvent);
+		//ReturnEvent = RunFree4AllSM(ThisEvent);
 	}
 	// EndIf
 	

@@ -3,6 +3,9 @@
 
  ****************************************************************************/
  #define CheckOff3 1
+ #define SM_TEST 0
+ 
+ #define GAME_TIMEOUT 20*1000 // change to 105? *1000
  
  // Commands
  #define STATUS_COMMAND 0xc0
@@ -12,6 +15,10 @@
 // Colors
  #define GREEN 0
  #define RED 1
+
+// Game Start
+ #define WAITING_FOR_START 0
+ #define GAME_STARTED 1
 
 // Check In
  #define CHECK_SHOOT_GREEN_MASK BIT7HI

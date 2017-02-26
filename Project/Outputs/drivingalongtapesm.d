@@ -33,3 +33,4 @@
 .\outputs\drivingalongtapesm.o: .\Headers\ConstructingSM.h
 .\outputs\drivingalongtapesm.o: .\Headers\DrivingAlongTapeSM.h
 .\outputs\drivingalongtapesm.o: .\Headers\ByteTransferSM.h
+.\outputs\drivingalongtapesm.o: .\Headers\constants.h

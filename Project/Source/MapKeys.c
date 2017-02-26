@@ -21,8 +21,8 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "MapKeys.h"
-#include "TopHSMTemplate.h"
 #include "LOC_HSM.h"
+#include "MasterHSM.h"
 
 
 /*----------------------------- Module Defines ----------------------------*/
@@ -168,6 +168,29 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							PostLOC_SM(ThisEvent);						
 						
 							break;
+						
+						case '9' :
+							
+							ThisEvent.EventType = ES_LOC_COMPLETE;
+							printf("ES_LOC_COMPLETE\r\n");						
+							PostMasterSM(ThisEvent);
+							break;
+						
+						case 'A':
+							ThisEvent.EventType = ES_ARRIVED_AT_STATION;
+							printf("ES_ARRIVED_AT_STATION\r\n");						
+							PostMasterSM(ThisEvent);
+							break;
+						case 'S':
+							ThisEvent.EventType = ES_REORIENT;
+							printf("ES_REORIENT\r\n");						
+							PostMasterSM(ThisEvent);
+							break;
+						case 'D':
+							ThisEvent.EventType = ES_GOAL_READY;
+							printf("ES_GOAL_READY\r\n");						
+							PostMasterSM(ThisEvent);
+							break;
         }
 
     }
@@ -175,4 +198,20 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
   return ReturnEvent;
 }
 
+//								ES_START,
+//								ES_TEAM_SWITCH,
+//								ES_DRIVE_ALONG_TAPE,
+//								ES_ARRIVED_AT_STATION,
+//								ES_ARRIVED_AT_RELOAD,
+//								ES_REORIENT,
+//								ES_GOAL_READY,
+//								ES_SHOOTING_COMPLETE,
+//								ES_RELOAD_COMPLETE,
+//								ES_RELOAD_START,
+//								ES_NORM_GAME_COMPLETE,
+//								ES_STATION_DETECTED,
+//								ES_FRONT_BUMP_DETECTED,
+//								ES_FREE_4_ALL_COMPLETE,
+//								ES_START_FREE_4_ALL,
+//								ES_NORMAL_GAME_COMPLETE
 

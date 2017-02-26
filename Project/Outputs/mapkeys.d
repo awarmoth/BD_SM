@@ -19,5 +19,5 @@
 .\outputs\mapkeys.o: .\Headers\ES_Events.h
 .\outputs\mapkeys.o: .\Headers\ES_Timers.h
 .\outputs\mapkeys.o: .\Headers\MapKeys.h
-.\outputs\mapkeys.o: .\Headers\TopHSMTemplate.h
 .\outputs\mapkeys.o: .\Headers\LOC_HSM.h
+.\outputs\mapkeys.o: .\Headers\MasterHSM.h

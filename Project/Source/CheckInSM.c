@@ -6,7 +6,6 @@
 #include "constants.h"
 
 // module level variables: 
- static uint8_t MyPriority;
  static CheckInState_t CurrentState;
  static uint8_t ResponseReady;
  static uint8_t ReportStatus;
@@ -94,9 +93,11 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
+					if (!SM_TEST) {
 					// Get response bytes from LOC
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
+					}
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					// If ResponseReady = not ready
@@ -199,9 +200,11 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
+					if (!SM_TEST) {
 					// Get response bytes from LOC
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
+					}
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					// If ResponseReady = not ready
@@ -306,9 +309,11 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
+		if (!SM_TEST) {
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
 		PostLOC_SM(Event2Post);
+		}
 		// Reinitialize variables
 		BadResponseCounter = 0;
 		ResponseReady = RESPONSE_NOT_READY;
@@ -341,7 +346,7 @@ ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostLOC_SM(Event2Post);
+		if (!SM_TEST) PostLOC_SM(Event2Post);
 	}
 	// EndIf
 
@@ -374,7 +379,7 @@ ES_Event DuringReporting_2(ES_Event ThisEvent)
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostLOC_SM(Event2Post);
+		if (!SM_TEST) PostLOC_SM(Event2Post);
 	}
 	// EndIf
 	
@@ -402,7 +407,7 @@ ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostLOC_SM(Event2Post);
+		if (!SM_TEST) PostLOC_SM(Event2Post);
 	}
 	// EndIf
 

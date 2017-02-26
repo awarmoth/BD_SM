@@ -68,7 +68,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 	// local variable MakeTransition
 	bool MakeTransition;
 	// local variable NextState
-	MasterState_t NextState;
+	ConstructingState_t NextState;
 	// local variable ReturnEvent
 	ES_Event ReturnEvent;
 	// local variable EntryEvent
@@ -89,6 +89,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 	{
 		// If CurrentState is GettingTargetStation
 		case(GettingTargetStation):
+			if (SM_TEST) printf("Constructing: GettingTargetStation\r\n");
 			// Run DuringGettingTargetStation and store the output in CurrentEvent
 			CurrentEvent = DuringGettingTargetStation(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -97,6 +98,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
+					if (!SM_TEST) {
 					// Get response bytes from LOC
 					// Set SB1_byte to getSB1_Byte
 					SetSB1_Byte(getSB1_Byte());
@@ -106,6 +108,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					SetSB3_Byte(getSB3_Byte());
 					// Update status variables
 					UpdateStatus();
+					}
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to DrivingAlongTape
@@ -131,6 +134,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 	
 		// If CurrentState is DrivingAlongTape
 		case(DrivingAlongTape):
+			if (SM_TEST) printf("Constructing: DrivingAlongTape\r\n");
 			// Run DuringDrivingAlongTape and store the output in CurrentEvent
 			CurrentEvent = DuringDrivingAlongTape(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -168,14 +172,16 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 
 		// If CurrentState is CheckIn
 		case(CheckIn):
+			if (SM_TEST) printf("Constructing: CheckIn\r\n");
 			// Run DuringCheckIn and store the output in CurrentEvent
 			CurrentEvent = DuringCheckIn(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
 			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_REORIENT
-				if (CurrentEvent.EventType == ES_ARRIVED_AT_STATION)
+				if (CurrentEvent.EventType == ES_REORIENT)
 				{
+					printf("reorient");
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to DrivingAlongTape
@@ -212,6 +218,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 		
 		// If CurrentState is Shooting
 		case(Shooting):
+			if (SM_TEST) printf("Shooting: GettingTargetStation\r\n");
 			// Run DuringShooting and store the output in CurrentEvent
 			CurrentEvent = DuringShooting(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -259,6 +266,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 
 		// If CurrentState is Reloading
 		case(Reloading):
+			if (SM_TEST) printf("Reloading: GettingTargetStation\r\n");
 			// Run DuringReloading and store the output in CurrentEvent
 			CurrentEvent = DuringReloading(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -341,12 +349,14 @@ ES_Event DuringGettingTargetStation(ES_Event ThisEvent)
 	if ((ThisEvent.EventType == ES_ENTRY) ||
 		(ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		if(!SM_TEST){
 		// Set Event2Post type to ES_Command
 		Event2Post.EventType = ES_COMMAND;
 		// Set Event2Post param to STATUS_COMMAND
 		Event2Post.EventParam = STATUS_COMMAND;
 		// Post Event2Post to LOC_SM
 		PostLOC_SM(Event2Post);
+		}
 	}
 	// EndIf
 	

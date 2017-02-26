@@ -67,6 +67,7 @@
 #include "ConstructingSM.h"
 #include "DrivingAlongTapeSM.h"
 #include "ByteTransferSM.h"
+#include "constants.h"
 
 /* include header files for this state machine as well as any machines at the
    next lower level in the hierarchy that are sub-machines to this machine
@@ -83,7 +84,9 @@
 #define SUPPLY_DEPOT 0
 #define FORWARD 1
 #define REVERSE -1
-
+#define TICKS_PER_MS 40000
+#define CONTROLLER_TIME_US 2000
+#define TICKS_PER_US 40
 
 
 /*---------------------------- Module Functions ---------------------------*/
@@ -99,7 +102,7 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent);
 // everybody needs a state variable, you may need others as well
 static DrivingState_t CurrentState;
 static uint8_t LastStation = INITIAL_STATION;
-static uint8_t TargetStation;
+static uint8_t TargetStation = 1;
 static int8_t Direction;
 
 
@@ -151,6 +154,8 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 		// If CurrentState is Waiting //NOTE CORRECT STATE MACHINE TO NOT TURN ON TAPE CONTROL ON WAITING EXIT
 		case Waiting:
 		{
+			if(SM_TEST) printf("DrivingAlongTape: Waiting\r\n");
+
 			// Call DuringWaiting and set CurrentEvent to its return value
 			CurrentEvent = DuringWaiting(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
@@ -166,7 +171,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 						// Set MakeTransition to true			
 						MakeTransition = true;
 						// Set ReturnEvent to ES_ArrivedAtStation
-						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
+						if (!SM_TEST) ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
 					}
 				
 					// If TargetStation is not LastStation and TargetStation is not supply depot
@@ -234,7 +239,9 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 	
 		// If CurrentState is DrivingToStation
 		case Driving2Station:
+			
 		{
+			if(SM_TEST) printf("DrivingAlongTape: Driving2Station\r\n");
 			// Call DuringDrivingToStation and set CurrentEvent to its return value
 			CurrentEvent = DuringDriving2Station(CurrentEvent);
 		
@@ -254,7 +261,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 						/*****************Stop driving******************/
 						
 						// Set ReturnEvent to ES_ArrivedAtStation
-						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
+						if (!SM_TEST) ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
 					}
 					// Endif
 			
@@ -465,5 +472,68 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	
 	// Return ReturnEvent
 	return ReturnEvent;
+}
+
+//static void ControlTimerInit(void)
+//{
+//	// Enable the clock to the timer (wide timer 2)
+//	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R2;
+//	
+//	// Make sure the clock has gotten going
+//	while((HWREG(SYSCTL_PRWTIMER) & SYSCTL_PRWTIMER_R2) != SYSCTL_PRWTIMER_R2){
+//	}
+//	
+//	// Make sure the timer is disabled before configuring
+//	HWREG(WTIMER2_BASE+TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
+//	
+//	// Set up timer in 32 bit wide mode
+//	HWREG(WTIMER2_BASE+TIMER_O_CFG) = TIMER_CFG_16_BIT;
+//	
+//	// Set up timer in periodic mode
+//	HWREG(WTIMER2_BASE+TIMER_O_TAMR) = (HWREG(WTIMER2_BASE+TIMER_O_TAMR) & ~TIMER_TAMR_TAMR_M) | TIMER_TAMR_TAMR_PERIOD;
+//	
+//	// Set the timeout
+//	HWREG(WTIMER2_BASE+TIMER_O_TAILR) = CONTROLLER_TIMEOUT;
+//	
+//	// Enable a local timeout interrupt
+//	HWREG(WTIMER2_BASE+TIMER_O_IMR) |= TIMER_IMR_TATOIM;
+//	
+//	// Enable timer A in NVIC
+//	HWREG(NVIC_EN3) |= BIT2HI;
+//	
+//	// Set the response to a lower priority
+//	HWREG(NVIC_PRI24) = (HWREG(NVIC_PRI24) & ~NVIC_PRI24_INTC_M) | BIT5HI;
+//	
+//	// Enable interrupts globally
+//	__enable_irq();
+//	
+//	// Enable timer and enable to stall when stopped by debugger
+//	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+//}
+
+static void Init_Controller(void)
+{
+	//enable clock to the timer (use timer 1)
+	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R1;
+	while ((HWREG(SYSCTL_PRWTIMER)&SYSCTL_PRWTIMER_R1)!=SYSCTL_PRWTIMER_R1) {}
+	//disable the timer (A)
+	HWREG(WTIMER1_BASE+TIMER_O_CTL)&=~(TIMER_CTL_TAEN);
+	//set 32 bit wide mode
+	HWREG(WTIMER1_BASE+TIMER_O_CFG)=TIMER_CFG_16_BIT;
+	//set up periodic mode
+	HWREG(WTIMER1_BASE+TIMER_O_TAMR)=(HWREG(WTIMER1_BASE+TIMER_O_TAMR)&~TIMER_TAMR_TAMR_M)|TIMER_TAMR_TAMR_PERIOD;
+	//set timeout to 2 ms
+	HWREG(WTIMER1_BASE+TIMER_O_TAILR)=(uint32_t)CONTROLLER_TIME_US*TICKS_PER_US;
+	//enable local interupt
+	HWREG(WTIMER1_BASE+TIMER_O_IMR)|=(TIMER_IMR_TATOIM);
+	//enable NVIC interupt
+	HWREG(NVIC_EN3)|=(BIT0HI);
+	//globally enable interrupts
+	__enable_irq();
+	//set priority to 6 (anything more important than the other ISRs)
+	HWREG(NVIC_PRI24)=(HWREG(NVIC_PRI24)&~NVIC_PRI24_INTA_M)|(0x6<<NVIC_PRI24_INTA_S);
+	//enable the timer
+	HWREG(WTIMER1_BASE+TIMER_O_CTL)|=(TIMER_CTL_TAEN|TIMER_CTL_TASTALL);
+	
 }
 

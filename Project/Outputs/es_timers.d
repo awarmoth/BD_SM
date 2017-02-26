@@ -20,4 +20,5 @@
 .\outputs\es_timers.o: .\Headers\ES_ServiceHeaders.h
 .\outputs\es_timers.o: .\Headers\MapKeys.h
 .\outputs\es_timers.o: .\Headers\LOC_HSM.h
+.\outputs\es_timers.o: .\Headers\MasterHSM.h
 .\outputs\es_timers.o: .\Headers\ES_LookupTables.h

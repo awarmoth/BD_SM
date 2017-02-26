@@ -17,3 +17,4 @@
 .\outputs\es_postlist.o: .\Headers\ES_ServiceHeaders.h
 .\outputs\es_postlist.o: .\Headers\MapKeys.h
 .\outputs\es_postlist.o: .\Headers\LOC_HSM.h
+.\outputs\es_postlist.o: .\Headers\MasterHSM.h

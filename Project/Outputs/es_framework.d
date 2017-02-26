@@ -22,3 +22,4 @@
 .\outputs\es_framework.o: .\Headers\ES_ServiceHeaders.h
 .\outputs\es_framework.o: .\Headers\MapKeys.h
 .\outputs\es_framework.o: .\Headers\LOC_HSM.h
+.\outputs\es_framework.o: .\Headers\MasterHSM.h
