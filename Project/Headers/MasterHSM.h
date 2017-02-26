@@ -16,6 +16,22 @@ bool InitMasterSM ( uint8_t Priority );
 static ES_Event DuringWaiting2Start( ES_Event Event);
 static ES_Event DuringConstructing( ES_Event Event);
 static ES_Event DuringFree4All( ES_Event Event);
-static ES_Event DuringGameComplete( ES_Event Event)
+static ES_Event DuringGameComplete( ES_Event Event);
+void SetSB1_Byte(uint8_t Byte2Write);
+void SetSB2_Byte(uint8_t Byte2Write);
+void SetSB3_Byte(uint8_t Byte2Write);
+void SetRS_Byte(uint8_t Byte2Write);
+void SetRR_Byte(uint8_t Byte2Write);
+uint8_t getTeamColor(void);
+uint8_t getCheckShootGreen(void);
+uint8_t getActiveStageGreen(void);
+uint8_t getActiveGoalGreen(void);
+uint8_t getCheckShootRed(void);
+uint8_t getActiveStageRed(void);
+uint8_t getActiveGoalRed(void);
+uint8_t getScoreGreen(void);
+uint8_t getScoreRed(void);
+uint8_t getGameState(void);
+
 
 #endif /*MasterHSM_H */

@@ -13,8 +13,15 @@ typedef enum {BT_Wait2Start, BT_Wait4EOT, BT_Wait4Timeout} ByteTransferState_t ;
 
 ES_Event RunByteTransferSM(ES_Event CurrentEvent);
 void StartByteTransferSM (ES_Event CurrentEvent);
-
-
+uint8_t getByte2(void);
+uint8_t getByte3(void);
+uint8_t getByte4(void);
+uint8_t getByte5(void);
+uint8_t getSB1_Byte(void);
+uint8_t getSB2_Byte(void);
+uint8_t getSB3_Byte(void);
+uint8_t getRS_Byte(void);
+uint8_t getRR_Byte(void);
 
 #endif /*BYTE_TRANSFER_SM_H */
 

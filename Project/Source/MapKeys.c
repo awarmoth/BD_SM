@@ -22,6 +22,7 @@
 #include "ES_Framework.h"
 #include "MapKeys.h"
 #include "TopHSMTemplate.h"
+#include "LOC_HSM.h"
 
 
 /*----------------------------- Module Defines ----------------------------*/
@@ -104,11 +105,69 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 
     if ( ThisEvent.EventType == ES_NEW_KEY) // there was a key pressed
     {
+				printf("Key Pressed = %d\r\n", ThisEvent.EventParam);
         switch ( toupper(ThisEvent.EventParam))
         {
           // This posts an ES_COMMAND to the LOC_SM with a parameter value of 12 (0b1100)
-            case '1' : ThisEvent.EventType = ES_NO_EVENT; 
-                       break;
+            case '1' : 
+							ThisEvent.EventType = ES_COMMAND; 
+							ThisEvent.EventParam = 192;
+							printf("Status Command\r\n");
+							PostLOC_SM(ThisEvent);
+							
+              break;
+						
+						case '2' :
+							ThisEvent.EventType = ES_EOT;
+							ThisEvent.EventParam = 0;
+							//PostLOC_SM(ThisEvent);
+						
+							break;
+						
+						case '3' :
+							ThisEvent.EventType = ES_EOT;
+							ThisEvent.EventParam = 1;
+							//PostLOC_SM(ThisEvent);
+							
+							break;
+						
+						case '4' :
+							ThisEvent.EventType = ES_EOT;
+							ThisEvent.EventParam = 2;
+							//PostLOC_SM(ThisEvent);
+							
+							break;
+						
+						case '5' :
+							ThisEvent.EventType = ES_EOT;
+							ThisEvent.EventParam = 3;
+							//PostLOC_SM(ThisEvent);
+						
+							break;
+						
+						case '6' :
+							ThisEvent.EventType = ES_EOT;
+							ThisEvent.EventParam = 4;
+							//PostLOC_SM(ThisEvent);
+						
+							break;
+						
+						case '7' :
+							ThisEvent.EventType = ES_COMMAND;
+							ThisEvent.EventParam = 120;
+							printf("Report Command\r\n");
+							PostLOC_SM(ThisEvent);
+						
+							break;
+						
+						case '8' :
+							
+							ThisEvent.EventType = ES_COMMAND;
+							ThisEvent.EventParam = 112;
+							printf("Query Command\r\n");						
+							PostLOC_SM(ThisEvent);						
+						
+							break;
         }
 
     }

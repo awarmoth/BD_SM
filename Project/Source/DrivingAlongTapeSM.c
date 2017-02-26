@@ -71,6 +71,13 @@
 /*----------------------------- Module Defines ----------------------------*/
 // define constants for the states for this machine
 // and any other local defines
+#define INITIAL_STATION 4 //dummy station for when the robot is at the start location
+#define STAGING_AREA_1 1
+#define STAGING_AREA_2 2
+#define STAGING_AREA_3 3
+#define SUPPLY_DEPOT 0
+#define FORWARD 1
+#define REVERSE -1
 
 
 
@@ -79,16 +86,17 @@
    functions, entry & exit functions.They should be functions relevant to the
    behavior of this state machine
 */
-static ES_Event DuringWait2Start(ES_Event ThisEvent);
-static ES_Event DuringWait4EOT(ES_Event ThisEvent);
-static ES_Event DuringWait4Timeout(ES_Event ThisEvent);
+static ES_Event DuringWaiting(ES_Event ThisEvent)
+static ES_Event DuringDriving2Station(ES_Event ThisEvent)
+static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 
 /*---------------------------- Module Variables ---------------------------*/
 // everybody needs a state variable, you may need others as well
-static ByteTransferState_t CurrentState;
-
-//array of values written back by the LOC
-//will need to check to see if static arrays are valid
+static DrivingState_t CurrentState;
+static uint8_t LastStation = INITIAL_STATION;
+static uint8_t TargetStation;
+static signed uint8_t Direction; //THIS MIGHT THROW ERRORS AT ME WHEN I ACTUALLY CHECK IT
+								 //IN THE MEANTIME ASSUME DIRECTION CAN BE + or - 1
 
 
 /*------------------------------ Module Code ------------------------------*/
@@ -116,120 +124,213 @@ static ByteTransferState_t CurrentState;
 ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 {
 	// local variable MakeTransition
+	bool MakeTransition;
 	// local variable NextState
+	DrivingState_t NextState;
 	// local variable EntryEvent
+	ES_Event EntryEvent;
 	// local variable ReturnEvent
+	ES_Event ReturnEvent;
 	
 	// Initialize MakeTransition to false
+	MakeTransition = false;
 	// Initialize NextState to CurrentState
+	NextState = CurrentState;
 	// Initialize EntryEvent to ES_ENTRY by default
+	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to CurrentEvent assuming no consuming of event
+	ReturnEvent = CurrentEvent;
 	
-	// If CurrentState is Waiting //NOTE CORRECT STATE MACHINE TO NOT TURN ON TAPE CONTROL ON WAITING EXIT
-		
-		// Call DuringWaiting and set CurrentEvent to its return value
-		
-		// If CurrentEvent is not an ES_NO_EVENT
-		
-			// If CurrentEvent is ES_DriveAlongTape
-			
-				// If TargetStation is LastStation //module variables can be set from checking the event param
-					// Set MakeTransition to true				
-					// Set ReturnEvent to ES_ArrivedAtStation
-				// Endif
-				
-				// If TargetStation is not LastStation and TargetStation is not supply depot //module variables can be set from checking the event param
-					// Set NextState to DrivingToStation
-					// Set MakeTransition to true
-					// Set ReturnEvent to ES_NO_EVENT
-					// Enable wire following control law
-					// Start driving
-					// Set TargetStation to getTargetStation
-					// Set Direction from sign(LastStation - TargetStation)
-				// Endif
-				
-				// If TargetStation is supply depot //module variables aren't set until exit runs
-					// Set NextState to DrivingToReload
-					// Set MakeTransition to true
-					// Set ReturnEvent to ES_NO_EVENT
-					// Enable wire following control law
-					// Start driving
-					// Set TargetStation to getTargetStation
-					// Set Direction from sign(LastStation - TargetStation)
-				// Endif
-			
-			// End ES_DriveAlongTape block
-			
-		// Endif
-		
-		// Else CurrentEvent is an ES_NO_EVENT
-			// Update ReturnEvent to ES_NO_EVENT
-		// Endf
-		
-	// End Waiting block
 	
-	// If CurrentState is DrivingToStation
-		
-		// Call DuringDrivingToStation and set CurrentEvent to its return value
-		
-		// If CurrentEvent is not an ES_NO_EVENT
-		
-			// If CurrentEvent is ES_StationDetected
-			
-				// If LastStation - Direction is TargetStation
-					// Set MakeTransition to true	
-					// Stop driving
-					// Disable wire following control law
-					// Set ReturnEvent to ES_ArrivedAtStation
-				// Endif
+	switch(CurrentState)
+	{
+		// If CurrentState is Waiting //NOTE CORRECT STATE MACHINE TO NOT TURN ON TAPE CONTROL ON WAITING EXIT
+		case Waiting:
+		{
+			// Call DuringWaiting and set CurrentEvent to its return value
+			CurrentEvent = DuringWaiting(CurrentEvent);
+			// If CurrentEvent is not an ES_NO_EVENT
+			if(CurrentEvent.EventType != ES_NO_EVENT)
+			{
+				// If CurrentEvent is ES_DriveAlongTape
+				if(CurrentEvent.EventType == ES_DRIVE_ALONG_TAPE)
+				{
+					TargetStation = CurrentEvent.EventParam;
+					// If TargetStation is LastStation
+					if(TargetStation == LastStation)
+					{
+						// Set MakeTransition to true			
+						MakeTransition = true;
+						// Set ReturnEvent to ES_ArrivedAtStation
+						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
+					}
 				
+					// If TargetStation is not LastStation and TargetStation is not supply depot
+					else if((TargetStation != LastStation) && (TargetStation != SUPPLY_DEPOT))
+					{
+						// Set NextState to Driving2Station
+						NextState = Driving2Station;
+						// Set MakeTransition to true
+						MakeTransition = true;
+						
+						/*******Enable wire following control law********/
+						/*****************Start driving******************/						
 
-				//Else we must not be at the target station so we keep going
-					// Set MakeTransition to true
-				// Endif
-			
-			// End ES_StationDetected block
-			
-		// Endif
-		
-		// Else CurrentEvent is an ES_NO_EVENT
-			// Update ReturnEvent to ES_NO_EVENT
-		// Endf
-		
-	// End DrivingToStation block
-	
-	// If CurrentState is DrivingToReload
-		
-		// Call DuringDrivingToReload and set CurrentEvent to its return value
-		
-		// If CurrentEvent is not an ES_NO_EVENT
-		
-			// If CurrentEvent is ES_Front_Bump_Detected
-				// Set MakeTransition to true	
-				// Stop driving
-				// Disable wire following control law
-				// Set ReturnEvent to ES_ArrivedAtReload			
-			// End ES_Front_Bump_Detected block
-			
-		// Endif
-		
-		// Else CurrentEvent is an ES_NO_EVENT
-			// Update ReturnEvent to ES_NO_EVENT
-		// Endf
-	
-	// End DrivingToReload block
-	
-	// If MakeTransition is true
-		
-		// Set CurrentEvent to ES_EXIT
-		// Call RunDrivingAlongTapeSM with CurrentEvent as the event parameter
+						// Set Direction from sign(LastStation - TargetStation)
+						if((LastStation - TargetStation >) 0) //LastStation is greater than TargetStation, so to count down we drive towards the SUPPLY_DEPOT
+						{
+							Direction = FORWARD;
+						}
+						
+						else //LastStation is less than TargetStation, so to count up we drive towards the NAV_BEACON
+						{
+							Direction = REVERSE;
+						}
+					}
 					
+					// If TargetStation is supply depot
+					else if(TargetStation == SUPPLY_DEPOT)
+					{
+						// Set NextState to Driving2Reload
+						NextState = Driving2Reload;
+						// Set MakeTransition to true
+						MakeTransition = true;
+						
+						/*******Enable wire following control law********/
+						/*****************Start driving******************/							
+
+						// Set Direction from sign(LastStation - TargetStation)
+						if((LastStation - TargetStation >) 0) //LastStation is greater than TargetStation, so to count down we drive towards the SUPPLY_DEPOT
+						{
+							Direction = FORWARD;
+						}
+						
+						else //LastStation is less than TargetStation, so to count up we drive towards the NAV_BEACON
+						{
+							Direction = REVERSE;
+						}
+					}
+					
+					else //something unexpected happened
+					{
+						printf("Unexpected Station: Station Number = %d\r\n", TargetStation);
+					}
+				}
+				// End ES_DriveAlongTape block
+			}
+			
+			else // Else CurrentEvent is an ES_NO_EVENT
+			{
+				ReturnEvent = CurrentEvent;// Update ReturnEvent to ES_NO_EVENT
+			}
+		
+			break;
+		}
+		// End Waiting block
+	
+		// If CurrentState is DrivingToStation
+		case Driving2Station:
+		{
+			// Call DuringDrivingToStation and set CurrentEvent to its return value
+			CurrentEvent = Driving2Station(CurrentEvent);
+		
+			// If CurrentEvent is not an ES_NO_EVENT
+			if(CurrentEvent.EventType != ES_NO_EVENT)
+			{
+				// If CurrentEvent is ES_StationDetected
+				if(CurrentEvent.EventType == ES_STATION_DETECTED)
+				{
+					// If LastStation - Direction is TargetStation
+					if((LastStation - Direction) == TargetStation)
+					{
+						// Set MakeTransition to true	
+						MakeTransition = true;
+						
+						/*******Disable wire following control law********/
+						/*****************Stop driving******************/
+						
+						// Set ReturnEvent to ES_ArrivedAtStation
+						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
+					}
+					// Endif
+			
+					//Else we must not be at the target station so we keep going
+					else
+					{
+						// Set MakeTransition to true
+						MakeTransition = true;
+					}
+					// Endif	
+				// End ES_StationDetected block
+				}
+			// Endif
+			}
+			
+			// Else CurrentEvent is an ES_NO_EVENT
+			else
+			{
+				// Update ReturnEvent to ES_NO_EVENT
+				ReturnEvent = CurrentEvent;
+			}
+			// Endf
+			
+		// End DrivingToStation block
+		}
+		
+		// If CurrentState is DrivingToReload
+		case Driving2Reload:
+		{
+			// Call DuringDrivingToReload and set CurrentEvent to its return value
+			CurrentEvent = DuringDriving2Reload(CurrentEvent);
+			
+			// If CurrentEvent is not an ES_NO_EVENT
+			if(CurrentEvent.EventType != ES_NO_EVENT)
+			{
+				// If CurrentEvent is ES_Front_Bump_Detected
+				if(CurrentEvent.EventType == ES_FRONT_BUMP_DETECTED)
+				{
+					// Set MakeTransition to true
+					MakeTransition = true;
+					
+					/*******Disable wire following control law********/
+					/*****************Stop driving******************/
+					
+					// Set ReturnEvent to ES_ArrivedAtReload	
+					ReturnEvent = ES_ARRIVED_AT_RELOAD;
+				}					
+				// End ES_Front_Bump_Detected block
+			}
+			// Endif
+		
+			// Else CurrentEvent is an ES_NO_EVENT
+			else
+			{
+				// Update ReturnEvent to ES_NO_EVENT
+				ReturnEvent = CurrentEvent;
+			}
+			// Endf
+		}
+		// End DrivingToReload block
+	}//end switch
+		
+	// If MakeTransition is true
+	if(MakeTransition)
+	{
+		// Set CurrentEvent to ES_EXIT
+		CurrentEvent.EventType = ES_EXIT;
+		// Call RunDrivingAlongTapeSM with CurrentEvent as the event parameter
+		RunDrivingAlongTapeSM(CurrentEvent);
+				
 		// Set CurrentState to NextState
+		CurrentState = NextState;
 		// Call RunDrivingAlongTapeSM with EntryEvent as the event parameter
+		RunDrivingAlongTapeSM(EntryEvent);
+	}
 			
 	// Endif
 	
 	// Return ReturnEvent
+	return ReturnEvent;
 }
 /****************************************************************************
  Function
@@ -251,10 +352,15 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 void StartDrivingAlongTapeSM(ES_Event CurrentEvent)
 {
 	// If CurrentEvent is not ES_ENTRY_HISTORY
+	if(CurrentEvent.EventType != ES_ENTRY_HISTORY)
+	{
 		// Set CurrentState to Waiting
+		CurrentState = Waiting;
+	}
 	// Endif
 	
 	// Call RunDrivingAlongTapeSM with CurrentEvent as the event parameter
+	RunDrivingAlongTapeSM(CurrentEvent);
 }
 
 
@@ -266,52 +372,94 @@ void StartDrivingAlongTapeSM(ES_Event CurrentEvent)
 static ES_Event DuringWaiting(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
-	
+	ES_Event ReturnEvent;
 	// Initialize ReturnEvent to ThisEvent assuming no re-mapping or consumption
+	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
 		// Set LastStation to getLastStation
 		// //Probably want to initialize module variables here as well
+	}
 	// EndIf
 	
 	// ElseIf ThisEvent is ES_EXIT
-
+	else if(ThisEvent.EventType == ES_EXIT)
+	{
+		//do nothing
+	}
+	
+	else
+	{
+		//do nothing
+	}
 	// EndIf
 	
 	// Return ReturnEvent
+	return ReturnEvent;
 }
 
-static ES_Event DuringDrivingToStation(ES_Event ThisEvent)
+static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
-	
+	ES_Event ReturnEvent;
 	// Initialize ReturnEvent to ThisEvent assuming no re-mapping or consumption
+	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY)
+	{
+		//do nothing
+	}
 	// EndIf
 	
 	// ElseIf ThisEvent is ES_EXIT
+	else if(ThisEvent.EventType == ES_EXIT)
+	{
 		// Set LastStation to (LastStation - Direction)
+		LastStation = (LastStation - Direction) //update LastStation to be the station we just passed
+	}
 	// EndIf
 	
+	else
+	{
+		//do nothing
+	}
+	
 	// Return ReturnEvent
+	return ReturnEvent;
 }
 
 
-static ES_Event DuringDrivingToReload(ES_Event ThisEvent)
+static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
-	
+	ES_Event ReturnEvent;
 	// Initialize ReturnEvent to ThisEvent assuming no re-mapping or consumption
+	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
+		//do nothing
+	}
 	// EndIf
 	
 	// ElseIf ThisEvent is ES_EXIT
+	else if(ThisEvent.EventType == ES_EXIT)
+	{
 		// Set LastStation to supply depot
+		LastStation = SUPPLY_DEPOT;
+	}
 	// EndIf
 	
+	else
+	{
+		//do nothing
+	}
+	
 	// Return ReturnEvent
+	return ReturnEvent;
 }
+

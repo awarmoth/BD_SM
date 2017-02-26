@@ -1,0 +1,254 @@
+module level variables: MyPriority, CurrentState, TeamColor, BallCount = 3, TargetStation, LastStation = START, 
+TargetGoal, Score, GameTimeoutFlag
+ConstructingState_t: GettingTargetStation, DrivingAlongTape, CheckIn, Shooting, Reloading
+Module level functions: DuringGettingTargetStation, DuringDrivingAlongTape, DuringCheckIn, DuringShooting, DuringReloading
+
+
+void StartConstructingSM(ES_Event CurrentEvent)
+{
+	Set CurrentState to GettingTargetStation
+	Run ConstructingSM with CurrentEvent
+}
+End StartConstructingSM
+
+
+ES_Event RunConstructingSM(ES_Event CurrentEvent)
+{
+	local variable MakeTransition
+	local variable NextState
+	local variable EntryEvent
+	local variable ReturnEvent
+	local variable Event2Post
+	
+	Initialize MakeTransition to false
+	Initialize NextState to CurrentState
+	Initialize EntryEvent to ES_ENTRY
+	Initialize ReturnEvent to CurrentEvent to assume no consumption of event
+	
+	If CurrentState is GettingTargetStation
+	
+		Run DuringGettingTargetStation and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_LOC_COMPLETE
+				Get response bytes from LOC
+				Set SB1_byte to getSB1_Byte
+				Set SB2_byte to getSB2_Byte
+				Set SB3_byte to getSB3_Byte
+				Update status variables
+				Set MakeTransition to true
+				Set NextState to DrivingAlongTape
+				Set Event2Post type to ES_DRIVE_ALONG_TAPE
+				Set Event2Post Param to TargetStation
+				Post Event2Post to Master
+			End ES_LOC_COMPLETE block
+				
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End GettingTargetStation block
+	
+	If CurrentState is DrivingAlongTape
+	
+		Run DuringDrivingAlongTape and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_ARRIVED_AT_STATION
+				Set MakeTransition to true
+				Set NextState to CheckIn
+			Else if CurrentEvent is ES_ARRIVED_AT_RELOAD
+				Set MakeTransition to true
+				Set NextState to Reloading
+				Post ES_RELOAD_START to ReloadService
+			EndIf
+	
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End DrivingAlongTape block
+
+	If CurrentState is CheckIn
+	
+		Run DuringCheckIn and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_REORIENT
+				Set MakeTransition to true
+				Set NextState to DrivingAlongTape
+				Set Event2Post type to ES_DRIVE_ALONG_TAPE
+				Set Event2Post param to RELOAD
+				Post Event2Post to Master
+			Else If CurrentEvent is ES_GOAL_READY
+				TargetGoal = CurrentEvent Param
+				Set MakeTransition to true
+				Set NextState to Shooting
+			EndIf
+
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End CheckIn block
+	
+	If CurrentState is Shooting
+	
+		Run DuringShooting and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_SHOOTING_COMPLETE or ES_TIMEOUT from SHOOTING_TIMER
+				If BallCount = 0
+					Set MakeTransition to true
+					Set NextState to DrivingAlongTape
+					Set Event2Post type to ES_DRIVE_ALONG_TAPE
+					Set Event2Post param to RELOAD
+					Post Event2Post to Master
+				Else
+					Set MakeTransition to true
+					Set NextState to GettingTargetStation
+			EndIf
+		
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End Shooting block
+
+	If CurrentState is Reloading
+	
+		Run DuringReloading and store the output in CurrentEvent
+		
+		If CurrentEvent is not ES_NO_EVENT
+			If CurrentEvent is ES_RELOAD_COMPLETE
+				If BallCount < 5
+					Set MakeTransition to true
+				Else
+					Set MakeTransition to true
+					Set NextState to GettingTargetStation
+				EndIf
+			Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
+				Set GameTimeoutFlag
+				Set ReturnEvent to ES_NO_EVENT
+			EndIf
+
+		Else
+			Set ReturnEvent to ES_NO_EVENT
+		EndIf
+		
+	End Reloading block
+	
+	
+	If MakeTransition is true
+	
+		Set CurrentEvent to ES_EXIT
+		Run ConstructingSM with CurrentEvent to allow lower level SMs to exit
+		
+		Set CurrentState to NextState
+		Run ConstructingSM with EntryEvent to allow lower level SMs to enter
+		
+	EndIf
+	
+	Return ReturnEvent
+}
+End RunConstructingSM
+
+
+ES_Event DuringGettingTargetStation(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	local variable Event2Post
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Set Event2Post type to ES_Command
+		Set Event2Post param to STATUS_COMMAND
+		Post Event2Post to LOC_SM
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringGettingTargetStation
+
+
+ES_Event DuringDrivingAlongTape(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY
+		Start DrivingAlongTapeSM with ThisEvent
+	Else If ThisEvent is ES_EXIT
+		Run DrivingAlongTapeSM with ThisEvent
+		Turn off motors/control
+	Else
+		Run DrivingAlongTapeSM with ThisEvent and store result in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringDrivingAlongTape
+
+
+ES_Event DuringCheckIn(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY
+		Start CheckInSM with ThisEvent
+	Else If ThisEvent is ES_EXIT
+		Run CheckInSM with ThisEvent
+	Else
+		Run CheckInSM with ThisEvent and store result in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringCheckIn
+
+
+ES_Event DuringShooting(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY
+		Start ShootingSM with ThisEvent
+	Else If ThisEvent is ES_EXIT
+		Run ShootingSM with ThisEvent
+	Else
+		Run ShootingSM with ThisEvent and store result in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringShooting
+
+ES_Event DuringReloading(ES_Event ThisEvent)
+{
+	local variable ReturnEvent
+	local variable Event2Post
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Set Event2Post type to ES_RELOAD_START
+		Post Event2Post to ReloadService
+	Else If ThisEvent is ES_EXIT
+		If normalgame timeout flag set, post ES_Norm_Game_Complete to Master
+	EndIf
+	
+	Return ReturnEvent
+	
+}
+End DuringReloading
+

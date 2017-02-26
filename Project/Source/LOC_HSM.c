@@ -176,6 +176,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 					//If CurrentEvent is ES_Command
 					if(CurrentEvent.EventType == ES_COMMAND)
 					{
+						printf("Moving to Transmitting %d\r\n", CurrentEvent.EventParam);
 						//Post an ES_Command event with the same event parameter to the LOC_SM
 						PostLOC_SM(CurrentEvent);
 						//Set MakeTransition to true
@@ -210,7 +211,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 					{
 					//Post ES_LOC_Complete to the MasterSM
 						Event2Post.EventType = ES_LOC_COMPLETE;
-						PostMasterSM(Event2Post);
+					// PostMasterSM(Event2Post);
 					//Set MakeTransition to true
 						MakeTransition = true;
 					//Set NextState to Waiting

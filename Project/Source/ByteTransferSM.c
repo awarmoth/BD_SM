@@ -148,13 +148,14 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 			//If CurrentEvent is ES_Command
 				if(CurrentEvent.EventType == ES_COMMAND) //IF WE ONLY WRITE 1 BYTE AT A TIME, HOW SHOULD WE PASS THE DATA WE WANT TO WRITE?
 				{
+					printf("New Command = %d\r\n", CurrentEvent.EventParam);
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Set NextState to BT_Wait4EOT
 					NextState = BT_Wait4EOT;
 					//Write the first byte command to the SPI Module
-						//uint8_t QueryVal = ((uint8_t)CurrentEvent.EventParam);
-						//QueryLOC(QueryVal);
+						uint8_t QueryVal = ((uint8_t)CurrentEvent.EventParam);
+						QueryLOC(QueryVal);
 					
 				}
 			//End ES_Command block
@@ -182,19 +183,21 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 			//If CurrentEvent is ES_EOT and ByteCounter is less than 5
 				if((CurrentEvent.EventType == ES_EOT) && (ByteCounter < 5))
 				{
+					printf("ES_EOT, Byte Written = %d, ByteCounter = %d\r\n", CurrentEvent.EventParam, ByteCounter);
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Store value written by LOC in BytesArray element corresponding to ByteCounter - 1
 				//EventParam is a uint16_t, so we have to cast it down to a uint8_t
 					BytesArray[ByteCounter-1] = ((uint8_t)CurrentEvent.EventParam);
 				//Write the next byte command to the SPI Module
-					//uint8_t QueryVal = 0; //Bytes 2-5 are always zeros
-					//QueryLOC(QueryVal);
+					uint8_t QueryVal = 0; //Bytes 2-5 are always zeros
+					QueryLOC(QueryVal);
 				}
 			
 			//ElseIf CurrentEvent is ES_EOT and ByteCounter is 5
 				else if((CurrentEvent.EventType == ES_EOT) && (ByteCounter == 5))
 				{
+					printf("ES_EOT, Byte Written = %d, ByteCounter = %d\r\n", CurrentEvent.EventParam, ByteCounter);
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Store value written by LOC in BytesArray element corresponding to ByteCounter - 1
@@ -227,6 +230,8 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 			//If CurrentEvent is ES_TIMEOUT
 				if(CurrentEvent.EventType == ES_TIMEOUT)
 				{
+					printf("LOC_TIMER Timed out\r\n");
+					printf("Byte1 = %d | Byte2 = %d | Byte3 = %d | Byte4 = %d | Byte5 = %d\r\n", BytesArray[0], BytesArray[1], BytesArray[2], BytesArray[3], BytesArray[4]);
 				//Set MakeTransition to true
 					MakeTransition = true;
 				//Transform ReturnEvent to ES_Ready2Write
@@ -332,8 +337,6 @@ static ES_Event DuringWait4EOT(ES_Event ThisEvent)
 		if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 		{
 			
-		//Write command to SPI module
-			/**************** HOW DO WE KNOW WHAT VALUE TO WRITE HERE??????????????***************/
 			
 		//Increment ByteCounter
 			ByteCounter++;
@@ -385,4 +388,56 @@ static ES_Event DuringWait4Timeout(ES_Event ThisEvent)
 	//Return ReturnEvent
 		return ReturnEvent;
 	
+}
+
+/*
+Getter Functions
+*/
+
+uint8_t getByte2(void)
+{
+	return BytesArray[1];
+}
+
+
+uint8_t getByte3(void)
+{
+	return BytesArray[2];
+}
+
+
+uint8_t getByte4(void)
+{
+	return BytesArray[3];
+}
+
+
+uint8_t getByte5(void)
+{
+	return BytesArray[4];
+}
+
+uint8_t getSB1_Byte(void)
+{
+	return getByte3();
+}
+
+uint8_t getSB2_Byte(void)
+{
+	return getByte4();
+}
+
+uint8_t getSB3_Byte(void)
+{
+	return getByte5();
+}
+
+uint8_t getRS_Byte(void)
+{
+	return getByte3();
+}
+
+uint8_t getRR_Byte(void)
+{
+	return getByte4();
 }

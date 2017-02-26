@@ -1,4 +1,4 @@
-module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, Score, BallCount
+module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
 ShootingState_t: AlignToGoal, Firing, WaitForShotResult, WaitForScoreUpdate, AlignToTape
 Module level functions: DuringAlignToGoal, DuringFiring, DuringWaitForShotResult, DuringWaitForScoreUpdate
 
@@ -53,11 +53,12 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 				Set GameTimeoutFlag
 			Else If CurrentEvent is ES_FIRE_COMPLETE
 				Set MakeTransition to true
-				Set BallCount to getBallCount;
-				If BallCount = 0 or GameTimeoutFlag Set or ShootingTimeoutFlag Set
-					Set NextState to AlignToTape
+				Set BallCount to getBallCount
+				Set NextState to WaitForShotResult
+				If BallCount = 0 or GameTimeoutFlag Set or ShootingTimeout Flag Set
+					Set ExitFlag
 				Else
-					Set NextState to WaitForShotResult
+					
 				EndIf
 			EndIf
 		

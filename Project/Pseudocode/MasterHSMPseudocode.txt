@@ -1,4 +1,4 @@
-module level variables: MyPriority, CurrentState, TeamColor, GameState
+module level variables: MyPriority, CurrentState, TeamColor, GameState, SB1_byte, SB2_byte, SB3_byte, RR_byte, RS_byte
 MasterState_t: Waiting2Start, Constructing, Free4All, GameComplete
 Module level functions: DuringWaiting2Start, DuringConstructing, DuringFree4All, DuringGameComplete
 
