@@ -3,10 +3,93 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-U:\awarmoth\My Documents\The_Framework\Project\UVFrameworkHSMTemplate.uvproj
-Project File Date:  02/23/2017
+U:\millerm2\My Documents\The_Framework\Project\UVFrameworkHSMTemplate.uvproj
+Project File Date:  02/25/2017
 
 <h2>Output:</h2>
-</pre>
-</body>
-</html>
+Rebuild target 'SPI_Integration'
+compiling HSMTemplateMain.c...
+compiling EventCheckers.c...
+compiling MapKeys.c...
+compiling LOC_HSM.c...
+Source\LOC_HSM.c(153): warning:  #550-D: variable "Event2Post" was set but never used
+                ES_Event Event2Post;
+Source\LOC_HSM.c: 1 warning, 0 errors
+compiling hardware.c...
+compiling SPI_Module.c...
+compiling ByteTransferSM.c...
+compiling CheckInSM.c...
+.\Headers\constants.h(61): warning:  #1-D: last line of file ends without a newline
+   
+Source\CheckInSM.c(132): error:  #18: expected a ")"
+                                                else if ( ReportStatus == NACK )
+Source\CheckInSM.c(235): error:  #18: expected a ")"
+                                                else if (ReportStatus == NACK)
+Source\CheckInSM.c(306): error:  #65: expected a ";"
+                Byte2Write = 0b10000000;
+Source\CheckInSM.c(340): error:  #65: expected a ";"
+                Byte2Write = 0b01110000;
+Source\CheckInSM.c(372): error:  #65: expected a ";"
+                        Byte2Write = 0b10000000;
+Source\CheckInSM.c(401): error:  #65: expected a ";"
+                Byte2Write = 0b01110000;
+Source\CheckInSM.c(9): warning:  #177-D: variable "MyPriority" was declared but never referenced
+   static uint8_t MyPriority;
+Source\CheckInSM.c(15): warning:  #177-D: variable "Period" was declared but never referenced
+   static uint32_t Period;
+Source\CheckInSM.c: 3 warnings, 6 errors
+compiling ConstructingSM.c...
+.\Headers\constants.h(61): warning:  #1-D: last line of file ends without a newline
+   
+Source\ConstructingSM.c(82): warning:  #188-D: enumerated type mixed with another type
+        NextState = CurrentState;
+Source\ConstructingSM.c(112): warning:  #188-D: enumerated type mixed with another type
+                                        NextState = DrivingAlongTape;
+Source\ConstructingSM.c(145): warning:  #188-D: enumerated type mixed with another type
+                                        NextState = CheckIn;
+Source\ConstructingSM.c(153): warning:  #188-D: enumerated type mixed with another type
+                                        NextState = Reloading;
+Source\ConstructingSM.c(182): warning:  #188-D: enumerated type mixed with another type
+                                        NextState = DrivingAlongTape;
+Source\ConstructingSM.c(198): warning:  #188-D: enumerated type mixed with another type
+                                        if (!CheckOff3) NextState = Shooting;
+Source\ConstructingSM.c(199): warning:  #188-D: enumerated type mixed with another type
+                                        else NextState = GettingTargetStation;
+Source\ConstructingSM.c(231): warning:  #188-D: enumerated type mixed with another type
+                                                NextState = DrivingAlongTape;
+Source\ConstructingSM.c(245): warning:  #188-D: enumerated type mixed with another type
+                                                NextState = GettingTargetStation;
+Source\ConstructingSM.c(282): warning:  #188-D: enumerated type mixed with another type
+                                                NextState = GettingTargetStation;
+Source\ConstructingSM.c(318): warning:  #188-D: enumerated type mixed with another type
+                CurrentState = NextState;
+Source\ConstructingSM.c(347): error:  #65: expected a ";"
+                Event2Post.EventParam = STATUS_COMMAND;
+Source\ConstructingSM.c: 12 warnings, 1 error
+compiling DrivingAlongTapeSM.c...
+Source\DrivingAlongTapeSM.c(239): error:  #109: expression must have (pointer-to-) function type
+                        CurrentEvent = Driving2Station(CurrentEvent);
+Source\DrivingAlongTapeSM.c(303): error:  #513: a value of type "int" cannot be assigned to an entity of type "ES_Event"
+                                        ReturnEvent = ES_ARRIVED_AT_RELOAD;
+Source\DrivingAlongTapeSM.c(426): error:  #65: expected a ";"
+        }
+Source\DrivingAlongTapeSM.c(407): warning:  #177-D: function "DuringDriving2Station" was declared but never referenced
+  static ES_Event DuringDriving2Station(ES_Event ThisEvent)
+Source\DrivingAlongTapeSM.c: 1 warning, 3 errors
+assembling startup_rvmdk.S...
+compiling ES_CheckEvents.c...
+compiling ES_DeferRecall.c...
+compiling ES_Framework.c...
+compiling ES_LookupTables.c...
+compiling ES_Port.c...
+compiling ES_PostList.c...
+Source\ES_PostList.c(27): warning:  #177-D: function "PostToList" was declared but never referenced
+  static bool PostToList(  PostFunc_t *const*FuncList, uint8_t ListSize, ES_Event NewEvent);
+Source\ES_PostList.c: 1 warning, 0 errors
+compiling ES_Queue.c...
+compiling ES_Timers.c...
+compiling retarget.c...
+compiling termio.c...
+compiling uartstdio.c...
+".\Outputs\BaseTarget.axf" - 10 Error(s), 18 Warning(s).
+Target not created

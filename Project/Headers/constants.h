@@ -2,6 +2,9 @@
  Header file for keeping track of all constants
 
  ****************************************************************************/
+ #define CheckOff3 1
+ 
+ 
  #define STATUS_COMMAND 0b1100 0000
  #define REPORT_COMMAND 0b1000 0000
  #define QUERY_RESPONSE_COMMAND 0b0111 0000
@@ -27,12 +30,12 @@
  #define RED_GOAL_ACTIVE_RIGHT_SHIFT 0
  #define NO_GOAL_ACTIVE 0
  #define NO_STAGE_ACTIVE 0
- #define STAGE_ONE 1
- #define GOAL_ONE 1
- #define STAGE_TWO 0b10
- #define GOAL_TWO 0b10
- #define STAGE_THREE 0b11
- #define GOAL_THREE 0b11
+ #define STAGE_ONE_ACTIVE 1
+ #define GOAL_ONE_ACTIVE 1
+ #define STAGE_TWO_ACTIVE 0b10
+ #define GOAL_TWO_ACTIVE 0b10
+ #define STAGE_THREE_ACTIVE 0b11
+ #define GOAL_THREE_ACTIVE 0b11
  #define ALL_GOALS_ACTIVE 0b111
  #define ALL_STAGES_ACTIVE 0b111
  
@@ -43,6 +46,8 @@
  #define GAME_STATUS_RIGHT_SHIFT 7
  #define REPORT_STATUS_MASK (BIT6HI | BIT7HI)
  #define REPORT_STATUS_RIGHT_SHIFT 6
+ 
+ #define LOCATION_MASK (BIT3HI | BIT2HI | BIT1HI | BIT0HI)
 
  #define RELOAD 0
  #define STATION_ONE 1
@@ -53,5 +58,4 @@
  #define GOAL_ONE 1
  #define GOAL_TWO 2
  #define GOAL_THREE 3
- 
  

@@ -63,6 +63,11 @@
 #include "driverlib/gpio.h"
 #include "driverlib/timer.h"
 
+#include "MasterHSM.h"
+#include "ConstructingSM.h"
+#include "DrivingAlongTapeSM.h"
+#include "ByteTransferSM.h"
+
 /* include header files for this state machine as well as any machines at the
    next lower level in the hierarchy that are sub-machines to this machine
 */
@@ -86,17 +91,16 @@
    functions, entry & exit functions.They should be functions relevant to the
    behavior of this state machine
 */
-static ES_Event DuringWaiting(ES_Event ThisEvent)
-static ES_Event DuringDriving2Station(ES_Event ThisEvent)
-static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
+static ES_Event DuringWaiting(ES_Event ThisEvent);
+static ES_Event DuringDriving2Station(ES_Event ThisEvent);
+static ES_Event DuringDriving2Reload(ES_Event ThisEvent);
 
 /*---------------------------- Module Variables ---------------------------*/
 // everybody needs a state variable, you may need others as well
 static DrivingState_t CurrentState;
 static uint8_t LastStation = INITIAL_STATION;
 static uint8_t TargetStation;
-static signed uint8_t Direction; //THIS MIGHT THROW ERRORS AT ME WHEN I ACTUALLY CHECK IT
-								 //IN THE MEANTIME ASSUME DIRECTION CAN BE + or - 1
+static int8_t Direction;
 
 
 /*------------------------------ Module Code ------------------------------*/
@@ -177,7 +181,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 						/*****************Start driving******************/						
 
 						// Set Direction from sign(LastStation - TargetStation)
-						if((LastStation - TargetStation >) 0) //LastStation is greater than TargetStation, so to count down we drive towards the SUPPLY_DEPOT
+						if((LastStation - TargetStation) > 0) //LastStation is greater than TargetStation, so to count down we drive towards the SUPPLY_DEPOT
 						{
 							Direction = FORWARD;
 						}
@@ -200,7 +204,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 						/*****************Start driving******************/							
 
 						// Set Direction from sign(LastStation - TargetStation)
-						if((LastStation - TargetStation >) 0) //LastStation is greater than TargetStation, so to count down we drive towards the SUPPLY_DEPOT
+						if((LastStation - TargetStation) > 0) //LastStation is greater than TargetStation, so to count down we drive towards the SUPPLY_DEPOT
 						{
 							Direction = FORWARD;
 						}
@@ -408,7 +412,7 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY)
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		//do nothing
 	}

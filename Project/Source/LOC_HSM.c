@@ -190,7 +190,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 				else
 				{
 					// Set ReturnEvent to ES_NO_EVENT
-					ReturnEvent = ES_NO_EVENT;
+					ReturnEvent.EventType = ES_NO_EVENT;
 				}
 				// 	EndIf	
 				break;
@@ -223,7 +223,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 				else
 				{
 					// Set ReturnEvent to ES_NO_EVENT
-					ReturnEvent = ES_NO_EVENT;
+					ReturnEvent.EventType = ES_NO_EVENT;
 				}
 				// 	EndIf	
 				break;

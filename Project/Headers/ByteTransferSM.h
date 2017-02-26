@@ -6,6 +6,9 @@
 #ifndef BYTE_TRANSFER_SM
 #define BYTE_TRANSFER_SM
 
+#include "ES_Configure.h" /* gets us event definitions */
+#include "ES_Types.h"     /* gets bool type for returns */
+
 // State definitions for use with the query function
 typedef enum {BT_Wait2Start, BT_Wait4EOT, BT_Wait4Timeout} ByteTransferState_t ;
 

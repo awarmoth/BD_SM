@@ -262,7 +262,18 @@ typedef enum {  ES_NO_EVENT = 0,
 								ES_READY_2_WRITE,
 								ES_LOC_COMPLETE,
 								ES_START,
-								ES_TEAM_SWITCH} ES_EventTyp_t ;
+								ES_TEAM_SWITCH,
+								ES_DRIVE_ALONG_TAPE,
+								ES_ARRIVED_AT_STATION,
+								ES_ARRIVED_AT_RELOAD,
+								ES_REORIENT,
+								ES_GOAL_READY,
+								ES_SHOOTING_COMPLETE,
+								ES_RELOAD_COMPLETE,
+								ES_RELOAD_START,
+								ES_NORM_GAME_COMPLETE,
+								ES_STATION_DETECTED,
+								ES_FRONT_BUMP_DETECTED} ES_EventTyp_t ;
 
 /****************************************************************************/
 // These are the definitions for the Distribution lists. Each definition
@@ -334,5 +345,7 @@ typedef enum {  ES_NO_EVENT = 0,
 // These symbolic names should be changed to be relevant to your application 
 
 #define LOC_TIMER 0
+#define SHOOTING_TIMER 1
+#define GAME_TIMER 2
 
 #endif /* CONFIGURE_H */

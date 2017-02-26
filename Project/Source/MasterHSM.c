@@ -2,6 +2,41 @@
 
 #include "constants.h"
 
+#include <stdint.h>
+#include <stdbool.h>
+#include "termio.h"
+
+#include "ES_Configure.h"
+#include "ES_Framework.h"
+#include "ES_DeferRecall.h"
+#include "ES_ShortTimer.h"
+
+// the headers to access the GPIO subsystem
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_sysctl.h"
+#include "inc/hw_timer.h"
+#include "inc/hw_nvic.h"
+
+
+// the headers to access the TivaWare Library
+#include "driverlib/sysctl.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/gpio.h"
+#include "driverlib/timer.h"
+#include "driverlib/interrupt.h"
+
+#include "BITDEFS.H"
+#include <Bin_Const.h>
+
+#ifndef ALL_BITS
+#define ALL_BITS (0xff<<2)
+#endif
+
+// readability defines
+
+#include "BITDEFS.H"
 
 // module level variables: MyPriority, CurrentState, TeamColor, GameState
 static uint8_t myPriority;
@@ -44,7 +79,7 @@ bool PostMasterSM(ES_Event ThisEvent)
 void StartMasterSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to Waiting2Start
-	CurrentState = Waiting2Start
+	CurrentState = Waiting2Start;
 	// Call RunMasterSM with CurrentEvent as the passed parameter 
 	// to initialize lower level SMs
 	RunMasterSM(CurrentEvent);
@@ -266,7 +301,9 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 		// Start ConstructingSM
 		StartConstructingSM(ThisEvent);
 		// Start GAME_TIMER
-		ES_Timer_InitTimer(GAME_TIMER,GAME_TIMEOUT);
+		if (!CheckOff3){
+			ES_Timer_InitTimer(GAME_TIMER,GAME_TIMEOUT);
+		}
 	}
 	// Else
 	else
@@ -349,27 +386,27 @@ uint8_t getTeamColor(void) {
 }
 
 uint8_t getCheckShootGreen(void) {
-	return SB1_Byte & CHECK_SHOOT_GREEN_MASK >> CHECK_SHOOT_GREEN_RIGHT_SHIFT;
+	return (SB1_Byte & CHECK_SHOOT_GREEN_MASK) >> CHECK_SHOOT_GREEN_RIGHT_SHIFT;
 }
 
 uint8_t getActiveStageGreen(void) {
-	return SB1_Byte & GREEN_STAGE_ACTIVE_MASK >> GREEN_STAGE_ACTIVE_RIGHT_SHIFT;
+	return (SB1_Byte & GREEN_STAGE_ACTIVE_MASK) >> GREEN_STAGE_ACTIVE_RIGHT_SHIFT;
 }
 
 uint8_t getActiveGoalGreen(void) {
-	return SB1_Byte & GREEN_GOAL_ACTIVE_MASK >> GREEN_GOAL_ACTIVE_RIGHT_SHIFT;
+	return (SB1_Byte & GREEN_GOAL_ACTIVE_MASK) >> GREEN_GOAL_ACTIVE_RIGHT_SHIFT;
 }
 
 uint8_t getCheckShootRed(void) {
-	return SB1_Byte & CHECK_SHOOT_RED_MASK >> CHECK_SHOOT_RED_RIGHT_SHIFT;
+	return (SB1_Byte & CHECK_SHOOT_RED_MASK) >> CHECK_SHOOT_RED_RIGHT_SHIFT;
 }
 
 uint8_t getActiveStageRed(void) {
-	return SB1_Byte & RED_STAGE_ACTIVE_MASK >> RED_STAGE_ACTIVE_RIGHT_SHIFT;
+	return (SB1_Byte & RED_STAGE_ACTIVE_MASK) >> RED_STAGE_ACTIVE_RIGHT_SHIFT;
 }
 
 uint8_t getActiveGoalRed(void) {
-	return SB1_Byte & RED_GOAL_ACTIVE_MASK >> RED_GOAL_ACTIVE_RIGHT_SHIFT;
+	return (SB1_Byte & RED_GOAL_ACTIVE_MASK) >> RED_GOAL_ACTIVE_RIGHT_SHIFT;
 }
 
 uint8_t getScoreGreen(void) {
@@ -381,5 +418,18 @@ uint8_t getScoreRed(void) {
 
 }
 uint8_t getGameState(void) {
-	return SB3_Byte & GAME_STATUS_MASK >> GAME_STATUS_RIGHT_SHIFT;
+	return (SB3_Byte & GAME_STATUS_MASK) >> GAME_STATUS_RIGHT_SHIFT;
 }
+
+uint8_t getResponseReady(void) {
+	return RR_Byte;
+}
+
+uint8_t getReportStatus(void) {
+	return (RS_Byte & REPORT_STATUS_MASK) >> REPORT_STATUS_RIGHT_SHIFT;
+}
+
+uint8_t getLocation(void) {
+	return RS_Byte & LOCATION_MASK;
+}
+

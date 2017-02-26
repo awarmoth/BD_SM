@@ -4,6 +4,10 @@
 #ifndef MasterHSM_H
 #define MasterHSM_H
 
+#include "ES_Configure.h" /* gets us event definitions */
+#include "ES_Types.h"     /* gets bool type for returns */
+#include "ES_Events.h"
+
 // State definitions for use with the query function
 typedef enum { Waiting2Start, Constructing, Free4All, GameComplete } MasterState_t ;
 
@@ -32,6 +36,9 @@ uint8_t getActiveGoalRed(void);
 uint8_t getScoreGreen(void);
 uint8_t getScoreRed(void);
 uint8_t getGameState(void);
+uint8_t getResponseReady(void);
+uint8_t getReportStatus(void);
+uint8_t getLocation(void);
 
 
 #endif /*MasterHSM_H */

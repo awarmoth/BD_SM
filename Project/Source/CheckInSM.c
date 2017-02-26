@@ -1,5 +1,7 @@
 #include "MasterHSM.h"
 #include "CheckInSM.h"
+#include "LOC_HSM.h"
+#include "ByteTransferSM.h"
 
 #include "constants.h"
 
@@ -10,6 +12,7 @@
  static uint8_t ReportStatus;
  static uint8_t BadResponseCounter = 0;
  static uint8_t Byte2Write;
+ static uint32_t Period;
 
  #define MAX_BAD_RESPONSES 3 
  #define RESPONSE_NOT_READY 0
@@ -27,7 +30,7 @@ void StartCheckInSM(ES_Event CurrentEvent)
 	// Run CheckInSM with CurrentEvent
 	RunCheckInSM(CurrentEvent);
 }
-End StartCheckInSM
+// End StartCheckInSM
 
 
 ES_Event RunCheckInSM(ES_Event CurrentEvent)
@@ -46,7 +49,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 	// Initialize NextState to CurrentState
 	NextState = CurrentState;
 	// Initialize EntryEvent to ES_ENTRY
-	EntryEvent = ES_ENTRY;
+	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to CurrentEvent to assume no consumption of event
 	ReturnEvent = CurrentEvent;
 	
@@ -74,7 +77,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent = ES_NO_EVENT;
+				ReturnEvent.EventType = ES_NO_EVENT;
 			}
 			// 	EndIf	
 
@@ -97,7 +100,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					// If ResponseReady = not ready
-					if (ResponseReady = RESPONSE_NOT_READY)
+					if (ResponseReady == RESPONSE_NOT_READY)
 					{
 						// Set MakeTransition to true
 						MakeTransition = true;
@@ -126,7 +129,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							NextState = Reporting_2;
 						}
 						// Else If ReportStatus = NACK
-						else if (ReportStatus == NACK)
+						else if ( ReportStatus == NACK )
 						{ 
 							// Increment BadResponseCounter
 							BadResponseCounter++;
@@ -151,7 +154,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent = ES_NO_EVENT;
+				ReturnEvent.EventType = ES_NO_EVENT;
 			}
 			// EndIf
 			
@@ -163,10 +166,10 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			// Run DuringReporting_2 and store the output in CurrentEvent
 			CurrentEvent = DuringReporting_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
-			if (CurrentEvent != ES_NO_EVENT)
+			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_LOC_COMPLETE
-				if (CurrentEvent == ES_LOC_COMPLETE)
+				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					// Set MakeTransition to true
 					MakeTransition = true;
@@ -179,7 +182,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent = ES_NO_EVENT;
+				ReturnEvent.EventType = ES_NO_EVENT;
 			}
 			// EndIf
 			
@@ -191,10 +194,10 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			// Run DuringWaitForResponse_2 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
-			if (CurrentEvent != ES_NO_EVENT)
+			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_LOC_COMPLETE
-				if (CurrentEvent == ES_LOC_COMPLETE)
+				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					// Get response bytes from LOC
 					SetRR_Byte(getRR_Byte());
@@ -213,7 +216,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					else if (BadResponseCounter > MAX_BAD_RESPONSES)
 					{
 						// Transform ReturnEvent to ES_Reorient
-						ReturnEvent = ES_REORIENT;
+						ReturnEvent.EventType = ES_REORIENT;
 					}
 					// Else
 					else
@@ -295,16 +298,17 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-	if (ThisEvent.EventType == ES_ENTRY || ThisEvent.EventType == ES_ENTRY_HISTORY)
+	if ((ThisEvent.EventType == ES_ENTRY) ||(ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Period = getPeriod // ISR is constantly updating
-		Period = getPeriod();
+		//Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
-		Byte2Write = 0b1000 0000+getPeriodCode(Period);
+		Byte2Write = 0b10000000;
+		Byte2Write += getPeriodCode(Period);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostLOC(Event2Post);
+		PostLOC_SM(Event2Post);
 		// Reinitialize variables
 		BadResponseCounter = 0;
 		ResponseReady = RESPONSE_NOT_READY;
@@ -324,19 +328,20 @@ ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	ES_Event ReturnEvent;
+	ES_Event Event2Post;
 	
 	// Initialize ReturnEvent to ThisEvent
 	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-	if (ThisEvent.EventType == ES_ENTRY || ThisEvent.EventType == ES_ENTRY_HISTORY)
+	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Set Byte2Write to report query response byte
-		Byte2Write = 0b0111 0000;
+		Byte2Write = 0b01110000;
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostLOC(Event2Post);
+		PostLOC_SM(Event2Post);
 	}
 	// EndIf
 
@@ -359,16 +364,17 @@ ES_Event DuringReporting_2(ES_Event ThisEvent)
 	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-	if (ThisEvent.EventType == ES_ENTRY || ThisEvent.EventType == ES_ENTRY_HISTORY)
+	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Period = getPeriod // ISR is constantly updating
-		Period = getPeriod();
+		// Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
-		Byte2Write = 0b1000+getPeriodCode(Period);
+			Byte2Write = 0b10000000;
+		Byte2Write += getPeriodCode(Period);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostLOC(Event2Post);
+		PostLOC_SM(Event2Post);
 	}
 	// EndIf
 	
@@ -383,19 +389,20 @@ ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	ES_Event ReturnEvent;
+	ES_Event Event2Post;
 	
 	// Initialize ReturnEvent to ThisEvent
 	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-	if (ThisEvent.EventType == ES_ENTRY || ThisEvent.EventType == ES_ENTRY_HISTORY)
+	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Set Byte2Write to query response byte
-		Byte2Write = 0b0111 0000;
+		Byte2Write = 0b01110000;
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		PostLOC(Event2Post);
+		PostLOC_SM(Event2Post);
 	}
 	// EndIf
 
@@ -403,4 +410,8 @@ ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 	return ReturnEvent;	
 }
 // End DuringWaitForResponse_2
+
+uint8_t getPeriodCode(uint32_t Period) {
+	return 0;
+}
 

@@ -32,6 +32,7 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "ES_Timers.h"
+#include "ES_Events.h"
 
 #define clrScrn() 	puts("\x1b[2J")
 
