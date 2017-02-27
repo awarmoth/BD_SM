@@ -164,7 +164,8 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 		case Waiting:
 		{
 			if(SM_TEST) printf("DrivingAlongTape: Waiting\r\n");
-
+			if(SM_TEST) TargetStation = 3;
+			if (SM_TEST) LastStation = 4;
 			// Call DuringWaiting and set CurrentEvent to its return value
 			CurrentEvent = DuringWaiting(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
@@ -300,6 +301,8 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 		// If CurrentState is DrivingToReload
 		case Driving2Reload:
 		{
+			if(SM_TEST) printf("DrivingAlongTape: Driving2Reload\r\n");
+
 			// Call DuringDrivingToReload and set CurrentEvent to its return value
 			CurrentEvent = DuringDriving2Reload(CurrentEvent);
 			
@@ -525,6 +528,7 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 
 void Controller_ISR(void)
 {
+	printf("Averaged Period: %i\r\n", getPeriod());
 	//clear interrupt
 	HWREG(WTIMER1_BASE+TIMER_O_ICR)=TIMER_ICR_TATOCINT;
 	static float LastError_POS = 0;

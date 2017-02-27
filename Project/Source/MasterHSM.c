@@ -315,6 +315,8 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 		// Start one shot timer
 		HWREG(WTIMER3_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
 		
+		ES_Timer_InitTimer(PRINT_TIMER, 1000);
+		
 		// Start ConstructingSM
 		StartConstructingSM(ThisEvent);
 		

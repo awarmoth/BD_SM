@@ -94,6 +94,12 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 		case(GettingTargetStation):
 			if (SM_TEST) printf("Constructing: GettingTargetStation\r\n");
 			// Run DuringGettingTargetStation and store the output in CurrentEvent
+		if (CurrentEvent.EventType == ES_TIMEOUT && CurrentEvent.EventParam == PRINT_TIMER){
+				//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
+				printf("Averaged Period: %i", HallSensorPeriod);
+				ES_Timer_InitTimer(PRINT_TIMER, 1000);
+			}
+		
 			CurrentEvent = DuringGettingTargetStation(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
 			if (CurrentEvent.EventType != ES_NO_EVENT)
@@ -141,6 +147,11 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 			// Run DuringDrivingAlongTape and store the output in CurrentEvent
 			CurrentEvent = DuringDrivingAlongTape(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
+			if (CurrentEvent.EventType == ES_TIMEOUT && CurrentEvent.EventParam == PRINT_TIMER){
+				//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
+				printf("Averaged Period: %i", HallSensorPeriod);
+				ES_Timer_InitTimer(PRINT_TIMER, 1000);
+			}
 			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_ARRIVED_AT_STATION
@@ -553,6 +564,7 @@ void HallEffect_ISR( void )
 	//	Set CurrentPeriod to subtract LastCapture from ThisCapture
 	ThisCapture = HWREG(WTIMER2_BASE+TIMER_O_TAR);
 	CurrentPeriod = ThisCapture - LastCapture;
+	//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
 	
 	//	Update counter position in LastTen to CurrentPeriod
 	LastTen[counter] = CurrentPeriod;
@@ -569,12 +581,12 @@ void HallEffect_ISR( void )
 	//	Post ES_StationDetected Event
 		PostEvent.EventType = ES_STATION_DETECTED;
 		PostMasterSM(PostEvent);
-		printf("Good Frequency\r\n");
+		//printf("Good Frequency: %i\r\n", HallSensorPeriod);
 		
 	//	HasLeftStage is false
 		HasLeftStage = false;
-	} else {
-		printf("Bad Frequency\r\n");
+	} else if(HasLeftStage){
+		//printf("Bad Period: %i\r\n", HallSensorPeriod);
 	}
 	//	If counter equals 9
 	if(counter == 9){
@@ -582,6 +594,7 @@ void HallEffect_ISR( void )
 	} else {
 		counter++;
 	}
+	LastCapture = ThisCapture;
 }
 
 void HallEffectOneShotTimer_ISR( void )
@@ -595,7 +608,9 @@ void HallEffectOneShotTimer_ISR( void )
 	// Set HasLeftStage to true
 	HasLeftStage = true;
 	
-	printf("Left the current stage\r\n");
+	HallSensorPeriod = 0;
+	
+	//printf("Left the current stage\r\n");
 }
 
 uint32_t getPeriod( void )
