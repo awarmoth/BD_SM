@@ -168,7 +168,6 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 			
 		//If CurrentState is LOC_Waiting
 			case LOC_Waiting:
-				if (SM_TEST) printf("LOC_Waiting");
 				//Run DuringWaiting and store the output in CurrentEvent
 				CurrentEvent = DuringLOC_Waiting(CurrentEvent);
 			
@@ -178,7 +177,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 					//If CurrentEvent is ES_Command
 					if(CurrentEvent.EventType == ES_COMMAND)
 					{
-						printf("Moving to Transmitting %d\r\n", CurrentEvent.EventParam);
+						//printf("Moving to Transmitting %d\r\n", CurrentEvent.EventParam);
 						//Post an ES_Command event with the same event parameter to the LOC_SM
 						PostLOC_SM(CurrentEvent);
 						//Set MakeTransition to true
@@ -201,7 +200,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 				
 		//If CurrentState is LOC_Transmitting
 			case LOC_Transmitting:
-				if (SM_TEST) printf("LOC_Transmitting");
+				//if (SM_TEST) printf("LOC_Transmitting");
 			//Run DuringTransmitting and store the output in CurrentEvent
 				CurrentEvent = DuringLOC_Transmitting(CurrentEvent);
 			

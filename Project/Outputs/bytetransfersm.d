@@ -23,6 +23,7 @@
 .\outputs\bytetransfersm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\inc/hw_types.h
 .\outputs\bytetransfersm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\inc/hw_gpio.h
 .\outputs\bytetransfersm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\inc/hw_sysctl.h
+.\outputs\bytetransfersm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\inc/hw_ssi.h
 .\outputs\bytetransfersm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\inc/hw_timer.h
 .\outputs\bytetransfersm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\inc/hw_nvic.h
 .\outputs\bytetransfersm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib/sysctl.h

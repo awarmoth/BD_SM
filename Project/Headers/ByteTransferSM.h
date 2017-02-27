@@ -25,6 +25,7 @@ uint8_t getSB2_Byte(void);
 uint8_t getSB3_Byte(void);
 uint8_t getRS_Byte(void);
 uint8_t getRR_Byte(void);
+void SetBytesArray(uint8_t data, int i);
 
 #endif /*BYTE_TRANSFER_SM_H */
 

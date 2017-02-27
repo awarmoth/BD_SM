@@ -53,18 +53,18 @@
 #include "BITDEFS.H"
 #include <Bin_Const.h>
 #include "LOC_HSM.h"
+#include "ByteTransferSM.h"
 
 
 // Module defines
 #define BITS_PER_NIBBLE 4
-#define CLOCK_PRE_DIVISOR 50
+#define CLOCK_PRE_DIVISOR 60
 #define SCR_POS 8
-#define SERIAL_CLOCK_RATE 59
+#define SERIAL_CLOCK_RATE 63
 #define QUERY_INPUT (0xAA)
 
 
 // Module variables
-static uint8_t command;
 
 
 /****************************************************************************
@@ -119,7 +119,7 @@ void InitSPI_Comm(void)
 	HWREG(GPIO_PORTA_BASE+GPIO_O_PUR) |= BIT2HI;
 	printf("\r\nSSI0 is starting");
 	//Wait for the SSI0 to be ready
-	while((HWREG(SYSCTL_RCGCSSI) & SYSCTL_RCGCSSI_R0) != SYSCTL_RCGCSSI_R0);
+	while((HWREG(SYSCTL_PRSSI) & SYSCTL_PRSSI_R0) != SYSCTL_PRSSI_R0);
 	printf("\r\nSSI0 is ready");
 	
 	//Make sure that the SSI is disabled before programming mode bits
@@ -176,12 +176,14 @@ void EOT_Response_ISR(void)
 	//disable the interrupt in the NVIC
 	HWREG(NVIC_EN0) &= ~(BIT7HI);
 	//read the value from the SSI Data Register
-	command = HWREG(SSI0_BASE+SSI_O_DR);
+	for (int i = 0; i<5;i++){
+		SetBytesArray(HWREG(SSI0_BASE+SSI_O_DR),i);
+	}
+
 	//printf("Command = %d\r\n",command);
 	//Post an ES_EOT Event to the ByteTransferSM with the event parameter being the value read
 	ES_Event ThisEvent;
 	ThisEvent.EventType = ES_EOT;
-	ThisEvent.EventParam = command;
 	//Post to LOC_SM
 	PostLOC_SM(ThisEvent);
 	
@@ -210,7 +212,11 @@ void QueryLOC(uint8_t QueryVal)
 	//enable the interrupt in the NVIC
 	
 	//write QueryVal to the SSI Data Register
-	HWREG(SSI0_BASE+SSI_O_DR) = (HWREG(SSI0_BASE+SSI_O_DR) & ~SSI_DR_DATA_M) + QueryVal;
+	// printf("QueryVal = %i\r\n",QueryVal);
+	HWREG(SSI0_BASE+SSI_O_DR) = QueryVal;
+	for (int i=0;i<4;i++){
+		HWREG(SSI0_BASE+SSI_O_DR) = 0;
+	}
 	HWREG(NVIC_EN0) |= BIT7HI;
 }
 

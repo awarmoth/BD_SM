@@ -86,7 +86,6 @@ void StartMasterSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to Waiting2Start
 	CurrentState = Waiting2Start;
-	// if (SM_TEST) CurrentState=Constructing;
 	// Call RunMasterSM with CurrentEvent as the passed parameter 
 	// to initialize lower level SMs
 	RunMasterSM(CurrentEvent);
@@ -121,7 +120,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 		if (SM_TEST) printf("Master: Waiting2Start\r\n");
 		// Run DuringWaiting2Start and store the output in CurrentEvent
 			CurrentEvent = DuringWaiting2Start(CurrentEvent);
-			printf("curr event: %i",CurrentEvent.EventType);
+//			printf("curr event: %i",CurrentEvent.EventType);
 			// If CurrentEvent is not an ES_NO_EVENT
 			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
@@ -132,9 +131,11 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 					SB1_Byte = getSB1_Byte();
 					SB2_Byte = getSB2_Byte();
 					SB3_Byte = getSB3_Byte();
+					//printf ("SB3:%i\r\n",SB3_Byte);
+					//printf("BytesArray[4] = %i\r\n", getByte4());
 					// Set GameState to getGameState
 					GameState = getGameState();
-					printf("GameState:%i",GameState);
+					//printf("GameState:%i",GameState);
 					// If GameState is WAITING_FOR_START
 					if (GameState == WAITING_FOR_START)
 					{	
@@ -147,7 +148,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 						// Set MakeTransition to true
 						MakeTransition = true;
 						// Set NextState to Constructing
-						if(!LOC_TEST) NextState = Constructing;
+						NextState = Constructing;
 					}
 					// EndIf
 				}
@@ -171,7 +172,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	
 		// If CurrentState is Constructing
 		case(Constructing):
-			if (SM_TEST) printf("Master: Constructing\r\n");
+			//if (SM_TEST) printf("Master: Constructing\r\n");
 			// Run DuringConstructing and store the output in CurrentEvent
 			CurrentEvent = DuringConstructing(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
@@ -295,7 +296,6 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 		Event2Post.EventParam = Byte2Write;
 		// Post Event2Post to LOC_HSM
 		PostLOC_SM(Event2Post);
-		printf("Posted to LOC");
 	}
 	// Return ReturnEvent
 	return ReturnEvent;

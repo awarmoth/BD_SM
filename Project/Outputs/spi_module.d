@@ -33,3 +33,4 @@
 .\outputs\spi_module.o: C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib/interrupt.h
 .\outputs\spi_module.o: C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib/pwm.h
 .\outputs\spi_module.o: .\Headers\LOC_HSM.h
+.\outputs\spi_module.o: .\Headers\ByteTransferSM.h

@@ -85,7 +85,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 		
 		// If CurrentState is WaitForResponse_1
 		case(WaitForResponse_1):{
-			if(SM_TEST) printf("CheckIn: WaitingForResponse_1\r\n");
+			//if(SM_TEST) printf("CheckIn: WaitingForResponse_1\r\n");
 			if (SM_TEST) ResponseReady = true;
 			if (SM_TEST) ReportStatus = ACK;
 			// Run DuringWaitForResponse_1 and store the output in CurrentEvent
@@ -315,6 +315,7 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);
+		printf("Period:%i",getPeriodCode(Period));
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;

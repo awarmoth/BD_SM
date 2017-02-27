@@ -162,7 +162,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 						// Set MakeTransition to true			
 						MakeTransition = true;
 						// Set ReturnEvent to ES_ArrivedAtStation
-						if (!SM_TEST) ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
+						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
 					}
 				
 					// If TargetStation is not LastStation and TargetStation is not supply depot
@@ -484,7 +484,7 @@ void Controller_ISR(void)
 	HWREG(WTIMER1_BASE+TIMER_O_ICR)=TIMER_ICR_TATOCINT;
 	static float LastError_POS = 0;
 	static float LastControl_POS = 0;
-	static float Kp_POS = 0.05;
+	static float Kp_POS = 0.1;
 	static float Kd_POS = 0.005;
 	int8_t LeftControl = 0;
 	int8_t RightControl = 0;
