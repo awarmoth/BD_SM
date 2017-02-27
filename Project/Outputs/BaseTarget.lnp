@@ -10,6 +10,8 @@
 ".\outputs\checkinsm.o"
 ".\outputs\constructingsm.o"
 ".\outputs\drivingalongtapesm.o"
+".\outputs\admulti.o"
+".\outputs\pwm_module.o"
 "C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib"
 ".\outputs\startup_rvmdk.o"
 ".\outputs\es_checkevents.o"

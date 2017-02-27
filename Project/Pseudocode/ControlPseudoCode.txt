@@ -1,0 +1,32 @@
+void Controller_ISR(void)
+{
+	//clear the source of the interrupt
+	//if desired control strategy is velocity control
+		//error is command minus RPM
+		//control is u[k]=(Kp+KiT/2)e[k]-(KiT/2-Kp)e[k-1]+u[k-1]
+		//update previous errors and controls
+		//if control is greater than nominal
+			//control equals nominal
+			//update last control as nominal
+		//write control values
+	//else if desired control strategy is position control
+		//read right sensor value
+		//read left sensor value
+		//error is the difference between the command and (Left - Right) (error is positive for rightward drift)
+		//control is u[k]=(Kp+2Kd/T+TKi/2)*e[k]+(TKi-4Kd/T)e[k-1]+(2Kd/T+TKi/2-Kp)e[k-2]+u[k-2]
+		//update previous errors and controls
+		//if control is positive, want L-R to increase: slow L
+			//left control is the nominal - control
+			//right control is the nominal
+			//if the left control is < 0
+				//left control is 0
+				//update last control as nominal value
+		//else if control is negative, want L-R to decrease: slow R
+			//left control is the nominal
+			//right control is the nominal + control
+			//if the right control is < 0
+				//right control is 0
+				//update last control as the nominal*-1
+		//write control values
+			
+}

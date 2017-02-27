@@ -191,6 +191,11 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_GOAL_READY\r\n");						
 							PostMasterSM(ThisEvent);
 							break;
+						case 'F':
+							ThisEvent.EventType = ES_DRIVE_ALONG_TAPE;
+							printf("ES_DRIVE_ALONG_TAPE\r\n");
+							PostMasterSM(ThisEvent);
+
         }
 
     }

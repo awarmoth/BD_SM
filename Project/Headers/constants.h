@@ -3,7 +3,7 @@
 
  ****************************************************************************/
  #define CheckOff3 1
- #define SM_TEST 0
+ #define SM_TEST 1
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000
  
@@ -68,3 +68,12 @@
  #define GOAL_ONE 1
  #define GOAL_TWO 2
  #define GOAL_THREE 3
+ 
+ // Timing
+ #define ONE_SHOT_TIMEOUT 2000000
+ 
+ // Magnetic sensors
+ #define RUN_AVERAGE_LENGTH 10
+ #define TICKS_PER_USEC 40
+ #define MAX_ALLOWABLE_PER TICKS_PER_USEC*1361
+ #define MIN_ALLOWABLE_PER TICKS_PER_USEC*472

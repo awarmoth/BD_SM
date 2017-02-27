@@ -1,9 +1,11 @@
 #include "MasterHSM.h"
+#include "ConstructingSM.h"
 #include "CheckInSM.h"
 #include "LOC_HSM.h"
 #include "ByteTransferSM.h"
 
 #include "constants.h"
+#include "termio.h"
 
 // module level variables: 
  static CheckInState_t CurrentState;
@@ -11,7 +13,6 @@
  static uint8_t ReportStatus;
  static uint8_t BadResponseCounter = 0;
  static uint8_t Byte2Write;
- static uint32_t Period;
 
  #define MAX_BAD_RESPONSES 3 
  #define RESPONSE_NOT_READY 0
@@ -304,7 +305,7 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 	if ((ThisEvent.EventType == ES_ENTRY) ||(ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Period = getPeriod // ISR is constantly updating
-		//Period = getPeriod();
+		Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);
@@ -372,7 +373,7 @@ ES_Event DuringReporting_2(ES_Event ThisEvent)
 	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Period = getPeriod // ISR is constantly updating
-		// Period = getPeriod();
+		Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);
@@ -417,6 +418,71 @@ ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 // End DuringWaitForResponse_2
 
 uint8_t getPeriodCode(uint32_t Period) {
-	return 0;
+//	If Period is less than or equal to 1361 us and greater than 1305
+	if(Period <= 1361*TICKS_PER_USEC && Period > 1305*TICKS_PER_USEC){
+//		Return 0x00
+	return 0x00;
+//	Elseif Period is less than or equal to 1305 and greater than 1249
+	}else if(Period <= 1305*TICKS_PER_USEC && Period > 1249*TICKS_PER_USEC){
+//		Return 0x01
+	return 0x01;
+//	Elseif rPeriod is less than or equal to 1249 and greater than 1194
+	}else if(Period <= 1249*TICKS_PER_USEC && Period > 1194*TICKS_PER_USEC){
+//		Return 0x02
+	return 0x02;
+//	Elseif Period is less than or equal to 1194 and greater than 1138
+	}else if(Period <= 1194*TICKS_PER_USEC && Period > 1138*TICKS_PER_USEC){
+//		Return 0x03
+	return 0x03;
+//	Elseif Period is less than or equal to 1138 and greater than 1083
+	}else if(Period <= 1138*TICKS_PER_USEC && Period > 1083*TICKS_PER_USEC){
+//		Return 0x04
+	return 0x04;
+//	Elseif Period is less than or equal to 1083 and greater than 1027
+	}else if(Period <= 1083*TICKS_PER_USEC && Period > 1027*TICKS_PER_USEC){
+//		Return 0x05
+	return 0x05;
+//	Elseif Period is less than or equal to 1027 and greater than 972
+	}else if(Period <= 1027*TICKS_PER_USEC && Period > 972*TICKS_PER_USEC){
+//		Return 0x06
+	return 0x06;
+//	Elseif Period is less than or equal to 972 and greater than 916
+	}else if(Period <= 972*TICKS_PER_USEC && Period > 916*TICKS_PER_USEC){
+//		Return 0x07
+	return 0x07;
+//	Elseif Period is less than or equal to 916 and greater than 861
+	}else if(Period <= 916*TICKS_PER_USEC && Period > 861*TICKS_PER_USEC){
+//		Return 0x08
+	return 0x09;
+//	Elseif Period is less than or equal to 861 and greater than 805
+	}else if(Period <= 861*TICKS_PER_USEC && Period > 805*TICKS_PER_USEC){
+//		Return 0x09
+		return 0x09;
+//	Elseif Period is less than or equal to 805 and greater than 750
+	}else if(Period <= 805*TICKS_PER_USEC && Period > 750*TICKS_PER_USEC){
+//		Return 0x0A
+		return 0x0A;
+//	Elseif Period is less than or equal to 750 and greater than 694
+	}else if(Period <= 750*TICKS_PER_USEC && Period > 694*TICKS_PER_USEC){
+//		Return 0x0B
+		return 0x0B;
+//	Elseif Period is less than or equal to 694 and greater than 639
+	}else if(Period <= 694*TICKS_PER_USEC && Period > 639*TICKS_PER_USEC){
+//		Return 0x0C
+		return 0x0C;
+//	Elseif Period is less than or equal to 639 and greater than 583
+	}else if(Period <= 639*TICKS_PER_USEC && Period > 583*TICKS_PER_USEC){
+//		Return 0x0D
+		return 0x0D;
+//	Elseif Period is less than or equal to 583 and greater than 528
+	}else if(Period <= 583*TICKS_PER_USEC && Period > 528*TICKS_PER_USEC){
+//		Return 0x0E
+		return 0x0E;
+//	Else Period is less than or equal to 528 and greater than 472
+	}else{
+//		Return 0x0F
+		printf("yay I think we found the frequency\r\n");
+		return 0x0F;
+//	Endif
 }
-
+}

@@ -443,11 +443,6 @@
               <FilePath>.\Source\hardware.c</FilePath>
             </File>
             <File>
-              <FileName>ConstructionSM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\ConstructionSM.c</FilePath>
-            </File>
-            <File>
               <FileName>SPI_Module.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\SPI_Module.c</FilePath>
@@ -456,6 +451,21 @@
               <FileName>ByteTransferSM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ByteTransferSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>CheckInSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\CheckInSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>ConstructingSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ConstructingSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>DrivingAlongTapeSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\DrivingAlongTapeSM.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -583,11 +593,6 @@
               <FilePath>.\Headers\hardware.h</FilePath>
             </File>
             <File>
-              <FileName>ConstructionSM.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ConstructionSM.h</FilePath>
-            </File>
-            <File>
               <FileName>ByteTransferSM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ByteTransferSM.h</FilePath>
@@ -596,6 +601,16 @@
               <FileName>SPI_Module.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\SPI_Module.h</FilePath>
+            </File>
+            <File>
+              <FileName>ConstructingSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ConstructingSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>CheckInSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\CheckInSM.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1221,11 +1236,6 @@
               <FilePath>.\Source\hardware.c</FilePath>
             </File>
             <File>
-              <FileName>ConstructionSM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\ConstructionSM.c</FilePath>
-            </File>
-            <File>
               <FileName>SPI_Module.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\SPI_Module.c</FilePath>
@@ -1234,6 +1244,21 @@
               <FileName>ByteTransferSM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ByteTransferSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>CheckInSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\CheckInSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>ConstructingSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ConstructingSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>DrivingAlongTapeSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\DrivingAlongTapeSM.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1361,11 +1386,6 @@
               <FilePath>.\Headers\hardware.h</FilePath>
             </File>
             <File>
-              <FileName>ConstructionSM.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ConstructionSM.h</FilePath>
-            </File>
-            <File>
               <FileName>ByteTransferSM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ByteTransferSM.h</FilePath>
@@ -1374,6 +1394,16 @@
               <FileName>SPI_Module.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\SPI_Module.h</FilePath>
+            </File>
+            <File>
+              <FileName>ConstructingSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ConstructingSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>CheckInSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\CheckInSM.h</FilePath>
             </File>
           </Files>
         </Group>

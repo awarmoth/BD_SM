@@ -9,6 +9,8 @@
 .\outputs\masterhsm.o: .\Headers\ByteTransferSM.h
 .\outputs\masterhsm.o: .\Headers\LOC_HSM.h
 .\outputs\masterhsm.o: .\Headers\ConstructingSM.h
+.\outputs\masterhsm.o: .\Headers\DrivingAlongTapeSM.h
+.\outputs\masterhsm.o: .\Headers\hardware.h
 .\outputs\masterhsm.o: .\Headers\constants.h
 .\outputs\masterhsm.o: .\Headers\termio.h
 .\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdio.h

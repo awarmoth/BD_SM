@@ -3,6 +3,8 @@
 #include "ByteTransferSM.h"
 #include "LOC_HSM.h"
 #include "ConstructingSM.h"
+#include "DrivingAlongTapeSM.h"
+#include "hardware.h"
 
 #include "constants.h"
 
@@ -63,6 +65,7 @@ bool InitMasterSM(uint8_t Priority)
 	ThisEvent.EventType = ES_NO_EVENT;
 	// Initialize the SPI module
 	if (!SM_TEST) InitSPI_Comm();
+	InitializePins();
 	// Call StartMasterSM with ThisEvent as the passed parameter
 	StartMasterSM(ThisEvent);
 	// Return true
@@ -84,6 +87,7 @@ void StartMasterSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to Waiting2Start
 	CurrentState = Waiting2Start;
+	if (SM_TEST) CurrentState=Constructing;
 	// Call RunMasterSM with CurrentEvent as the passed parameter 
 	// to initialize lower level SMs
 	RunMasterSM(CurrentEvent);
@@ -308,8 +312,12 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		// Start one shot timer
+		HWREG(WTIMER3_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+		
 		// Start ConstructingSM
 		StartConstructingSM(ThisEvent);
+		
 		// Start GAME_TIMER
 		if (!CheckOff3){
 			ES_Timer_InitTimer(GAME_TIMER,GAME_TIMEOUT);

@@ -1,6 +1,4 @@
-/****************************************************************************
- Header file for keeping track of all hardware initialization
+#include "ES_Configure.h" /* gets us event definitions */
+#include "ES_Types.h"     /* gets bool type for returns */
 
- ****************************************************************************/
- 
- void InitializePins(void);
+void InitializePins(void);

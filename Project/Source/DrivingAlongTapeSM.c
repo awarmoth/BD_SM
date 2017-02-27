@@ -68,6 +68,8 @@
 #include "DrivingAlongTapeSM.h"
 #include "ByteTransferSM.h"
 #include "constants.h"
+#include "PWM_Module.h"
+#include "ADMulti.h"
 
 /* include header files for this state machine as well as any machines at the
    next lower level in the hierarchy that are sub-machines to this machine
@@ -85,8 +87,14 @@
 #define FORWARD 1
 #define REVERSE -1
 #define TICKS_PER_MS 40000
-#define CONTROLLER_TIME_US 2000
-#define TICKS_PER_US 40
+
+//define controller constants
+#define LEFT_MAX_DUTY 100
+#define RIGHT_MAX_DUTY 100
+#define COMMAND_DIFF 0
+#define CONTROLLER_OFF 0
+#define VELOCITY_CONTROLLER 1
+#define POSITION_CONTROLLER 2
 
 
 /*---------------------------- Module Functions ---------------------------*/
@@ -104,6 +112,7 @@ static DrivingState_t CurrentState;
 static uint8_t LastStation = INITIAL_STATION;
 static uint8_t TargetStation = 1;
 static int8_t Direction;
+static uint8_t Controller = CONTROLLER_OFF;
 
 
 /*------------------------------ Module Code ------------------------------*/
@@ -390,6 +399,7 @@ static ES_Event DuringWaiting(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		Controller = CONTROLLER_OFF;
 		// Set LastStation to getLastStation
 		// //Probably want to initialize module variables here as well
 	}
@@ -421,7 +431,8 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		//do nothing
+		// Turn on Controller
+		Controller = POSITION_CONTROLLER;
 	}
 	// EndIf
 	
@@ -453,7 +464,8 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		//do nothing
+			// Turn on Controller
+		Controller = POSITION_CONTROLLER;
 	}
 	// EndIf
 	
@@ -511,29 +523,82 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 //	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
 //}
 
-static void Init_Controller(void)
+void Controller_ISR(void)
 {
-	//enable clock to the timer (use timer 1)
-	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R1;
-	while ((HWREG(SYSCTL_PRWTIMER)&SYSCTL_PRWTIMER_R1)!=SYSCTL_PRWTIMER_R1) {}
-	//disable the timer (A)
-	HWREG(WTIMER1_BASE+TIMER_O_CTL)&=~(TIMER_CTL_TAEN);
-	//set 32 bit wide mode
-	HWREG(WTIMER1_BASE+TIMER_O_CFG)=TIMER_CFG_16_BIT;
-	//set up periodic mode
-	HWREG(WTIMER1_BASE+TIMER_O_TAMR)=(HWREG(WTIMER1_BASE+TIMER_O_TAMR)&~TIMER_TAMR_TAMR_M)|TIMER_TAMR_TAMR_PERIOD;
-	//set timeout to 2 ms
-	HWREG(WTIMER1_BASE+TIMER_O_TAILR)=(uint32_t)CONTROLLER_TIME_US*TICKS_PER_US;
-	//enable local interupt
-	HWREG(WTIMER1_BASE+TIMER_O_IMR)|=(TIMER_IMR_TATOIM);
-	//enable NVIC interupt
-	HWREG(NVIC_EN3)|=(BIT0HI);
-	//globally enable interrupts
-	__enable_irq();
-	//set priority to 6 (anything more important than the other ISRs)
-	HWREG(NVIC_PRI24)=(HWREG(NVIC_PRI24)&~NVIC_PRI24_INTA_M)|(0x6<<NVIC_PRI24_INTA_S);
-	//enable the timer
-	HWREG(WTIMER1_BASE+TIMER_O_CTL)|=(TIMER_CTL_TAEN|TIMER_CTL_TASTALL);
-	
+	//clear interrupt
+	HWREG(WTIMER1_BASE+TIMER_O_ICR)=TIMER_ICR_TATOCINT;
+	static float LastError_POS = 0;
+	static float LastControl_POS = 0;
+	static float Kp_POS = 0.05;
+	static float Kd_POS = 0.005;
+	int8_t LeftControl = 0;
+	int8_t RightControl = 0;
+	//write requested commands
+	//if desired control is no controller
+	if (Controller == CONTROLLER_OFF)
+	{
+		//stop motors
+		SetDutyA(0);
+		SetDutyB(0);
+	}
+	//if desired control strategy is velocity control
+		//error is command minus RPM
+		//control is u[k]=(Kp+KiT/2)e[k]-(KiT/2-Kp)e[k-1]+u[k-1]
+		//update previous errors and controls
+		//if control is greater than nominal
+			//control equals nominal
+			//update last control as nominal
+	//write control to motors
+	//else if desired control strategy is position control
+	else if (Controller == POSITION_CONTROLLER)
+	{
+		//read sensor values
+		uint32_t MotorVals[2];
+		ADC_MultiRead(MotorVals);
+		float RightVal = MotorVals[0];
+		float LeftVal = MotorVals[1];
+		//error is the difference between the command and (Left - Right) (error is positive for rightward drift)
+		float Error = COMMAND_DIFF - (LeftVal - RightVal);
+		//control is u[k]=(Kp+2Kd/T)*e[k]+(Kp-2Kd/T)e[k-1]-u[k-2]
+		float Control = (Kp_POS + Kd_POS)*Error + (Kp_POS - Kd_POS)*LastError_POS-LastControl_POS;
+		//if control is positive, want L-R to increase: slow L
+		if (Control > 0)
+		{
+			//left control is the nominal - control
+			LeftControl = LEFT_MAX_DUTY - Control;
+			//right control is the nominal
+			RightControl = RIGHT_MAX_DUTY;
+			//if the left control is < 0
+			if (LeftControl<0)
+			{
+				//left control is 0
+				LeftControl = 0;
+				//update control as nominal value
+				Control = LEFT_MAX_DUTY;
+			}
+		}
+		//else if control is negative, want L-R to decrease: slow R
+		else if (Control < 0)
+		{
+			//left control is the nominal
+			LeftControl = LEFT_MAX_DUTY;
+			//right control is the nominal + control
+			RightControl = RIGHT_MAX_DUTY + Control;
+			//if the right control is < 0
+			if (RightControl < 0)
+			{
+				//right control is 0
+				RightControl = 0;
+				//update last control as the nominal*-1
+				Control = -1*RIGHT_MAX_DUTY;
+			}
+		}
+		//update previous errors and controls
+		LastControl_POS = Control;
+		LastError_POS = Error;
+		//write control values (A is Right, B is Left)
+		//printf("%d, %d\r\n", (uint16_t)RightVal, (uint16_t)LeftVal);
+		SetDutyA((uint8_t)RightControl);
+		SetDutyB((uint8_t)LeftControl);
+	}
 }
-

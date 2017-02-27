@@ -34,3 +34,5 @@
 .\outputs\drivingalongtapesm.o: .\Headers\DrivingAlongTapeSM.h
 .\outputs\drivingalongtapesm.o: .\Headers\ByteTransferSM.h
 .\outputs\drivingalongtapesm.o: .\Headers\constants.h
+.\outputs\drivingalongtapesm.o: .\Headers\PWM_Module.h
+.\outputs\drivingalongtapesm.o: .\Headers\ADMulti.h

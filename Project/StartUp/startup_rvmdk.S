@@ -81,6 +81,9 @@ __heap_limit
         EXTERN  SysTickIntHandler
 ;        EXTERN  UARTStdioIntHandler
 		EXTERN	EOT_Response_ISR
+		EXTERN	Controller_ISR
+		EXTERN	HallEffect_ISR
+		EXTERN	HallEffectOneShotTimer_ISR
 
 ;******************************************************************************
 ;
@@ -201,11 +204,11 @@ __Vectors
         DCD     IntDefaultHandler           ; Timer 5 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 0 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 0 subtimer B
-        DCD     IntDefaultHandler           ; Wide Timer 1 subtimer A
+        DCD     Controller_ISR	            ; Wide Timer 1 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 1 subtimer B
-        DCD     IntDefaultHandler           ; Wide Timer 2 subtimer A
+        DCD     HallEffect_ISR				; Wide Timer 2 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 2 subtimer B
-        DCD     IntDefaultHandler           ; Wide Timer 3 subtimer A
+        DCD     HallEffectOneShotTimer_ISR  ; Wide Timer 3 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 3 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer B

@@ -51,12 +51,15 @@ uint8_t TargetStation;
 uint8_t LastStation = START;
 uint8_t TargetGoal;
 uint8_t Score;
+uint32_t LastCapture, HallSensorPeriod;
+uint8_t HasLeftStage = true;
 bool GameTimeoutFlag = false;
 
 void StartConstructingSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to GettingTargetStation
 	CurrentState = GettingTargetStation;
+	if (SM_TEST) CurrentState = DrivingAlongTape;
 	// Run ConstructingSM with CurrentEvent
 	RunConstructingSM(CurrentEvent);
 }
@@ -525,4 +528,77 @@ void UpdateStatus( void )
 		TargetStation = getActiveStageGreen();
 		Score = getScoreGreen();
 	}
+}
+
+void HallEffect_ISR( void )
+{
+	//	Static local variable LastTen array initialized to ten zeros
+	static uint32_t LastTen[RUN_AVERAGE_LENGTH] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	
+	//	Static local variable 8 bit integer counter initialized to 0
+	static uint8_t counter = 0;
+	ES_Event PostEvent;
+	uint32_t ThisCapture, CurrentPeriod;
+		
+	// Clear source of interrupt
+	HWREG(WTIMER2_BASE+TIMER_O_ICR) = TIMER_ICR_CAECINT;
+	
+	// Restart the one shot timer
+	HWREG(WTIMER3_BASE+TIMER_O_TAV) = ONE_SHOT_TIMEOUT;
+	
+	// Clear last HallSensorPeriod
+	HallSensorPeriod = 0;
+	
+	//	Get captured value
+	//	Set CurrentPeriod to subtract LastCapture from ThisCapture
+	ThisCapture = HWREG(WTIMER2_BASE+TIMER_O_TAR);
+	CurrentPeriod = ThisCapture - LastCapture;
+	
+	//	Update counter position in LastTen to CurrentPeriod
+	LastTen[counter] = CurrentPeriod;
+	
+	//	Set HallSensorPeriod to average of LastTen
+	for(int i = 0; i <10; i++){
+		HallSensorPeriod += LastTen[i];
+	}
+	HallSensorPeriod = HallSensorPeriod/RUN_AVERAGE_LENGTH;
+	
+	//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
+	//	and HasLeftStage is true
+	if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage){
+	//	Post ES_StationDetected Event
+		PostEvent.EventType = ES_STATION_DETECTED;
+		PostMasterSM(PostEvent);
+		printf("Good Frequency\r\n");
+		
+	//	HasLeftStage is false
+		HasLeftStage = false;
+	} else {
+		printf("Bad Frequency\r\n");
+	}
+	//	If counter equals 9
+	if(counter == 9){
+		counter = 0;
+	} else {
+		counter++;
+	}
+}
+
+void HallEffectOneShotTimer_ISR( void )
+{	
+	// Clear source of interrupt
+	HWREG(WTIMER3_BASE+TIMER_O_ICR) = TIMER_ICR_TATOCINT;
+	
+	// Restart the one shot timer
+	HWREG(WTIMER3_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+	
+	// Set HasLeftStage to true
+	HasLeftStage = true;
+	
+	printf("Left the current stage\r\n");
+}
+
+uint32_t getPeriod( void )
+{
+	return HallSensorPeriod;
 }
