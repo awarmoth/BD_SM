@@ -120,35 +120,35 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 						case '2' :
 							ThisEvent.EventType = ES_EOT;
 							ThisEvent.EventParam = 0;
-							//PostLOC_SM(ThisEvent);
+							PostLOC_SM(ThisEvent);
 						
 							break;
 						
 						case '3' :
 							ThisEvent.EventType = ES_EOT;
 							ThisEvent.EventParam = 1;
-							//PostLOC_SM(ThisEvent);
+							PostLOC_SM(ThisEvent);
 							
 							break;
 						
 						case '4' :
 							ThisEvent.EventType = ES_EOT;
 							ThisEvent.EventParam = 2;
-							//PostLOC_SM(ThisEvent);
+							PostLOC_SM(ThisEvent);
 							
 							break;
 						
 						case '5' :
 							ThisEvent.EventType = ES_EOT;
 							ThisEvent.EventParam = 3;
-							//PostLOC_SM(ThisEvent);
+							PostLOC_SM(ThisEvent);
 						
 							break;
 						
 						case '6' :
 							ThisEvent.EventType = ES_EOT;
 							ThisEvent.EventParam = 4;
-							//PostLOC_SM(ThisEvent);
+							PostLOC_SM(ThisEvent);
 						
 							break;
 						
@@ -192,8 +192,8 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							PostMasterSM(ThisEvent);
 							break;
 						case 'F':
-							ThisEvent.EventType = ES_DRIVE_ALONG_TAPE;
-							printf("ES_DRIVE_ALONG_TAPE\r\n");
+							ThisEvent.EventType = ES_STATION_DETECTED;
+							printf("ES_STATION_DETECTED\r\n");
 							PostMasterSM(ThisEvent);
 
         }

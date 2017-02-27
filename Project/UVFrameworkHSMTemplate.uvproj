@@ -493,11 +493,6 @@
           <GroupName>Headers</GroupName>
           <Files>
             <File>
-              <FileName>uartstdio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\uartstdio.h</FilePath>
-            </File>
-            <File>
               <FileName>Bin_Const.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\Bin_Const.h</FilePath>
@@ -511,6 +506,11 @@
               <FileName>ES_CheckEvents.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ES_CheckEvents.h</FilePath>
+            </File>
+            <File>
+              <FileName>uartstdio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\uartstdio.h</FilePath>
             </File>
             <File>
               <FileName>ES_Configure.h</FileName>
@@ -1277,11 +1277,6 @@
           <GroupName>Headers</GroupName>
           <Files>
             <File>
-              <FileName>uartstdio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\uartstdio.h</FilePath>
-            </File>
-            <File>
               <FileName>Bin_Const.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\Bin_Const.h</FilePath>
@@ -1295,6 +1290,11 @@
               <FileName>ES_CheckEvents.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ES_CheckEvents.h</FilePath>
+            </File>
+            <File>
+              <FileName>uartstdio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\uartstdio.h</FilePath>
             </File>
             <File>
               <FileName>ES_Configure.h</FileName>

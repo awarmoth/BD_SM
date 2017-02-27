@@ -78,24 +78,7 @@
 
 
 /*----------------------------- Module Defines ----------------------------*/
-// define constants for the states for this machine
-// and any other local defines
-#define INITIAL_STATION 4 //dummy station for when the robot is at the start location
-#define STAGING_AREA_1 1
-#define STAGING_AREA_2 2
-#define STAGING_AREA_3 3
-#define SUPPLY_DEPOT 0
-#define FORWARD 1
-#define REVERSE -1
-#define TICKS_PER_MS 40000
 
-//define controller constants
-#define LEFT_MAX_DUTY 40
-#define RIGHT_MAX_DUTY 40
-#define COMMAND_DIFF 0
-#define CONTROLLER_OFF 0
-#define VELOCITY_CONTROLLER 1
-#define POSITION_CONTROLLER 2
 
 
 /*---------------------------- Module Functions ---------------------------*/
@@ -111,7 +94,7 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent);
 // everybody needs a state variable, you may need others as well
 static DrivingState_t CurrentState;
 static uint8_t LastStation = INITIAL_STATION;
-static uint8_t TargetStation = 1;
+static uint8_t TargetStation;
 static int8_t Direction;
 static uint8_t Controller = CONTROLLER_OFF;
 
@@ -157,8 +140,6 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to CurrentEvent assuming no consuming of event
 	ReturnEvent = CurrentEvent;
-	if (SM_TEST) CurrentState = Driving2Station;
-	if (SM_TEST) Controller = POSITION_CONTROLLER;
 	
 	switch(CurrentState)
 	{
@@ -166,9 +147,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 		case Waiting:
 		{
 			if(SM_TEST) printf("DrivingAlongTape: Waiting\r\n");
-			if(SM_TEST) TargetStation = 3;
-			if (SM_TEST) LastStation = 4;
-			// Call DuringWaiting and set CurrentEvent to its return value
+			// Call DuringWaiting a nd set CurrentEvent to its return value
 			CurrentEvent = DuringWaiting(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
 			if(CurrentEvent.EventType != ES_NO_EVENT)
@@ -176,7 +155,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_DriveAlongTape
 				if(CurrentEvent.EventType == ES_DRIVE_ALONG_TAPE)
 				{
-					//TargetStation = CurrentEvent.EventParam;
+					TargetStation = CurrentEvent.EventParam;
 					// If TargetStation is LastStation
 					if(TargetStation == LastStation)
 					{
@@ -263,7 +242,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_StationDetected
 				if(CurrentEvent.EventType == ES_STATION_DETECTED)
 				{
-					printf("station detected");
+					if (SM_TEST) printf("Last: %i, Target:%i\r\n",LastStation, TargetStation);
 					// If LastStation - Direction is TargetStation
 					if((LastStation - Direction) == TargetStation)
 					{
@@ -271,10 +250,13 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 						MakeTransition = true;
 						
 						/*******Disable wire following control law********/
+						Controller = CONTROLLER_OFF;
 						/*****************Stop driving******************/
+						SetDutyA(0);
+						SetDutyA(0);
 						
 						// Set ReturnEvent to ES_ArrivedAtStation
-						if (!SM_TEST) ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
+						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
 					}
 					// Endif
 			
@@ -319,7 +301,10 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					MakeTransition = true;
 					
 					/*******Disable wire following control law********/
+					Controller = CONTROLLER_OFF;
 					/*****************Stop driving******************/
+					SetDutyA(0);
+					SetDutyA(0);
 					
 					// Set ReturnEvent to ES_ArrivedAtReload	
 					ReturnEvent.EventType = ES_ARRIVED_AT_RELOAD;
@@ -405,9 +390,8 @@ static ES_Event DuringWaiting(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		Controller = CONTROLLER_OFF;
 		// Set LastStation to getLastStation
-		// //Probably want to initialize module variables here as well
+		// Probably want to initialize module variables here as well
 	}
 	// EndIf
 	
@@ -447,7 +431,6 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	{
 		// Set LastStation to (LastStation - Direction)
 		LastStation = (LastStation - Direction); //update LastStation to be the station we just passed
-		Controller = CONTROLLER_OFF;
 	}
 	// EndIf
 	

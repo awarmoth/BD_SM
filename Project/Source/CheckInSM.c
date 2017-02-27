@@ -38,7 +38,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 	// local variable MakeTransition
 	static bool MakeTransition;
 	// local variable NextState
-	static CheckInState_t NextState;
+	CheckInState_t NextState = CurrentState;
 	// local variable EntryEvent
 	static ES_Event EntryEvent;
 	// local variable ReturnEvent
@@ -46,17 +46,15 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 
 	// Initialize MakeTransition to false
 	MakeTransition = false;
-	// Initialize NextState to CurrentState
-	NextState = CurrentState;
 	// Initialize EntryEvent to ES_ENTRY
 	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to CurrentEvent to assume no consumption of event
 	ReturnEvent = CurrentEvent;
 	
 	switch (CurrentState) {
-
 		// If CurrentState is Reporting_1
-		case(Reporting_1):	
+		case(Reporting_1):{
+			if(SM_TEST) printf("CheckIn: Reporting_1\r\n");
 			// 	Run DuringReporting_1 and store the output in CurrentEvent
 			CurrentEvent = DuringReporting_1(CurrentEvent);
 				
@@ -83,9 +81,13 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 
 		// End Reporting_1 block
 		break;
+		}
 		
 		// If CurrentState is WaitForResponse_1
-		case(WaitForResponse_1):
+		case(WaitForResponse_1):{
+			if(SM_TEST) printf("CheckIn: WaitingForResponse_1\r\n");
+			if (SM_TEST) ResponseReady = true;
+			if (SM_TEST) ReportStatus = ACK;
 			// Run DuringWaitForResponse_1 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_1(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -94,13 +96,12 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
-					if (!SM_TEST) {
 					// Get response bytes from LOC
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
-					}
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
+					ReportStatus = getReportStatus();
 					// If ResponseReady = not ready
 					if (ResponseReady == RESPONSE_NOT_READY)
 					{
@@ -161,10 +162,11 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			// EndIf
 			
 		// End WaitForResponse_1 block
-		break;
+		break;}
 
 		// If CurrentState is Reporting_2
-		case ( Reporting_2 ):		
+		case ( Reporting_2): {
+			if(SM_TEST) printf("CheckIn: Reporting_2\r\n");
 			// Run DuringReporting_2 and store the output in CurrentEvent
 			CurrentEvent = DuringReporting_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -189,10 +191,13 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			// EndIf
 			
 		// End Reporting_2 block
-		break;
+		break;}
 		
 		// If CurrentState is WaitForResponse_2
-		case (WaitForResponse_2):
+		case (WaitForResponse_2):{
+			if(SM_TEST) printf("CheckIn: WaitForResponse_2\r\n");
+			if (SM_TEST) ResponseReady = true;
+			if (SM_TEST) ReportStatus = ACK;
 			// Run DuringWaitForResponse_2 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -201,13 +206,14 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
-					if (!SM_TEST) {
 					// Get response bytes from LOC
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
-					}
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
+					// Set ReportStatus to getReportStatus
+					ReportStatus = getReportStatus();
+
 					// If ResponseReady = not ready
 					if (ResponseReady == RESPONSE_NOT_READY)
 					{
@@ -225,8 +231,6 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Else
 					else
 					{
-						// Set ReportStatus to getReportStatus
-						ReportStatus = getReportStatus();
 						// If ReportStatus = ACK
 						if (ReportStatus == ACK)
 						{
@@ -266,7 +270,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 			// 	EndIf
 				
 		// End WaitForResponse_2 block
-		break;
+		break;}
 	}
 	
 	// If MakeTransition is true
@@ -274,12 +278,14 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 	{
 		// Set CurrentEvent to ES_EXIT
 		CurrentEvent.EventType = ES_EXIT;
-		// Run CheckInSM with CurrentEvent to allow lower level SMs to exit
+		// Run CheckInSM with CurrentEvent
 		RunCheckInSM(CurrentEvent);
 		// Set CurrentState to NextState
 		CurrentState = NextState;
-		// Run CheckInSM with EntryEvent to allow lower level SMs to enter
+		// Run CheckInSM with EntryEvent
 		RunCheckInSM(EntryEvent);
+//		if (NextState == WaitForResponse_1) printf("wfr\r\n");
+//		else printf("not wfr\r\n");
 	}
 	// EndIf
 	
@@ -302,7 +308,7 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 	ReturnEvent = ThisEvent;
 	
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-	if ((ThisEvent.EventType == ES_ENTRY) ||(ThisEvent.EventType == ES_ENTRY_HISTORY))
+	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Period = getPeriod // ISR is constantly updating
 		Period = getPeriod();
@@ -310,16 +316,12 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
-		if (!SM_TEST) {
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
 		PostLOC_SM(Event2Post);
-		}
 		// Reinitialize variables
 		BadResponseCounter = 0;
 		ResponseReady = RESPONSE_NOT_READY;
-
-
 	}
 	// EndIf
 	
@@ -347,7 +349,7 @@ ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (!SM_TEST) PostLOC_SM(Event2Post);
+		PostLOC_SM(Event2Post);
 	}
 	// EndIf
 
@@ -380,7 +382,7 @@ ES_Event DuringReporting_2(ES_Event ThisEvent)
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (!SM_TEST) PostLOC_SM(Event2Post);
+		PostLOC_SM(Event2Post);
 	}
 	// EndIf
 	
@@ -408,7 +410,7 @@ ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (!SM_TEST) PostLOC_SM(Event2Post);
+		PostLOC_SM(Event2Post);
 	}
 	// EndIf
 
@@ -485,7 +487,11 @@ uint8_t getPeriodCode(uint32_t Period) {
 		return 0x0F;
 //	Endif
 	} else {
-		printf("Something weird");
+		printf("Wrong frequency: only should get here in SM testing");
 		return 0xFF;
 	}
+}
+
+void ClearBadResponseCounter(void) {
+	BadResponseCounter = 0;
 }

@@ -62,6 +62,8 @@ void StartConstructingSM(ES_Event CurrentEvent)
 	CurrentState = GettingTargetStation;
 	// Run ConstructingSM with CurrentEvent
 	RunConstructingSM(CurrentEvent);
+	TeamColor = getTeamColor();
+	if(SM_TEST) TeamColor = TEAM_COLOR;
 }
 // End StartConstructingSM
 
@@ -87,7 +89,6 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to ES_NO_EVENT
 	ReturnEvent.EventType = ES_NO_EVENT;
-	if (SM_TEST) CurrentState = DrivingAlongTape;
 	
 	switch (CurrentState)
 	{
@@ -95,12 +96,6 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 		case(GettingTargetStation):
 			if (SM_TEST) printf("Constructing: GettingTargetStation\r\n");
 			// Run DuringGettingTargetStation and store the output in CurrentEvent
-		if (CurrentEvent.EventType == ES_TIMEOUT && CurrentEvent.EventParam == PRINT_TIMER){
-				//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
-				printf("Averaged Period: %i", HallSensorPeriod);
-				ES_Timer_InitTimer(PRINT_TIMER, 1000);
-			}
-		
 			CurrentEvent = DuringGettingTargetStation(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
 			if (CurrentEvent.EventType != ES_NO_EVENT)
@@ -108,7 +103,6 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
-					if (!SM_TEST) {
 					// Get response bytes from LOC
 					// Set SB1_byte to getSB1_Byte
 					SetSB1_Byte(getSB1_Byte());
@@ -118,7 +112,12 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					SetSB3_Byte(getSB3_Byte());
 					// Update status variables
 					UpdateStatus();
+					if (TeamColor == GREEN) {
+						TargetStation = getActiveStageGreen();
+					} else {
+						TargetStation = getActiveStageRed();
 					}
+					if (SM_TEST) TargetStation = STAGING_AREA_2;
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to DrivingAlongTape
@@ -148,11 +147,6 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 			// Run DuringDrivingAlongTape and store the output in CurrentEvent
 			CurrentEvent = DuringDrivingAlongTape(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
-			if (CurrentEvent.EventType == ES_TIMEOUT && CurrentEvent.EventParam == PRINT_TIMER){
-				//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
-				printf("Averaged Period: %i", HallSensorPeriod);
-				ES_Timer_InitTimer(PRINT_TIMER, 1000);
-			}
 			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_ARRIVED_AT_STATION
@@ -364,14 +358,12 @@ ES_Event DuringGettingTargetStation(ES_Event ThisEvent)
 	if ((ThisEvent.EventType == ES_ENTRY) ||
 		(ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		if(!SM_TEST){
 		// Set Event2Post type to ES_Command
 		Event2Post.EventType = ES_COMMAND;
 		// Set Event2Post param to STATUS_COMMAND
 		Event2Post.EventParam = STATUS_COMMAND;
 		// Post Event2Post to LOC_SM
 		PostLOC_SM(Event2Post);
-		}
 	}
 	// EndIf
 	
@@ -439,6 +431,7 @@ ES_Event DuringCheckIn(ES_Event ThisEvent)
 	{
 		// Run CheckInSM with ThisEvent
 		RunCheckInSM(ThisEvent);
+		ClearBadResponseCounter();
 	// Else
 	}
 	else

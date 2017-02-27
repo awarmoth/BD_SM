@@ -42,6 +42,7 @@
 #include "ByteTransferSM.h"
 #include "SPI_Module.h"
 #include "MasterHSM.h"
+#include "constants.h"
 
 /*----------------------------- Module Defines ----------------------------*/
 
@@ -79,6 +80,7 @@ static uint8_t MyPriority;
 
 bool InitLOC_SM(uint8_t Priority)
 {
+	printf("here");
 		TERMIO_Init();
 	//local variable ThisEvent
 		ES_Event ThisEvent;
@@ -89,7 +91,7 @@ bool InitLOC_SM(uint8_t Priority)
 		ThisEvent.EventType = ES_ENTRY;
 	
 	//Initialize the SPI module
-/***InitSPI_Comm();***************/
+//		InitSPI_Comm();
 	
 	//Call StartLOC_SM with ThisEvent as the passed parameter
 		StartLOC_SM(ThisEvent);
@@ -166,7 +168,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 			
 		//If CurrentState is LOC_Waiting
 			case LOC_Waiting:
-	
+				if (SM_TEST) printf("LOC_Waiting");
 				//Run DuringWaiting and store the output in CurrentEvent
 				CurrentEvent = DuringLOC_Waiting(CurrentEvent);
 			
@@ -199,7 +201,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 				
 		//If CurrentState is LOC_Transmitting
 			case LOC_Transmitting:
-		
+				if (SM_TEST) printf("LOC_Transmitting");
 			//Run DuringTransmitting and store the output in CurrentEvent
 				CurrentEvent = DuringLOC_Transmitting(CurrentEvent);
 			
@@ -211,7 +213,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 					{
 					//Post ES_LOC_Complete to the MasterSM
 						Event2Post.EventType = ES_LOC_COMPLETE;
-					// PostMasterSM(Event2Post);
+						PostMasterSM(Event2Post);
 					//Set MakeTransition to true
 						MakeTransition = true;
 					//Set NextState to Waiting

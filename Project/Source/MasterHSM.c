@@ -61,15 +61,14 @@ bool InitMasterSM(uint8_t Priority)
 	ES_Event ThisEvent;
 	// Initialize MyPriority to Priority
 	myPriority = Priority;
-	// Initialize ThisEvent to ES_NO_EVENT
-	ThisEvent.EventType = ES_NO_EVENT;
+	// Initialize ThisEvent to ES_ENTRY
+	ThisEvent.EventType = ES_ENTRY;
 	// Initialize the SPI module
-	if (!SM_TEST) InitSPI_Comm();
+	InitSPI_Comm();
 	InitializePins();
 	// Call StartMasterSM with ThisEvent as the passed parameter
 	StartMasterSM(ThisEvent);
 	// Return true
-	if (SM_TEST) GameState = GAME_STARTED;
 	return true;
 }
 // End InitMasterSM
@@ -87,7 +86,7 @@ void StartMasterSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to Waiting2Start
 	CurrentState = Waiting2Start;
-	if (SM_TEST) CurrentState=Constructing;
+	// if (SM_TEST) CurrentState=Constructing;
 	// Call RunMasterSM with CurrentEvent as the passed parameter 
 	// to initialize lower level SMs
 	RunMasterSM(CurrentEvent);
@@ -122,20 +121,20 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 		if (SM_TEST) printf("Master: Waiting2Start\r\n");
 		// Run DuringWaiting2Start and store the output in CurrentEvent
 			CurrentEvent = DuringWaiting2Start(CurrentEvent);
+			printf("curr event: %i",CurrentEvent.EventType);
 			// If CurrentEvent is not an ES_NO_EVENT
 			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
-					if (!SM_TEST) {
 					// Get response bytes from LOC
-						SB1_Byte = getSB1_Byte();
-						SB2_Byte = getSB2_Byte();
-						SB3_Byte = getSB3_Byte();
-						// Set GameState to getGameState
-						GameState = getGameState();
-					}
+					SB1_Byte = getSB1_Byte();
+					SB2_Byte = getSB2_Byte();
+					SB3_Byte = getSB3_Byte();
+					// Set GameState to getGameState
+					GameState = getGameState();
+					printf("GameState:%i",GameState);
 					// If GameState is WAITING_FOR_START
 					if (GameState == WAITING_FOR_START)
 					{	
@@ -148,7 +147,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 						// Set MakeTransition to true
 						MakeTransition = true;
 						// Set NextState to Constructing
-						NextState = Constructing;
+						if(!LOC_TEST) NextState = Constructing;
 					}
 					// EndIf
 				}
@@ -293,8 +292,10 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 		Event2Post.EventType = ES_COMMAND;
 		// Set Byte2Write to status byte
 		Byte2Write = STATUS_COMMAND;
+		Event2Post.EventParam = Byte2Write;
 		// Post Event2Post to LOC_HSM
 		PostLOC_SM(Event2Post);
+		printf("Posted to LOC");
 	}
 	// Return ReturnEvent
 	return ReturnEvent;
@@ -314,9 +315,7 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 	{
 		// Start one shot timer
 		HWREG(WTIMER3_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
-		
-		ES_Timer_InitTimer(PRINT_TIMER, 1000);
-		
+				
 		// Start ConstructingSM
 		StartConstructingSM(ThisEvent);
 		

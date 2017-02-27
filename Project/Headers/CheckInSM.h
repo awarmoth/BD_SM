@@ -18,6 +18,7 @@ ES_Event DuringWaitForResponse_1 ( ES_Event ThisEvent );
 ES_Event DuringReporting_2 ( ES_Event ThisEvent );
 ES_Event DuringWaitForResponse_2 ( ES_Event ThisEvent );
 uint8_t getPeriodCode(uint32_t Period);
+void ClearBadResponseCounter(void);
 
 #endif /*CheckInSM_H */
 

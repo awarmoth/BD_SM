@@ -4,6 +4,8 @@
  ****************************************************************************/
  #define CheckOff3 1
  #define SM_TEST 1
+ #define TEAM_COLOR GREEN
+ #define LOC_TEST 1
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000
  
@@ -78,4 +80,24 @@
  #define MAX_ALLOWABLE_PER (TICKS_PER_USEC*1361)
  #define MIN_ALLOWABLE_PER (TICKS_PER_USEC*472)
  
- #define CONTROLLER_OFF 0
+ // define constants for the states for this machine
+// and any other local defines
+#define INITIAL_STATION 4 //dummy station for when the robot is at the start location
+#define STAGING_AREA_1 1
+#define STAGING_AREA_2 2
+#define STAGING_AREA_3 3
+#define SUPPLY_DEPOT 0
+#define FORWARD 1
+#define REVERSE -1
+#define TICKS_PER_MS 40000
+
+//define controller constants
+#define LEFT_MAX_DUTY 40
+#define RIGHT_MAX_DUTY 40
+#define COMMAND_DIFF 0
+#define CONTROLLER_OFF 0
+#define VELOCITY_CONTROLLER 1
+#define POSITION_CONTROLLER 2
+
+#define CONTROLLER_TIME_US 2000
+#define TICKS_PER_US 40

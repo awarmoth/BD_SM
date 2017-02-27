@@ -33,3 +33,4 @@
 .\outputs\loc_hsm.o: .\Headers\ByteTransferSM.h
 .\outputs\loc_hsm.o: .\Headers\SPI_Module.h
 .\outputs\loc_hsm.o: .\Headers\MasterHSM.h
+.\outputs\loc_hsm.o: .\Headers\constants.h
