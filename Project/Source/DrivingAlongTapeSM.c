@@ -70,6 +70,7 @@
 #include "constants.h"
 #include "PWM_Module.h"
 #include "ADMulti.h"
+#include "DrivingAlongTapeSM.h"
 
 /* include header files for this state machine as well as any machines at the
    next lower level in the hierarchy that are sub-machines to this machine
@@ -89,8 +90,8 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 100
-#define RIGHT_MAX_DUTY 100
+#define LEFT_MAX_DUTY 40
+#define RIGHT_MAX_DUTY 40
 #define COMMAND_DIFF 0
 #define CONTROLLER_OFF 0
 #define VELOCITY_CONTROLLER 1
@@ -156,7 +157,8 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to CurrentEvent assuming no consuming of event
 	ReturnEvent = CurrentEvent;
-	
+	if (SM_TEST) CurrentState = Driving2Station;
+	if (SM_TEST) Controller = POSITION_CONTROLLER;
 	
 	switch(CurrentState)
 	{
@@ -174,7 +176,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_DriveAlongTape
 				if(CurrentEvent.EventType == ES_DRIVE_ALONG_TAPE)
 				{
-					TargetStation = CurrentEvent.EventParam;
+					//TargetStation = CurrentEvent.EventParam;
 					// If TargetStation is LastStation
 					if(TargetStation == LastStation)
 					{
@@ -261,6 +263,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_StationDetected
 				if(CurrentEvent.EventType == ES_STATION_DETECTED)
 				{
+					printf("station detected");
 					// If LastStation - Direction is TargetStation
 					if((LastStation - Direction) == TargetStation)
 					{
@@ -294,7 +297,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 				ReturnEvent = CurrentEvent;
 			}
 			// Endf
-			
+		break;
 		// End DrivingToStation block
 		}
 		
@@ -444,6 +447,7 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	{
 		// Set LastStation to (LastStation - Direction)
 		LastStation = (LastStation - Direction); //update LastStation to be the station we just passed
+		Controller = CONTROLLER_OFF;
 	}
 	// EndIf
 	
@@ -477,6 +481,7 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	{
 		// Set LastStation to supply depot
 		LastStation = SUPPLY_DEPOT;
+		Controller = CONTROLLER_OFF;
 	}
 	// EndIf
 	
@@ -489,46 +494,9 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	return ReturnEvent;
 }
 
-//static void ControlTimerInit(void)
-//{
-//	// Enable the clock to the timer (wide timer 2)
-//	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R2;
-//	
-//	// Make sure the clock has gotten going
-//	while((HWREG(SYSCTL_PRWTIMER) & SYSCTL_PRWTIMER_R2) != SYSCTL_PRWTIMER_R2){
-//	}
-//	
-//	// Make sure the timer is disabled before configuring
-//	HWREG(WTIMER2_BASE+TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
-//	
-//	// Set up timer in 32 bit wide mode
-//	HWREG(WTIMER2_BASE+TIMER_O_CFG) = TIMER_CFG_16_BIT;
-//	
-//	// Set up timer in periodic mode
-//	HWREG(WTIMER2_BASE+TIMER_O_TAMR) = (HWREG(WTIMER2_BASE+TIMER_O_TAMR) & ~TIMER_TAMR_TAMR_M) | TIMER_TAMR_TAMR_PERIOD;
-//	
-//	// Set the timeout
-//	HWREG(WTIMER2_BASE+TIMER_O_TAILR) = CONTROLLER_TIMEOUT;
-//	
-//	// Enable a local timeout interrupt
-//	HWREG(WTIMER2_BASE+TIMER_O_IMR) |= TIMER_IMR_TATOIM;
-//	
-//	// Enable timer A in NVIC
-//	HWREG(NVIC_EN3) |= BIT2HI;
-//	
-//	// Set the response to a lower priority
-//	HWREG(NVIC_PRI24) = (HWREG(NVIC_PRI24) & ~NVIC_PRI24_INTC_M) | BIT5HI;
-//	
-//	// Enable interrupts globally
-//	__enable_irq();
-//	
-//	// Enable timer and enable to stall when stopped by debugger
-//	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
-//}
-
 void Controller_ISR(void)
 {
-	printf("Averaged Period: %i\r\n", getPeriod());
+	// printf("Averaged Period: %i\r\n", getPeriod());
 	//clear interrupt
 	HWREG(WTIMER1_BASE+TIMER_O_ICR)=TIMER_ICR_TATOCINT;
 	static float LastError_POS = 0;
@@ -605,4 +573,8 @@ void Controller_ISR(void)
 		SetDutyA((uint8_t)RightControl);
 		SetDutyB((uint8_t)LeftControl);
 	}
+}
+
+void SetController(uint8_t control){
+	Controller = control;
 }

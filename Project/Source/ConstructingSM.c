@@ -2,6 +2,7 @@
 #include "CheckInSM.h"
 #include "LOC_HSM.h"
 #include "DrivingAlongTapeSM.h"
+#include "PWM_Module.h"
 
 #include "ConstructingSM.h"
 #include "ByteTransferSM.h"
@@ -59,7 +60,6 @@ void StartConstructingSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to GettingTargetStation
 	CurrentState = GettingTargetStation;
-	if (SM_TEST) CurrentState = DrivingAlongTape;
 	// Run ConstructingSM with CurrentEvent
 	RunConstructingSM(CurrentEvent);
 }
@@ -87,6 +87,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to ES_NO_EVENT
 	ReturnEvent.EventType = ES_NO_EVENT;
+	if (SM_TEST) CurrentState = DrivingAlongTape;
 	
 	switch (CurrentState)
 	{
@@ -399,11 +400,9 @@ ES_Event DuringDrivingAlongTape(ES_Event ThisEvent)
 	{
 		// Run DrivingAlongTapeSM with ThisEvent
 		RunDrivingAlongTapeSM(ThisEvent);
-		// Turn off motors/control
-		/**********************************************/
-		/**********************************************/
-		/**********************************************/
-		/**********************************************/
+		SetDutyA(0);
+		SetDutyB(0);
+		SetController(CONTROLLER_OFF);
 	// Else
 	}
 	else

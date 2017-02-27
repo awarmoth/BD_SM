@@ -23,7 +23,7 @@ Module file for exectuing all hardware initialization
 #include "ADMulti.h"
 #include "PWM_Module.h"
  
-#define CONTROLLER_TIME_US 200000
+#define CONTROLLER_TIME_US 2000
 #define TICKS_PER_US 40
  
 static void Init_Controller(void);

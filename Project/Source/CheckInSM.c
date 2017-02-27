@@ -479,10 +479,13 @@ uint8_t getPeriodCode(uint32_t Period) {
 //		Return 0x0E
 		return 0x0E;
 //	Else Period is less than or equal to 528 and greater than 472
-	}else{
+	}else if(Period <= 528*TICKS_PER_USEC && Period > 472*TICKS_PER_USEC) {
 //		Return 0x0F
 		printf("yay I think we found the frequency\r\n");
 		return 0x0F;
 //	Endif
-}
+	} else {
+		printf("Something weird");
+		return 0xFF;
+	}
 }
