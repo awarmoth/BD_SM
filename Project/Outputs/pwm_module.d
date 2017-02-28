@@ -1,11 +1,11 @@
 .\outputs\pwm_module.o: Source\PWM_Module.c
-.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h
-.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdbool.h
+.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\outputs\pwm_module.o: .\Headers\termio.h
-.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdio.h
-.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdlib.h
+.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\outputs\pwm_module.o: C:\ti\TivaWare_C_Series-2.1.0.12573\utils/uartstdio.h
-.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdarg.h
+.\outputs\pwm_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\outputs\pwm_module.o: .\Headers\ES_Configure.h
 .\outputs\pwm_module.o: .\Headers\ES_Framework.h
 .\outputs\pwm_module.o: .\Headers\ES_Port.h

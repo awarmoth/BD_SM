@@ -14,7 +14,7 @@
  static uint8_t BadResponseCounter = 0;
  static uint8_t Byte2Write;
 
- #define MAX_BAD_RESPONSES 3 
+ #define MAX_BAD_RESPONSES 10 
  #define RESPONSE_NOT_READY 0
  #define RESPONSE_READY 0xAA
  
@@ -86,8 +86,6 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 		// If CurrentState is WaitForResponse_1
 		case(WaitForResponse_1):{
 			//if(SM_TEST) printf("CheckIn: WaitingForResponse_1\r\n");
-			if (SM_TEST) ResponseReady = true;
-			if (SM_TEST) ReportStatus = ACK;
 			// Run DuringWaitForResponse_1 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_1(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -96,6 +94,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
+					//printf("Got response\r\n");
 					// Get response bytes from LOC
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
@@ -105,6 +104,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// If ResponseReady = not ready
 					if (ResponseReady == RESPONSE_NOT_READY)
 					{
+						//printf("Response not ready");
 						// Set MakeTransition to true
 						MakeTransition = true;
 						// Transform ReturnEvent to ES_NO_EVENT
@@ -113,14 +113,14 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					}
 					else if (BadResponseCounter > MAX_BAD_RESPONSES)
 					{ 
+						printf("here");
 						// Transform ReturnEvent to ES_Reorient
 						ReturnEvent.EventType = ES_REORIENT;
 					// Else
 					}
 					else
 					{
-						// Set Report Status to getReportStatus
-						ReportStatus = getReportStatus();
+						printf("ReportStatus = %i\r\n",ReportStatus);
 						// If ReportStatus = ACK
 						if ( ReportStatus == ACK )
 						{
@@ -196,8 +196,6 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 		// If CurrentState is WaitForResponse_2
 		case (WaitForResponse_2):{
 			if(SM_TEST) printf("CheckIn: WaitForResponse_2\r\n");
-			if (SM_TEST) ResponseReady = true;
-			if (SM_TEST) ReportStatus = ACK;
 			// Run DuringWaitForResponse_2 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -321,8 +319,8 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		Event2Post.EventParam = Byte2Write;
 		PostLOC_SM(Event2Post);
 		// Reinitialize variables
-		BadResponseCounter = 0;
-		ResponseReady = RESPONSE_NOT_READY;
+//		BadResponseCounter = 0;
+//		ResponseReady = RESPONSE_NOT_READY;
 	}
 	// EndIf
 	

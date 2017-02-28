@@ -53,6 +53,7 @@ uint8_t LastStation = START;
 uint8_t TargetGoal;
 uint8_t Score;
 uint32_t LastCapture, HallSensorPeriod;
+uint32_t LastPeriod, DeltaAvg;
 uint8_t HasLeftStage = true;
 bool GameTimeoutFlag = false;
 static bool initHallEffect = true;
@@ -537,14 +538,17 @@ void HallEffect_ISR( void )
 {
 	//	Static local variable LastTen array initialized to ten zeros
 	static uint32_t LastTen[RUN_AVERAGE_LENGTH];
+	static uint32_t LastDeltas[RUN_AVERAGE_LENGTH];
 	if (initHallEffect){
 		for (int i=0;i<RUN_AVERAGE_LENGTH;i++){
 			LastTen[i] = 0;
+			LastDeltas[i] = 0;
 		}
 		initHallEffect = false;
 	}
 	//	Static local variable 8 bit integer counter initialized to 0
 	static uint8_t counter = 0;
+	static uint8_t deltacounter = 0;
 	static uint16_t throwaway = 0;
 	if (throwaway <THROWAWAY){
 		throwaway++;
@@ -566,6 +570,18 @@ void HallEffect_ISR( void )
 	//	Set CurrentPeriod to subtract LastCapture from ThisCapture
 	ThisCapture = HWREG(WTIMER2_BASE+TIMER_O_TAR);
 	CurrentPeriod = ThisCapture - LastCapture;
+	
+	LastTen[deltacounter] = CurrentPeriod;
+	for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
+		DeltaAvg += LastDeltas[i];
+	}
+	
+	if(deltacounter == RUN_AVERAGE_LENGTH-1){
+		deltacounter = 0;
+	} else {
+		deltacounter++;
+	}
+	DeltaAvg /= RUN_AVERAGE_LENGTH;
 	//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
 	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) || (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
 		//	Update counter position in LastTen to CurrentPeriod
@@ -579,7 +595,7 @@ void HallEffect_ISR( void )
 		
 		//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
 		//	and HasLeftStage is true
-		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage) {
+		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 15) {
 		//	Post ES_StationDetected Event
 			PostEvent.EventType = ES_STATION_DETECTED;
 			PostMasterSM(PostEvent);
@@ -598,6 +614,8 @@ void HallEffect_ISR( void )
 		}
 	}
 	LastCapture = ThisCapture;
+	
+	LastPeriod = CurrentPeriod;
 }
 
 void HallEffectOneShotTimer_ISR( void )
