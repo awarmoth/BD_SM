@@ -420,7 +420,7 @@ uint8_t getRS_Byte(void)
 
 uint8_t getRR_Byte(void)
 {
-	return getByte4();
+	return getByte2();
 }
 
 void SetBytesArray(uint8_t data, int i) {

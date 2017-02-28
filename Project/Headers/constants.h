@@ -93,8 +93,8 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 40
-#define RIGHT_MAX_DUTY 40
+#define LEFT_MAX_DUTY 50
+#define RIGHT_MAX_DUTY 50
 #define COMMAND_DIFF 0
 #define CONTROLLER_OFF 0
 #define VELOCITY_CONTROLLER 1

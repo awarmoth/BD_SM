@@ -19,8 +19,8 @@
  #define RESPONSE_READY 0xAA
  
  #define ACK 0
- #define NACK 0x02
- #define INACTIVE 0x03
+ #define NACK 0x03
+ #define INACTIVE 0x02
 
 
 void StartCheckInSM(ES_Event CurrentEvent)
@@ -120,7 +120,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					}
 					else
 					{
-						printf("ReportStatus = %i\r\n",ReportStatus);
+						printf("ReportStatus1 = %i\r\n",ReportStatus);
 						// If ReportStatus = ACK
 						if ( ReportStatus == ACK )
 						{
@@ -132,7 +132,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							NextState = Reporting_2;
 						}
 						// Else If ReportStatus = NACK
-						else if ( ReportStatus == NACK )
+						else if ( ReportStatus == NACK || ReportStatus == INACTIVE)
 						{ 
 							// Increment BadResponseCounter
 							BadResponseCounter++;
@@ -142,11 +142,6 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							NextState = Reporting_1;
 						}
 						// Else // report status = inactive
-						else
-						{
-							// Transform ReturnEvent to ES_Reorient
-							ReturnEvent.EventType = ES_REORIENT;
-						}
 						// EndIf
 					}
 					// EndIf
@@ -229,6 +224,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Else
 					else
 					{
+						printf("ReportStatus1 = %i\r\n",ReportStatus);
 						// If ReportStatus = ACK
 						if (ReportStatus == ACK)
 						{
@@ -238,7 +234,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							ReturnEvent.EventParam = getLocation();
 						}
 						// Else If ReportStatus = NACK
-						else if (ReportStatus == NACK)
+						else if (ReportStatus == NACK || ReportStatus == INACTIVE)
 						{
 							// Increment BadResponseCounter
 							BadResponseCounter++;
@@ -246,12 +242,6 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							MakeTransition = true;
 							// Set NextState to Reporting_2
 							NextState = Reporting_2;
-						}
-						// Else // report status = inactive
-						else
-						{
-							// Transform ReturnEvent to ES_Reorient
-							ReturnEvent.EventType = ES_REORIENT;
 						}
 						// EndIf
 					}
@@ -319,8 +309,8 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		Event2Post.EventParam = Byte2Write;
 		PostLOC_SM(Event2Post);
 		// Reinitialize variables
-//		BadResponseCounter = 0;
-//		ResponseReady = RESPONSE_NOT_READY;
+		BadResponseCounter = 0;
+		ResponseReady = RESPONSE_NOT_READY;
 	}
 	// EndIf
 	
