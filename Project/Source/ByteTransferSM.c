@@ -69,6 +69,7 @@
 */
 #include "ByteTransferSM.h"
 #include "SPI_Module.h"
+#include "constants.h"
 
 /*----------------------------- Module Defines ----------------------------*/
 // define constants for the states for this machine
@@ -91,6 +92,7 @@ static ByteTransferState_t CurrentState;
 //array of values written back by the LOC
 //will need to check to see if static arrays are valid
 static uint8_t BytesArray[5];
+static uint8_t command;
 
 /*------------------------------ Module Code ------------------------------*/
 
@@ -153,8 +155,9 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 					MakeTransition = true;
 				//Set NextState to BT_Wait4EOT
 					NextState = BT_Wait4EOT;
+					command = (uint8_t)CurrentEvent.EventParam;
 					//Write the first byte command to the SPI Module
-					uint8_t QueryVal = ((uint8_t)CurrentEvent.EventParam);
+					uint8_t QueryVal = (command);
 					QueryLOC(QueryVal);
 				}
 			//End ES_Command block
@@ -422,6 +425,6 @@ uint8_t getRR_Byte(void)
 
 void SetBytesArray(uint8_t data, int i) {
 	BytesArray[i] = data;
-	//printf("Byte %i = %i\r\n", i,BytesArray[i]);
+	// if (command != QUERY_RESPONSE_COMMAND) printf("Byte %i = %i\r\n", i,BytesArray[i]);
 
 }

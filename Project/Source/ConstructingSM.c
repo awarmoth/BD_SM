@@ -55,6 +55,7 @@ uint8_t Score;
 uint32_t LastCapture, HallSensorPeriod;
 uint8_t HasLeftStage = true;
 bool GameTimeoutFlag = false;
+static bool initHallEffect = true;
 
 void StartConstructingSM(ES_Event CurrentEvent)
 {
@@ -535,11 +536,17 @@ void UpdateStatus( void )
 void HallEffect_ISR( void )
 {
 	//	Static local variable LastTen array initialized to ten zeros
-	static uint32_t LastTen[RUN_AVERAGE_LENGTH] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	static uint32_t LastTen[RUN_AVERAGE_LENGTH];
+	if (initHallEffect){
+		for (int i=0;i<RUN_AVERAGE_LENGTH;i++){
+			LastTen[i] = 0;
+		}
+		initHallEffect = false;
+	}
 	//	Static local variable 8 bit integer counter initialized to 0
 	static uint8_t counter = 0;
 	static uint16_t throwaway = 0;
-	if (throwaway <1000){
+	if (throwaway <THROWAWAY){
 		throwaway++;
 		return;
 	}
@@ -561,36 +568,35 @@ void HallEffect_ISR( void )
 	CurrentPeriod = ThisCapture - LastCapture;
 	//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
 	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) || (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
-	
-	//	Update counter position in LastTen to CurrentPeriod
-	LastTen[counter] = CurrentPeriod;
-	
-	//	Set HallSensorPeriod to average of LastTen
-	for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
-		HallSensorPeriod += LastTen[i];
-	}
-	HallSensorPeriod = HallSensorPeriod/RUN_AVERAGE_LENGTH;
-	
-	//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
-	//	and HasLeftStage is true
-	if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage) {
-	//	Post ES_StationDetected Event
-		PostEvent.EventType = ES_STATION_DETECTED;
-		PostMasterSM(PostEvent);
-		//printf("Good Frequency: %i\r\n", HallSensorPeriod);
+		//	Update counter position in LastTen to CurrentPeriod
+		LastTen[counter] = CurrentPeriod;
 		
-	//	HasLeftStage is false
-		HasLeftStage = false;
-	} else if(HasLeftStage){
-		//printf("Bad Period: %i\r\n", HallSensorPeriod);
+		//	Set HallSensorPeriod to average of LastTen
+		for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
+			HallSensorPeriod += LastTen[i];
+		}
+		HallSensorPeriod = HallSensorPeriod/RUN_AVERAGE_LENGTH;
+		
+		//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
+		//	and HasLeftStage is true
+		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage) {
+		//	Post ES_StationDetected Event
+			PostEvent.EventType = ES_STATION_DETECTED;
+			PostMasterSM(PostEvent);
+			//printf("Good Frequency: %i\r\n", HallSensorPeriod);
+			
+		//	HasLeftStage is false
+			HasLeftStage = false;
+		} else if(HasLeftStage){
+			//printf("Bad Period: %i\r\n", HallSensorPeriod);
+		}
+		//	If counter equals 9
+		if(counter == RUN_AVERAGE_LENGTH-1){
+			counter = 0;
+		} else {
+			counter++;
+		}
 	}
-	//	If counter equals 9
-	if(counter == RUN_AVERAGE_LENGTH-1){
-		counter = 0;
-	} else {
-		counter++;
-	}
-}
 	LastCapture = ThisCapture;
 }
 

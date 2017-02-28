@@ -131,11 +131,10 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 					SB1_Byte = getSB1_Byte();
 					SB2_Byte = getSB2_Byte();
 					SB3_Byte = getSB3_Byte();
-					//printf ("SB3:%i\r\n",SB3_Byte);
-					//printf("BytesArray[4] = %i\r\n", getByte4());
+					printf ("SB3:%i\r\n",SB3_Byte);
 					// Set GameState to getGameState
 					GameState = getGameState();
-					//printf("GameState:%i",GameState);
+					printf("GameState:%i",GameState);
 					// If GameState is WAITING_FOR_START
 					if (GameState == WAITING_FOR_START)
 					{	
