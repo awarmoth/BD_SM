@@ -1,6 +1,8 @@
 //module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
 //ShootingState_t: AlignToGoal; 
 
+static uint8_t Shooting_Timeout_Flag = 0;
+
 void StartShootingSM(ES_Event CurrentEvent)  
 {
 	// Set CurrentState to AlignToGoal
@@ -36,18 +38,18 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 	switch(CurrentState)
 	{
 		// If CurrentState is AlignToGoal
-		if (CurrentState == AlignToGoal)
+                case (CurrentState == AlignToGoal):
 		{
 			// Run DuringAlignToGoal and store the output in CurrentEvent
 			CurrentEvent = DuringAlignToGoal(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
-			if (CurrentEvent != ES_NO_EVENT)
+                        if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_GOAL_BEACON_DETECTED
-				if (CurrentEvent == ES_GOAL_BEACON_DETECTED)
+                                if (CurrentEvent.EventType == ES_GOAL_BEACON_DETECTED)
 				{
 					// Stop rotating
-					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                        //ROTATE//////////////////////////////////////////////////////////////////////////////////////////////////////
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to Firing
@@ -59,21 +61,29 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent = ES_NO_EVENT;
+                                ReturnEven.EventType = ES_NO_EVENT;
 			// EndIf
 			}
 		
 		// End AlignToGoal block
+                break;
 		}
 	
 		// If CurrentState is Firing
-	
+                case (Firing):
+                {
 			// Run DuringFiring and store the output in CurrentEvent
-		
+                        CurrentEvent = DuringFiring(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
+                        if (CurrentEvent.EventType != ES_NO_EVENT)
+                        {
 				// If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
+                                if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOOTING_TIMER))
+                                {
 					// Transform ReturnEvent to ES_NO_EVENT
+                                        CurrentEvent.EventType = ES_NO_EVENT;
 					// Set ShootingTimeoutFlag
+                                        Shooting_Timeout_Flag = 1;
 				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
 					// Transform ReturnEvent to ES_NO_EVENT
 					// Set GameTimeoutFlag
