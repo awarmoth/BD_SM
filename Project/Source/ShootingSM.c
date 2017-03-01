@@ -1,229 +1,241 @@
-////module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
-
+//module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
+//ShootingState_t: AlignToGoal; 
 
 void StartShootingSM(ES_Event CurrentEvent)  
 {
-	Set CurrentState to AlignToGoal
-	Run ShootingSM with CurrentEvent
+	// Set CurrentState to AlignToGoal
+	CurrentState = AlignToGoal;
+	// Run ShootingSM with CurrentEvent
+	RunShootingSM(CurrentEvent);
 }
 End StartShootingSM
 
 
 ES_Event RunShootingSM(ES_Event CurrentEvent)
 {
-	local variable MakeTransition
-	local variable NextState
-	local variable EntryEvent
-	local variable ReturnEvent
+	// local variable MakeTransition
+	bool MakeTransition;
+	// local variable NextState
+	ShootingState_t NextState;
 	
-	Initialize MakeTransition to false
-	Initialize NextState to CurrentState
-	Initialize EntryEvent to ES_ENTRY
-	Initialize ReturnEvent to CurrentEvent to assume no consumption of event
+	// local variable EntryEvent
+	ES_Event EntryEvent;
+	// local variable ReturnEvent
+	ES_Event ReturnEvent;
 	
-	If CurrentState is AlignToGoal
+	// Initialize MakeTransition to false
+	MakeTransition = false;
+	// Initialize NextState to CurrentState
+	NextState = CurrentState;
+	// Initialize EntryEvent to ES_ENTRY
+	EntryEvent.EventType = ES_ENTRY;
+	// Initialize ReturnEvent to CurrentEvent to assume no consumption of event
+	ReturnEvent = CurrentEvent;
 	
-		Run DuringAlignToGoal and store the output in CurrentEvent
-		
-		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_GOAL_BEACON_DETECTED
-				Stop rotating
-				Set MakeTransition to true
-				Set NextState to Firing
-			EndIf
-				
-		Else
-			Set ReturnEvent to ES_NO_EVENT
-		EndIf
-		
-	End AlignToGoal block
-	
-	If CurrentState is Firing
-	
-		Run DuringFiring and store the output in CurrentEvent
-		
-		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
-				Transform ReturnEvent to ES_NO_EVENT
-				Set ShootingTimeoutFlag
-			Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
-				Transform ReturnEvent to ES_NO_EVENT
-				Set GameTimeoutFlag
-			Else If CurrentEvent is ES_FIRE_COMPLETE
-				Set MakeTransition to true
-				Set BallCount to getBallCount
-				Set NextState to WaitForShotResult
-				If BallCount = 0 or GameTimeoutFlag Set or ShootingTimeout Flag Set
-					Set ExitFlag
-				Else
-					
-				EndIf
-			EndIf
-		
-		Else
-			Set ReturnEvent to ES_NO_EVENT
-		EndIf
-		
-	End Firing block
 
-	If CurrentState is WaitForShotResult
-	
-		Run DuringWaitForShotResult and store the output in CurrentEvent
+	switch(CurrentState)
+	{
+		// If CurrentState is AlignToGoal
+			// Run DuringAlignToGoal and store the output in CurrentEvent
 		
-		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_TIMEOUT from SHOT_RESULT_TIMER
-				Set MakeTransition to true
-				Set NextState to WaitForScoreUpdate
-			EndIf
+			// If CurrentEvent is not ES_NO_EVENT
+				// If CurrentEvent is ES_GOAL_BEACON_DETECTED
+					// Stop rotating
+					// Set MakeTransition to true
+					// Set NextState to Firing
+				// EndIf
 				
-		Else
-			Set ReturnEvent to ES_NO_EVENT
-		EndIf
+			// Else
+				// Set ReturnEvent to ES_NO_EVENT
+			// EndIf
 		
-	End WaitForShotResult block
+		// End AlignToGoal block
 	
-	If CurrentState is WaitForScoreUpdate
+		// If CurrentState is Firing
 	
-		Run DuringWaitForScoreUpdate and store the output in CurrentEvent
+			// Run DuringFiring and store the output in CurrentEvent
 		
-		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_LOC_COMPLETE
-				Get response bytes from LOC
-				SetSB1_Byte(getSB1_Byte())
-				SetSB2_Byte(getSB2_Byte())
-				SetSB3_Byte(getSB3_Byte())
+			// If CurrentEvent is not ES_NO_EVENT
+				// If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
+					// Transform ReturnEvent to ES_NO_EVENT
+					// Set ShootingTimeoutFlag
+				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
+					// Transform ReturnEvent to ES_NO_EVENT
+					// Set GameTimeoutFlag
+				// Else If CurrentEvent is ES_FIRE_COMPLETE
+					// Set MakeTransition to true
+					// Set BallCount to getBallCount
+					// Set NextState to WaitForShotResult
+					// If BallCount = 0 or GameTimeoutFlag Set or ShootingTimeout Flag Set
+						// Set ExitFlag
+					// EndIf
+				// EndIf
+		
+			// Else
+				// Set ReturnEvent to ES_NO_EVENT
+			// EndIf
+		
+		// End Firing block
 
-				Set MakeTransition to true
-				Initialize NewScore to getScore
-				If NewScore = Score
-					Set NextState to Firing
-				Else
-					Set NextState to AlignToTape
-				EndIf
-				Score = NewScore
-			EndIf
-		
-		Else
-			Set ReturnEvent to ES_NO_EVENT
-		EndIf
-		
-	End WaitForScoreUpdate block
-
-	If CurrentState is AlignToTape
+		// If CurrentState is WaitForShotResult
 	
-		Run DuringAlignToTape and store the output in CurrentEvent
+			// Run DuringWaitForShotResult and store the output in CurrentEvent
 		
-		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_TAPE_DETECTED
-				Transform ReturnEvent to ES_SHOOTING_COMPLETE
-				If GameTimeoutFlag Set
-					Post ES_NORMAL_GAME_COMPLETE to Master
-				EndIf
-			EndIf
+			// If CurrentEvent is not ES_NO_EVENT
+				// If CurrentEvent is ES_TIMEOUT from SHOT_RESULT_TIMER
+					// Set MakeTransition to true
+					// Set NextState to WaitForScoreUpdate
+				// EndIf
 				
-		Else
-			Set ReturnEvent to ES_NO_EVENT
-		EndIf
+			// Else
+				// Set ReturnEvent to ES_NO_EVENT
+			// EndIf
 		
-	End AlignToTape block
+		// End WaitForShotResult block
 	
+		// If CurrentState is WaitForScoreUpdate
 	
-	If MakeTransition is true
-	
-		Set CurrentEvent to ES_EXIT
-		Run ShootingSM with CurrentEvent to allow lower level SMs to exit
+			// Run DuringWaitForScoreUpdate and store the output in CurrentEvent
 		
-		Set CurrentState to NextState
-		Run ShootingSM with EntryEvent to allow lower level SMs to enter
+			// If CurrentEvent is not ES_NO_EVENT
+				// If CurrentEvent is ES_LOC_COMPLETE
+					// Get response bytes from LOC
+					// SetSB1_Byte(getSB1_Byte())
+					// SetSB2_Byte(getSB2_Byte())
+					// SetSB3_Byte(getSB3_Byte())
+
+					// Set MakeTransition to true
+					// Initialize NewScore to getScore
+					// If NewScore = Score
+						// Set NextState to Firing
+					// Else
+						// Set NextState to AlignToTape
+					// EndIf
+					// Score = NewScore
+				// EndIf
 		
-	EndIf
+			// Else
+				// Set ReturnEvent to ES_NO_EVENT
+			// EndIf
+		
+		// End WaitForScoreUpdate block
+
+		// If CurrentState is AlignToTape
 	
-	Return ReturnEvent
+			// Run DuringAlignToTape and store the output in CurrentEvent
+		
+			// If CurrentEvent is not ES_NO_EVENT
+				// If CurrentEvent is ES_TAPE_DETECTED
+					// Transform ReturnEvent to ES_SHOOTING_COMPLETE
+					// If GameTimeoutFlag Set
+						// Post ES_NORMAL_GAME_COMPLETE to Master
+					// EndIf
+				// EndIf
+				
+			// Else
+				// Set ReturnEvent to ES_NO_EVENT
+			// EndIf
+		
+		// End AlignToTape block
+	}//End switch
+	
+		// If MakeTransition is true
+	
+		// Set CurrentEvent to ES_EXIT
+		// Run ShootingSM with CurrentEvent to allow lower level SMs to exit
+	
+		// Set CurrentState to NextState
+		// Run ShootingSM with EntryEvent to allow lower level SMs to enter
+		
+	// EndIf
+	
+	// Return ReturnEvent
+	
 }
-End RunShootingSM
+
 
 
 ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 {
-	local variable ReturnEvent
+	// local variable ReturnEvent
 	
-	Initialize ReturnEvent to ThisEvent
+	// Initialize ReturnEvent to ThisEvent
 	
-	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Start rotating // direction based on team color
-		Set OldScore to getScore
-		Clear timeout flags
-	EndIf
+	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		// Start rotating // direction based on team color
+		// Set OldScore to getScore
+		// Clear timeout flags
+	// EndIf
 	
-	Return ReturnEvent
+	// Return ReturnEvent
 	
 }
-End DuringAlignToGoal
+
 
 
 ES_Event DuringFiring(ES_Event ThisEvent)
 {
-	local variable ReturnEvent
-	local variable Event2Post
+	// local variable ReturnEvent
+	// local variable Event2Post
 	
-	Initialize ReturnEvent to ThisEvent
+	// Initialize ReturnEvent to ThisEvent
 	
-	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Set Event2Post to a ES_FIRE_COMMAND
-		Post Event2Post to Firing Service
-	EndIf
+	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		// Set Event2Post to a ES_FIRE_COMMAND
+		// Post Event2Post to Firing Service
+	// EndIf
 	
-	Return ReturnEvent
+	// Return ReturnEvent
 	
 }
-End DuringFiring
+
 
 
 ES_Event DuringWaitForShotResult(ES_Event ThisEvent)
 {
-	local variable ReturnEvent
+	// local variable ReturnEvent
 	
-	Initialize ReturnEvent to ThisEvent
+	// Initialize ReturnEvent to ThisEvent
 	
-	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Start SHOT_RESULT_TIMER
-	EndIf
+	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		// Start SHOT_RESULT_TIMER
+	// EndIf
 	
-	Return ReturnEvent
+	// Return ReturnEvent
 	
 }
-End DuringWaitForShotResult
+
 
 
 ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent)
 {
-	local variable ReturnEvent
-	local variable Event2Post
+	// local variable ReturnEvent
+	// local variable Event2Post
 	
-	Initialize ReturnEvent to ThisEvent
+	// Initialize ReturnEvent to ThisEvent
 	
-	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Set Byte2Write to status byte
-		Post ES_Command to LOC w/ parameter: Byte2Write
-	EndIf
+	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		// Set Byte2Write to status byte
+		// Post ES_Command to LOC w/ parameter: Byte2Write
+	// EndIf
 	
-	Return ReturnEvent
+	// Return ReturnEvent
 	
 }
-End DuringWaitForScoreUpdate
+
 
 ES_Event DuringAlignToTape(ES_Event ThisEvent)
 {
-	local variable ReturnEvent
+	// local variable ReturnEvent
 	
-	Initialize ReturnEvent to ThisEvent
+	// Initialize ReturnEvent to ThisEvent
 	
-	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Start rotating // direction based on team color, opposite of AlignToGoal
-	EndIf
+	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		// Start rotating // direction based on team color, opposite of AlignToGoal
+	// EndIf
 	
-	Return ReturnEvent
+	// Return ReturnEvent
 	
 }
-End DuringAlignToTape
+
 
