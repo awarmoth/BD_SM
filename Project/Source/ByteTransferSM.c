@@ -413,15 +413,17 @@ uint8_t getSB3_Byte(void)
 	return getByte4();
 }
 
+uint8_t getRR_Byte(void)
+{
+	return getByte2();
+}
+
 uint8_t getRS_Byte(void)
 {
 	return getByte3();
 }
 
-uint8_t getRR_Byte(void)
-{
-	return getByte2();
-}
+
 
 void SetBytesArray(uint8_t data, int i) {
 	BytesArray[i] = data;
