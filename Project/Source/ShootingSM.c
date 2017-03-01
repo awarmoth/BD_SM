@@ -36,20 +36,35 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 	switch(CurrentState)
 	{
 		// If CurrentState is AlignToGoal
+		if (CurrentState == AlignToGoal)
+		{
 			// Run DuringAlignToGoal and store the output in CurrentEvent
-		
+			CurrentEvent = DuringAlignToGoal(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
+			if (CurrentEvent != ES_NO_EVENT)
+			{
 				// If CurrentEvent is ES_GOAL_BEACON_DETECTED
+				if (CurrentEvent == ES_GOAL_BEACON_DETECTED)
+				{
 					// Stop rotating
+					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					// Set MakeTransition to true
+					MakeTransition = true;
 					// Set NextState to Firing
+					NextState = Firing;
 				// EndIf
-				
+				}
+			}				
 			// Else
+			else
+			{
 				// Set ReturnEvent to ES_NO_EVENT
+				ReturnEvent = ES_NO_EVENT;
 			// EndIf
+			}
 		
 		// End AlignToGoal block
+		}
 	
 		// If CurrentState is Firing
 	
