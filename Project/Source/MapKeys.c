@@ -114,28 +114,27 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
           // This posts an ES_COMMAND to the LOC_SM with a parameter value of 12 (0b1100)
             case '1' : 
 							ThisEvent.EventType = ES_COMMAND; 
-							ThisEvent.EventParam = STATUS_COMMAND;
+							ThisEvent.EventParam = 192;
 							printf("Status Command\r\n");
-							if (NO_LOC) printf("Posting Command: Status to LOC\r\n");
-							else PostLOC_SM(ThisEvent);
+							PostLOC_SM(ThisEvent);
 							
               break;
 						
 						case '2' :
 							ThisEvent.EventType = ES_COMMAND;
-							ThisEvent.EventParam = REPORT_COMMAND;
+							ThisEvent.EventParam = 120;
 							printf("Report Command\r\n");
-							if (NO_LOC) printf("Posting Command: Report to LOC\r\n");
-							else PostLOC_SM(ThisEvent);PostLOC_SM(ThisEvent);						
+							PostLOC_SM(ThisEvent);
+						
 							break;
 						
 						case '3' :
 							
 							ThisEvent.EventType = ES_COMMAND;
-							ThisEvent.EventParam = QUERY_RESPONSE_COMMAND;
+							ThisEvent.EventParam = 112;
 							printf("Query Command\r\n");						
-							if (NO_LOC) printf("Posting Command: Query to LOC\r\n");
-							else PostLOC_SM(ThisEvent);PostLOC_SM(ThisEvent);						
+							PostLOC_SM(ThisEvent);						
+						
 							break;
 						
 						case '4' :
@@ -159,37 +158,12 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							SetSB3_Byte(getSB3_Byte() | GAME_STATUS_MASK);
 							break;
 						
-						case '7' :
-							ThisEvent.EventType = ES_LOC_COMPLETE;
-							printf("ES_LOC_COMPLETE: Response Ready = Not Ready\r\n");						
+						case '7':
+							ThisEvent.EventType = ES_DRIVE_ALONG_TAPE;
+							ThisEvent.EventParam = rand() % 3 + 1;
+							printf("ES_DRIVE_ALONG_TAPE: Target = %i", ThisEvent.EventParam);
 							PostMasterSM(ThisEvent);
-							SetRR_Byte(RESPONSE_NOT_READY);
 							break;
-						
-						case '8' :
-							ThisEvent.EventType = ES_LOC_COMPLETE;
-							printf("ES_LOC_COMPLETE: Response Ready = Ready, Report Status = ACK\r\n");						
-							PostMasterSM(ThisEvent);
-							SetRR_Byte(RESPONSE_READY);
-							SetRS_Byte((getRS_Byte() & ~REPORT_STATUS_MASK) | REPORT_ACK);
-							break;
-						
-						case '9':
-							ThisEvent.EventType = ES_LOC_COMPLETE;
-							printf("ES_LOC_COMPLETE: Response Ready = Ready, Report Status = NACK\r\n");						
-							PostMasterSM(ThisEvent);
-							SetRR_Byte(RESPONSE_READY);
-							SetRS_Byte((getRS_Byte() & ~REPORT_STATUS_MASK) | REPORT_NACK);
-							break;
-							
-						case '0':
-							ThisEvent.EventType = ES_LOC_COMPLETE;
-							printf("ES_LOC_COMPLETE: Response Ready = Ready, Report Status = INACTIVE\r\n");						
-							PostMasterSM(ThisEvent);
-							SetRR_Byte(RESPONSE_READY);
-							SetRS_Byte((getRS_Byte() & ~REPORT_STATUS_MASK) | REPORT_INACTIVE);
-							break;
-						
 													
 						
 						case 'A':
@@ -212,19 +186,6 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_STATION_DETECTED\r\n");
 							PostMasterSM(ThisEvent);
 							break;
-						case 'G':
-							ThisEvent.EventType = ES_SHOOTING_COMPLETE;
-							printf("ES_SHOOTING_COMPLETE\r\n");
-							PostMasterSM(ThisEvent);
-							break;
-						case 'H':
-							ThisEvent.EventType = ES_DRIVE_ALONG_TAPE;
-							ThisEvent.EventParam = rand() % 3 + 1;
-							printf("ES_DRIVE_ALONG_TAPE: Target = %i", ThisEvent.EventParam);
-							PostMasterSM(ThisEvent);
-							break;
-						
-						
 						
 	
 						case 'Z':

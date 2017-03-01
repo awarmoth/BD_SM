@@ -3,7 +3,7 @@ F (.\Source\HSMTemplateMain.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x57F6E7B8)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\sysctl.h)(0x58B3DE56)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
@@ -20,7 +20,7 @@ I (.\Headers\ES_PostList.h)(0x58B3FC6B)
 I (.\Headers\ES_Events.h)(0x58B3FC6B)
 I (.\Headers\ES_Timers.h)(0x58B3FC6B)
 F (.\Source\EventCheckers.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\eventcheckers.o --omf_browse .\outputs\eventcheckers.crf --depend .\outputs\eventcheckers.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Events.h)(0x58B3FC6B)
 I (.\Headers\ES_Types.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
@@ -29,7 +29,11 @@ I (.\Headers\ES_PostList.h)(0x58B3FC6B)
 I (.\Headers\ES_ServiceHeaders.h)(0x58B3FC6B)
 I (.\Headers\MapKeys.h)(0x58B3FC6B)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
+=======
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
 I (.\Headers\termio.h)(0x58B3FC6B)
@@ -39,15 +43,19 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F6E7B8)
 I (.\Headers\bitdefs.h)(0x58B3FC6A)
 I (.\Headers\Bin_Const.h)(0x58B3FC6A)
 I (.\Headers\EventCheckers.h)(0x58B3FC6B)
+<<<<<<< HEAD
 F (.\Source\MapKeys.c)(0x58B68A70)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\mapkeys.o --omf_browse .\outputs\mapkeys.crf --depend .\outputs\mapkeys.d)
+=======
+F (.\Source\MapKeys.c)(0x58B455CD)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\mapkeys.o --omf_browse .\outputs\mapkeys.crf --depend .\outputs\mapkeys.d)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x57F6E7B6)
-I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F6E7B8)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
 I (.\Headers\termio.h)(0x58B3FC6B)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F6E7B8)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\utils\uartstdio.h)(0x58B3DE7D)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F6E7B8)
 I (.\Headers\bitdefs.h)(0x58B3FC6A)
@@ -61,23 +69,34 @@ I (.\Headers\ES_Events.h)(0x58B3FC6B)
 I (.\Headers\ES_Timers.h)(0x58B3FC6B)
 I (.\Headers\MapKeys.h)(0x58B3FC6B)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
 I (.\Headers\constants.h)(0x58B68A6F)
 I (.\Headers\ByteTransferSM.h)(0x58B683C4)
 F (.\Source\MasterHSM.c)(0x58B68A70)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\masterhsm.o --omf_browse .\outputs\masterhsm.crf --depend .\outputs\masterhsm.d)
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
 I (.\Headers\ES_Configure.h)(0x58B67C13)
+=======
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+F (.\Source\MasterHSM.c)(0x58B53397)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\masterhsm.o --omf_browse .\outputs\masterhsm.crf --depend .\outputs\masterhsm.d)
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\ES_Types.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x57F6E7B8)
 I (.\Headers\ES_Events.h)(0x58B3FC6B)
 I (.\Headers\SPI_Module.h)(0x58B478B6)
-I (.\Headers\ByteTransferSM.h)(0x58B683C4)
+I (.\Headers\ByteTransferSM.h)(0x58B47098)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
-I (.\Headers\ConstructingSM.h)(0x58B68329)
+I (.\Headers\ConstructingSM.h)(0x58B3FC6A)
 I (.\Headers\DrivingAlongTapeSM.h)(0x58B4297D)
 I (.\Headers\hardware.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\constants.h)(0x58B68A6F)
+=======
+I (.\Headers\constants.h)(0x58B60656)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\termio.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F6E7B8)
@@ -105,7 +124,7 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\gpio.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\timer.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\interrupt.h)(0x58B3DE56)
 F (.\Source\LOC_HSM.c)(0x58B47029)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\loc_hsm.o --omf_browse .\outputs\loc_hsm.crf --depend .\outputs\loc_hsm.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
@@ -136,12 +155,17 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\pin_map.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\gpio.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\timer.h)(0x58B3DE56)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
-I (.\Headers\ByteTransferSM.h)(0x58B683C4)
+I (.\Headers\ByteTransferSM.h)(0x58B47098)
 I (.\Headers\SPI_Module.h)(0x58B478B6)
+<<<<<<< HEAD
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
 I (.\Headers\constants.h)(0x58B68A6F)
+=======
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+I (.\Headers\constants.h)(0x58B60656)
+>>>>>>> parent of e7c8988... Worked more on SM
 F (.\Source\hardware.c)(0x58B4387D)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\hardware.o --omf_browse .\outputs\hardware.crf --depend .\outputs\hardware.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
@@ -171,10 +195,14 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\sysctl.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\pin_map.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\gpio.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\timer.h)(0x58B3DE56)
+<<<<<<< HEAD
 I (.\Headers\constants.h)(0x58B68A6F)
+=======
+I (.\Headers\constants.h)(0x58B60656)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\ADMulti.h)(0x58B3FC6A)
 I (.\Headers\PWM_Module.h)(0x58B3FC6B)
-F (.\Source\SPI_Module.c)(0x58B67C15)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\spi_module.o --omf_browse .\outputs\spi_module.crf --depend .\outputs\spi_module.d)
+F (.\Source\SPI_Module.c)(0x58B47E2E)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\spi_module.o --omf_browse .\outputs\spi_module.crf --depend .\outputs\spi_module.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x57F6E7B8)
 I (.\Headers\termio.h)(0x58B3FC6B)
@@ -182,7 +210,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F6E7B8)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\utils\uartstdio.h)(0x58B3DE7D)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F6E7B8)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (.\Headers\bitdefs.h)(0x58B3FC6A)
@@ -209,9 +237,15 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\timer.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\interrupt.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\pwm.h)(0x58B3DE56)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\ByteTransferSM.h)(0x58B683C4)
 F (.\Source\ByteTransferSM.c)(0x58B68A70)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\bytetransfersm.o --omf_browse .\outputs\bytetransfersm.crf --depend .\outputs\bytetransfersm.d)
 I (.\Headers\ES_Configure.h)(0x58B67C13)
+=======
+I (.\Headers\ByteTransferSM.h)(0x58B47098)
+F (.\Source\ByteTransferSM.c)(0x58B54A66)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\bytetransfersm.o --omf_browse .\outputs\bytetransfersm.crf --depend .\outputs\bytetransfersm.d)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
@@ -242,29 +276,47 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\sysctl.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\pin_map.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\gpio.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\timer.h)(0x58B3DE56)
-I (.\Headers\ByteTransferSM.h)(0x58B683C4)
+I (.\Headers\ByteTransferSM.h)(0x58B47098)
 I (.\Headers\SPI_Module.h)(0x58B478B6)
+<<<<<<< HEAD
 I (.\Headers\constants.h)(0x58B68A6F)
 F (.\Source\CheckInSM.c)(0x58B68A70)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\checkinsm.o --omf_browse .\outputs\checkinsm.crf --depend .\outputs\checkinsm.d)
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
 I (.\Headers\ES_Configure.h)(0x58B67C13)
+=======
+I (.\Headers\constants.h)(0x58B60656)
+F (.\Source\CheckInSM.c)(0x58B609AE)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\checkinsm.o --omf_browse .\outputs\checkinsm.crf --depend .\outputs\checkinsm.d)
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\ES_Types.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x57F6E7B8)
 I (.\Headers\ES_Events.h)(0x58B3FC6B)
-I (.\Headers\ConstructingSM.h)(0x58B68329)
+I (.\Headers\ConstructingSM.h)(0x58B3FC6A)
 I (.\Headers\CheckInSM.h)(0x58B441DC)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\ByteTransferSM.h)(0x58B683C4)
 I (.\Headers\constants.h)(0x58B68A6F)
+=======
+I (.\Headers\ByteTransferSM.h)(0x58B47098)
+I (.\Headers\constants.h)(0x58B60656)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\termio.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F6E7B8)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\utils\uartstdio.h)(0x58B3DE7D)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F6E7B8)
+<<<<<<< HEAD
 F (.\Source\ConstructingSM.c)(0x58B68BB6)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\constructingsm.o --omf_browse .\outputs\constructingsm.crf --depend .\outputs\constructingsm.d)
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
 I (.\Headers\ES_Configure.h)(0x58B67C13)
+=======
+F (.\Source\ConstructingSM.c)(0x58B60CEF)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\constructingsm.o --omf_browse .\outputs\constructingsm.crf --depend .\outputs\constructingsm.d)
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\ES_Types.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x57F6E7B8)
@@ -273,9 +325,15 @@ I (.\Headers\CheckInSM.h)(0x58B441DC)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
 I (.\Headers\DrivingAlongTapeSM.h)(0x58B4297D)
 I (.\Headers\PWM_Module.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\ConstructingSM.h)(0x58B68329)
 I (.\Headers\ByteTransferSM.h)(0x58B683C4)
 I (.\Headers\constants.h)(0x58B68A6F)
+=======
+I (.\Headers\ConstructingSM.h)(0x58B3FC6A)
+I (.\Headers\ByteTransferSM.h)(0x58B47098)
+I (.\Headers\constants.h)(0x58B60656)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\termio.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F6E7B8)
@@ -303,7 +361,7 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\gpio.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\timer.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\interrupt.h)(0x58B3DE56)
 F (.\Source\DrivingAlongTapeSM.c)(0x58B48889)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\drivingalongtapesm.o --omf_browse .\outputs\drivingalongtapesm.crf --depend .\outputs\drivingalongtapesm.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
@@ -333,11 +391,19 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\sysctl.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\pin_map.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\gpio.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\timer.h)(0x58B3DE56)
+<<<<<<< HEAD
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
 I (.\Headers\ConstructingSM.h)(0x58B68329)
 I (.\Headers\DrivingAlongTapeSM.h)(0x58B4297D)
 I (.\Headers\ByteTransferSM.h)(0x58B683C4)
 I (.\Headers\constants.h)(0x58B68A6F)
+=======
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+I (.\Headers\ConstructingSM.h)(0x58B3FC6A)
+I (.\Headers\DrivingAlongTapeSM.h)(0x58B4297D)
+I (.\Headers\ByteTransferSM.h)(0x58B47098)
+I (.\Headers\constants.h)(0x58B60656)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\PWM_Module.h)(0x58B3FC6B)
 I (.\Headers\ADMulti.h)(0x58B3FC6A)
 F (.\Source\ADMulti.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\admulti.o --omf_browse .\outputs\admulti.crf --depend .\outputs\admulti.d)
@@ -355,7 +421,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F6E7B8)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\utils\uartstdio.h)(0x58B3DE7D)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F6E7B8)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (.\Headers\bitdefs.h)(0x58B3FC6A)
@@ -379,12 +445,16 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\gpio.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\timer.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\interrupt.h)(0x58B3DE56)
 I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\pwm.h)(0x58B3DE56)
+<<<<<<< HEAD
 F (.\Source\ShootingSM.c)(0x00000000)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\shootingsm.o --omf_browse .\outputs\shootingsm.crf --depend .\outputs\shootingsm.d)
+=======
+F (.\Source\ShootingSM.c)(0x58B60CD4)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\shootingsm.o --omf_browse .\outputs\shootingsm.crf --depend .\outputs\shootingsm.d)
+>>>>>>> parent of e7c8988... Worked more on SM
 F (.\Headers\Bin_Const.h)(0x58B3FC6A)()
 F (.\Headers\BITDEFS.H)(0x58B3FC6A)()
 F (.\Headers\ES_CheckEvents.h)(0x58B3FC6B)()
 F (.\Headers\uartstdio.h)(0x58B3FC6B)()
-F (.\Headers\ES_Configure.h)(0x58B67C13)()
+F (.\Headers\ES_Configure.h)(0x58B437B5)()
 F (.\Headers\ES_DeferRecall.h)(0x58B3FC6B)()
 F (.\Headers\ES_Events.h)(0x58B3FC6B)()
 F (.\Headers\ES_Framework.h)(0x58B3FC6B)()
@@ -400,20 +470,26 @@ F (.\Headers\ES_Types.h)(0x58B3FC6B)()
 F (.\Headers\EventCheckers.h)(0x58B3FC6B)()
 F (.\Headers\termio.h)(0x58B3FC6B)()
 F (.\Headers\MapKeys.h)(0x58B3FC6B)()
+<<<<<<< HEAD
 F (.\Headers\MasterHSM.h)(0x58B68A6F)()
 F (.\Headers\LOC_HSM.h)(0x58B3FC6B)()
 F (.\Headers\constants.h)(0x58B68A6F)()
+=======
+F (.\Headers\MasterHSM.h)(0x58B3FC6B)()
+F (.\Headers\LOC_HSM.h)(0x58B3FC6B)()
+F (.\Headers\constants.h)(0x58B60656)()
+>>>>>>> parent of e7c8988... Worked more on SM
 F (.\Headers\hardware.h)(0x58B3FC6B)()
-F (.\Headers\ByteTransferSM.h)(0x58B683C4)()
+F (.\Headers\ByteTransferSM.h)(0x58B47098)()
 F (.\Headers\SPI_Module.h)(0x58B478B6)()
-F (.\Headers\ConstructingSM.h)(0x58B68329)()
+F (.\Headers\ConstructingSM.h)(0x58B3FC6A)()
 F (.\Headers\CheckInSM.h)(0x58B441DC)()
 F (.\Headers\DrivingAlongTapeSM.h)(0x58B4297D)()
 F (.\Headers\ShootingSM.h)(0x58B60D8B)()
 F (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib)(0x58B3DE56)()
 F (.\StartUp\startup_rvmdk.S)(0x58B3FC6B)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123--pd "__UVISION_VERSION SETA 523"-o .\outputs\startup_rvmdk.o --depend .\outputs\startup_rvmdk.d)
 F (.\Source\ES_CheckEvents.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\es_checkevents.o --omf_browse .\outputs\es_checkevents.crf --depend .\outputs\es_checkevents.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Events.h)(0x58B3FC6B)
 I (.\Headers\ES_Types.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
@@ -422,7 +498,7 @@ I (.\Headers\ES_General.h)(0x58B3FC6B)
 I (.\Headers\ES_CheckEvents.h)(0x58B3FC6B)
 I (.\Headers\EventCheckers.h)(0x58B3FC6B)
 F (.\Source\ES_DeferRecall.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\es_deferrecall.o --omf_browse .\outputs\es_deferrecall.crf --depend .\outputs\es_deferrecall.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
@@ -443,7 +519,7 @@ I (.\Headers\ES_Timers.h)(0x58B3FC6B)
 I (.\Headers\ES_DeferRecall.h)(0x58B3FC6B)
 I (.\Headers\ES_Queue.h)(0x58B3FC6B)
 F (.\Source\ES_Framework.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\es_framework.o --omf_browse .\outputs\es_framework.crf --depend .\outputs\es_framework.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
@@ -466,7 +542,11 @@ I (.\Headers\ES_LookupTables.h)(0x58B3FC6B)
 I (.\Headers\ES_ServiceHeaders.h)(0x58B3FC6B)
 I (.\Headers\MapKeys.h)(0x58B3FC6B)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
+=======
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+>>>>>>> parent of e7c8988... Worked more on SM
 F (.\Source\ES_LookupTables.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\es_lookuptables.o --omf_browse .\outputs\es_lookuptables.crf --depend .\outputs\es_lookuptables.d)
 I (.\Headers\ES_Types.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
@@ -513,16 +593,20 @@ I (.\Headers\bitdefs.h)(0x58B3FC6A)
 I (.\Headers\Bin_Const.h)(0x58B3FC6A)
 I (.\Headers\ES_Types.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x57F6E7B8)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_General.h)(0x58B3FC6B)
 I (.\Headers\ES_PostList.h)(0x58B3FC6B)
 I (.\Headers\ES_Events.h)(0x58B3FC6B)
 I (.\Headers\ES_ServiceHeaders.h)(0x58B3FC6B)
 I (.\Headers\MapKeys.h)(0x58B3FC6B)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
+=======
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+>>>>>>> parent of e7c8988... Worked more on SM
 F (.\Source\ES_Queue.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\es_queue.o --omf_browse .\outputs\es_queue.crf --depend .\outputs\es_queue.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Queue.h)(0x58B3FC6B)
 I (.\Headers\ES_Types.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F6E7B8)
@@ -537,7 +621,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F6E7B8)
 I (.\Headers\bitdefs.h)(0x58B3FC6A)
 I (.\Headers\Bin_Const.h)(0x58B3FC6A)
 F (.\Source\ES_Timers.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\es_timers.o --omf_browse .\outputs\es_timers.crf --depend .\outputs\es_timers.d)
-I (.\Headers\ES_Configure.h)(0x58B67C13)
+I (.\Headers\ES_Configure.h)(0x58B437B5)
 I (.\Headers\ES_Framework.h)(0x58B3FC6B)
 I (.\Headers\ES_Port.h)(0x58B3FC6B)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)
@@ -558,7 +642,11 @@ I (.\Headers\ES_Timers.h)(0x58B3FC6B)
 I (.\Headers\ES_ServiceHeaders.h)(0x58B3FC6B)
 I (.\Headers\MapKeys.h)(0x58B3FC6B)
 I (.\Headers\LOC_HSM.h)(0x58B3FC6B)
+<<<<<<< HEAD
 I (.\Headers\MasterHSM.h)(0x58B68A6F)
+=======
+I (.\Headers\MasterHSM.h)(0x58B3FC6B)
+>>>>>>> parent of e7c8988... Worked more on SM
 I (.\Headers\ES_LookupTables.h)(0x58B3FC6B)
 F (.\Source\retarget.c)(0x58B3FC6B)(-c --cpu Cortex-M4.fp -D__EVAL -g -O2 --apcs=interwork --split_sections -I C:\ti\TivaWare_C_Series-2.1.0.12573 -I .\Headers --c99-IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\Inc\TI\TM4C123-D__UVISION_VERSION="523" -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1 -DTM4C123GH6PM-o .\outputs\retarget.o --omf_browse .\outputs\retarget.crf --depend .\outputs\retarget.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F6E7B8)

@@ -106,14 +106,12 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					// Get response bytes from LOC
-					if (!NO_LOC){
 					// Set SB1_byte to getSB1_Byte
 					SetSB1_Byte(getSB1_Byte());
 					// Set SB2_byte to getSB2_Byte
 					SetSB2_Byte(getSB2_Byte());
 					// Set SB3_byte to getSB3_Byte
 					SetSB3_Byte(getSB3_Byte());
-					}
 					// Update status variables
 					UpdateStatus();
 					if (TeamColor == GREEN) {
@@ -130,7 +128,11 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					// Set Event2Post Param to TargetStation
 					Event2Post.EventParam = TargetStation;
 					// Post Event2Post to Master
+<<<<<<< HEAD
 					if (!NO_LOC) PostMasterSM(Event2Post);
+=======
+					PostMasterSM(Event2Post);
+>>>>>>> parent of e7c8988... Worked more on SM
 				}
 				// End ES_LOC_COMPLETE block
 			}	
@@ -193,6 +195,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_REORIENT
 				if (CurrentEvent.EventType == ES_REORIENT)
 				{
+					printf("reorient");
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to DrivingAlongTape
@@ -364,8 +367,8 @@ ES_Event DuringGettingTargetStation(ES_Event ThisEvent)
 		// Set Event2Post param to STATUS_COMMAND
 		Event2Post.EventParam = STATUS_COMMAND;
 		// Post Event2Post to LOC_SM
-		if (NO_LOC) printf("Posting Command: Status to LOC\r\n");
-		else PostLOC_SM(Event2Post);	}
+		PostLOC_SM(Event2Post);
+	}
 	// EndIf
 	
 	// Return ReturnEvent
