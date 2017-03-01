@@ -130,7 +130,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					// Set Event2Post Param to TargetStation
 					Event2Post.EventParam = TargetStation;
 					// Post Event2Post to Master
-					if (!NO_LOC) PostMasterSM(Event2Post);
+					if (NO_LOC) PostMasterSM(Event2Post);
 				}
 				// End ES_LOC_COMPLETE block
 			}	
@@ -251,7 +251,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 						// Set Event2Post param to RELOAD
 						Event2Post.EventParam = RELOAD;
 						// Post Event2Post to Master
-						if (!NO_LOC) PostMasterSM(Event2Post);
+						PostMasterSM(Event2Post);
 					}
 					// Else
 					else
