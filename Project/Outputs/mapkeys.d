@@ -1,12 +1,12 @@
 .\outputs\mapkeys.o: Source\MapKeys.c
 .\outputs\mapkeys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\outputs\mapkeys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
+.\outputs\mapkeys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\outputs\mapkeys.o: .\Headers\ES_Configure.h
 .\outputs\mapkeys.o: .\Headers\ES_Framework.h
 .\outputs\mapkeys.o: .\Headers\ES_Port.h
 .\outputs\mapkeys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\outputs\mapkeys.o: .\Headers\termio.h
-.\outputs\mapkeys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\outputs\mapkeys.o: C:\ti\TivaWare_C_Series-2.1.0.12573\utils/uartstdio.h
 .\outputs\mapkeys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\outputs\mapkeys.o: .\Headers\bitdefs.h
@@ -21,3 +21,5 @@
 .\outputs\mapkeys.o: .\Headers\MapKeys.h
 .\outputs\mapkeys.o: .\Headers\LOC_HSM.h
 .\outputs\mapkeys.o: .\Headers\MasterHSM.h
+.\outputs\mapkeys.o: .\Headers\constants.h
+.\outputs\mapkeys.o: .\Headers\ByteTransferSM.h
