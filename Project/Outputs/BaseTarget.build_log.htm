@@ -22,11 +22,10 @@ Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
 C:\Users\adamw_000\Documents\GitHub\The_Framework\Project\UVFrameworkHSMTemplate.uvproj
-Project File Date:  02/27/2017
+Project File Date:  02/28/2017
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
-<<<<<<< HEAD
 Rebuild target 'SPI_Integration'
 compiling EventCheckers.c...
 compiling HSMTemplateMain.c...
@@ -69,27 +68,6 @@ Program Size: Code=11048 RO-data=1184 RW-data=148 ZI-data=2612
 After Build - User command #1: fromelf --bin --output .\Outputs\BaseTarget.bin .\Outputs\BaseTarget.axf
 ".\Outputs\BaseTarget.axf" - 0 Error(s), 3 Warning(s).
 Build Time Elapsed:  00:00:03
-=======
-Build target 'SPI_Integration'
-compiling ShootingSM.c...
-Source\ShootingSM.c(4): error:  #20: identifier "ES_Event" is undefined
-  void StartShootingSM(ES_Event CurrentEvent)
-Source\ShootingSM.c(6): error:  #20: identifier "Set" is undefined
-  	Set CurrentState to AlignToGoal
-Source\ShootingSM.c(6): error:  #65: expected a ";"
-  	Set CurrentState to AlignToGoal
-Source\ShootingSM.c(9): error:  #20: identifier "End" is undefined
-  End StartShootingSM
-Source\ShootingSM.c(9): error:  #147: declaration is incompatible with "void StartShootingSM(<error-type>)"  (declared at line 4)
-  End StartShootingSM
-Source\ShootingSM.c(12): error:  #65: expected a ";"
-  ES_Event RunShootingSM(ES_Event CurrentEvent)
-Source\ShootingSM.c(229): warning: At end of source:  #12-D: parsing restarts here after previous syntax error
-Source\ShootingSM.c: 1 warning, 6 errors
-".\Outputs\BaseTarget.axf" - 6 Error(s), 1 Warning(s).
-Target not created.
-Build Time Elapsed:  00:00:00
->>>>>>> parent of e7c8988... Worked more on SM
 </pre>
 </body>
 </html>

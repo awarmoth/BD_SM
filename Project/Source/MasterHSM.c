@@ -127,14 +127,14 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
+					if (!NO_LOC){
 					// Get response bytes from LOC
 					SB1_Byte = getSB1_Byte();
 					SB2_Byte = getSB2_Byte();
 					SB3_Byte = getSB3_Byte();
-					printf ("SB3:%i\r\n",SB3_Byte);
+					}
 					// Set GameState to getGameState
 					GameState = getGameState();
-					printf("GameState:%i",GameState);
 					// If GameState is WAITING_FOR_START
 					if (GameState == WAITING_FOR_START)
 					{	
@@ -171,11 +171,11 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	
 		// If CurrentState is Constructing
 		case(Constructing):
-			//if (SM_TEST) printf("Master: Constructing\r\n");
+			if (SM_TEST) printf("Master: Constructing\r\n");
 			// Run DuringConstructing and store the output in CurrentEvent
 			CurrentEvent = DuringConstructing(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
-			if (CurrentEvent.EventType == ES_NO_EVENT)
+			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_NORMAL_GAME_COMPLETE
 				if (CurrentEvent.EventType == ES_NORMAL_GAME_COMPLETE)
@@ -193,6 +193,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				else if ((CurrentEvent.EventType == ES_TIMEOUT) &&
 						(CurrentEvent.EventParam == GAME_TIMER))
 				{
+					printf("here");
 					// Post ES_START_FREE_4_ALL to Master
 					ES_Event Event2Post;
 					Event2Post.EventType = ES_START_FREE_4_ALL;
@@ -220,7 +221,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 			// Run DuringConstructing and store the output in CurrentEvent
 			CurrentEvent = DuringConstructing(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
-			if (CurrentEvent.EventType == ES_NO_EVENT)
+			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_FREE_4_ALL_COMPLETE
 				if (CurrentEvent.EventType == ES_FREE_4_ALL_COMPLETE)
@@ -284,6 +285,7 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		if (SM_TEST) printf("Master: Entering Waiting2Start\r\n");
 		// Set TeamColor to getTeamColor
 		TeamColor = getTeamColor();
 		// Turn on respective LEDs
@@ -294,7 +296,8 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 		Byte2Write = STATUS_COMMAND;
 		Event2Post.EventParam = Byte2Write;
 		// Post Event2Post to LOC_HSM
-		PostLOC_SM(Event2Post);
+		if (NO_LOC) printf("Posting Command: Status to LOC\r\n");
+		else PostLOC_SM(Event2Post);
 	}
 	// Return ReturnEvent
 	return ReturnEvent;
@@ -312,6 +315,7 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		if (SM_TEST) printf("Master: Entering Constructing\r\n");
 		// Start one shot timer
 		HWREG(WTIMER3_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
 				
@@ -319,14 +323,17 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 		StartConstructingSM(ThisEvent);
 		
 		// Start GAME_TIMER
-		if (!CheckOff3){
-			ES_Timer_InitTimer(GAME_TIMER,GAME_TIMEOUT);
-		}
+		//ES_Timer_InitTimer(GAME_TIMER,GAME_TIMEOUT);
 	}
 	// Else
+	else if (ThisEvent.EventType == ES_EXIT){
+		if (SM_TEST) printf("Master: Exiting Constructing");
+	}
 	else
 	{
 		// Run ConstructingSM and store output in ReturnEvent
+		if (SM_TEST) printf("Master: Constructing: Running Constructing SM\r\n");
+
 		ReturnEvent = RunConstructingSM(ThisEvent);
 	}
 	// EndIf
@@ -344,12 +351,15 @@ static ES_Event DuringFree4All(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		if (SM_TEST) printf("Master: Entering Free4All\r\n");
 		// Start Free4AllSM
 		//StartFree4AllSM(ThisEvent);
 		// Start FREE_4_ALL_TIMER
 		//ES_Timer_InitTimer(FREE_4_ALL_TIMER, FREE_4_ALL_TIMEOUT);
 	}
-	// Else
+	else if (ThisEvent.EventType == ES_EXIT){
+		if (SM_TEST) printf("Master: Exiting Free4All");
+	}
 	else
 	{
 		// Run Free4AllSM and store output in ReturnEvent
@@ -370,6 +380,8 @@ static ES_Event DuringGameComplete(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		if (SM_TEST) printf("Master: Entering Free4All\r\n");
+		
 		// Turn off hardware/peripherals
 		// Stop functions/idle
 	}
@@ -379,24 +391,30 @@ static ES_Event DuringGameComplete(ES_Event ThisEvent)
 	return ReturnEvent;
 }
 
-void SetSB1_Byte(uint8_t Byte2Write) {
+uint8_t SetSB1_Byte(uint8_t Byte2Write) {
 	SB1_Byte = Byte2Write;
+	return SB1_Byte;
 }
 
-void SetSB2_Byte(uint8_t Byte2Write) {
+uint8_t SetSB2_Byte(uint8_t Byte2Write) {
 	SB2_Byte = Byte2Write;
+	return SB2_Byte;
+
 }
 
-void SetSB3_Byte(uint8_t Byte2Write) {
+uint8_t SetSB3_Byte(uint8_t Byte2Write) {
 	SB3_Byte = Byte2Write;
+	return SB3_Byte;
 }
 
-void SetRS_Byte(uint8_t Byte2Write) {
+uint8_t SetRS_Byte(uint8_t Byte2Write) {
 	RS_Byte = Byte2Write;
+	return RS_Byte;
 }
 
-void SetRR_Byte(uint8_t Byte2Write) {
+uint8_t SetRR_Byte(uint8_t Byte2Write) {
 	RR_Byte = Byte2Write;
+	return RR_Byte;
 }
 
 uint8_t getTeamColor(void) {
