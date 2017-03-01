@@ -1,0 +1,4 @@
+*.o
+Project/Outputs/BaseTarget.bin
+*.htm
+Project/Outputs/BaseTarget.map

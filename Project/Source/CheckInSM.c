@@ -14,6 +14,14 @@
  static uint8_t BadResponseCounter = 0;
  static uint8_t Byte2Write;
 
+ #define MAX_BAD_RESPONSES 10 
+ #define RESPONSE_NOT_READY 0
+ #define RESPONSE_READY 0xAA
+ 
+ #define ACK 0
+ #define NACK 0x03
+ #define INACTIVE 0x02
+
 
 void StartCheckInSM(ES_Event CurrentEvent)
 {
@@ -87,11 +95,9 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					//printf("Got response\r\n");
-					if (!NO_LOC){
 					// Get response bytes from LOC
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
-					}
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					ReportStatus = getReportStatus();
@@ -193,10 +199,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					// Get response bytes from LOC
-					if (!NO_LOC){
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
-					}
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					// Set ReportStatus to getReportStatus
@@ -302,8 +306,8 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (NO_LOC) printf("Posting Command: Report to LOC\r\n");
-		else PostLOC_SM(Event2Post);		// Reinitialize variables
+		PostLOC_SM(Event2Post);
+		// Reinitialize variables
 		BadResponseCounter = 0;
 		ResponseReady = RESPONSE_NOT_READY;
 	}
@@ -333,8 +337,8 @@ ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (NO_LOC) printf("Posting Command: Query to LOC\r\n");
-		else PostLOC_SM(Event2Post);	}
+		PostLOC_SM(Event2Post);
+	}
 	// EndIf
 
 	// Return ReturnEvent
@@ -366,8 +370,8 @@ ES_Event DuringReporting_2(ES_Event ThisEvent)
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (NO_LOC) printf("Posting Command: Report to LOC\r\n");
-		else PostLOC_SM(Event2Post);	}
+		PostLOC_SM(Event2Post);
+	}
 	// EndIf
 	
 	// Return ReturnEvent
@@ -394,8 +398,8 @@ ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (NO_LOC) printf("Posting Command: Query to LOC\r\n");
-		else PostLOC_SM(Event2Post);	}
+		PostLOC_SM(Event2Post);
+	}
 	// EndIf
 
 	// Return ReturnEvent
