@@ -1,11 +1,8 @@
 //module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
 //ShootingState_t: AlignToGoal; 
 
-<<<<<<< HEAD
 static uint8_t Shooting_Timeout_Flag = 0;
 
-=======
->>>>>>> ca8201955cf3ad1ba9ad9d5bd32a64652b222b23
 void StartShootingSM(ES_Event CurrentEvent)  
 {
 	// Set CurrentState to AlignToGoal
@@ -13,7 +10,7 @@ void StartShootingSM(ES_Event CurrentEvent)
 	// Run ShootingSM with CurrentEvent
 	RunShootingSM(CurrentEvent);
 }
-End StartShootingSM
+//End StartShootingSM
 
 
 ES_Event RunShootingSM(ES_Event CurrentEvent)
@@ -41,7 +38,6 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 	switch(CurrentState)
 	{
 		// If CurrentState is AlignToGoal
-<<<<<<< HEAD
                 case (CurrentState == AlignToGoal):
 		{
 			// Run DuringAlignToGoal and store the output in CurrentEvent
@@ -88,32 +84,9 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
                                         CurrentEvent.EventType = ES_NO_EVENT;
 					// Set ShootingTimeoutFlag
                                         Shooting_Timeout_Flag = 1;
-=======
-			// Run DuringAlignToGoal and store the output in CurrentEvent
-		
-			// If CurrentEvent is not ES_NO_EVENT
-				// If CurrentEvent is ES_GOAL_BEACON_DETECTED
-					// Stop rotating
-					// Set MakeTransition to true
-					// Set NextState to Firing
-				// EndIf
-				
-			// Else
-				// Set ReturnEvent to ES_NO_EVENT
-			// EndIf
-		
-		// End AlignToGoal block
-	
-		// If CurrentState is Firing
-	
-			// Run DuringFiring and store the output in CurrentEvent
-		
-			// If CurrentEvent is not ES_NO_EVENT
-				// If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
-					// Transform ReturnEvent to ES_NO_EVENT
-					// Set ShootingTimeoutFlag
->>>>>>> ca8201955cf3ad1ba9ad9d5bd32a64652b222b23
+                                }
 				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
+                                else if
 					// Transform ReturnEvent to ES_NO_EVENT
 					// Set GameTimeoutFlag
 				// Else If CurrentEvent is ES_FIRE_COMPLETE
