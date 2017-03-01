@@ -113,14 +113,13 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					}
 					else if (BadResponseCounter > MAX_BAD_RESPONSES)
 					{ 
-						printf("here");
 						// Transform ReturnEvent to ES_Reorient
 						ReturnEvent.EventType = ES_REORIENT;
 					// Else
 					}
 					else
 					{
-						printf("ReportStatus1 = %i\r\n",ReportStatus);
+						if (SM_TEST) printf("ReportStatus1 = %i\r\n",ReportStatus);
 						// If ReportStatus = ACK
 						if ( ReportStatus == ACK )
 						{
@@ -224,7 +223,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Else
 					else
 					{
-						printf("ReportStatus1 = %i\r\n",ReportStatus);
+						if (SM_TEST) printf("ReportStatus1 = %i\r\n",ReportStatus);
 						// If ReportStatus = ACK
 						if (ReportStatus == ACK)
 						{
@@ -303,7 +302,7 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);
-		printf("Period:%i",getPeriodCode(Period));
+		if (SM_TEST) printf("Period:%i\r\n",getPeriodCode(Period));
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;

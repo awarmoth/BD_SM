@@ -2,12 +2,12 @@
  Header file for keeping track of all constants
 
  ****************************************************************************/
- #define CheckOff3 1
+ #define CheckOff3 0
  #define SM_TEST 1
  #define TEAM_COLOR RED
  #define LOC_TEST 0
  
- #define GAME_TIMEOUT 20*1000 // change to 105? *1000
+ #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
  
  // Commands
  #define STATUS_COMMAND 0xc0

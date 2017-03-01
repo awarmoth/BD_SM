@@ -211,8 +211,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to Shooting
-					if (!CheckOff3) NextState = Shooting;
-					else NextState = GettingTargetStation;
+					NextState = Shooting;
 				}
 				// EndIf
 			}
@@ -549,11 +548,6 @@ void HallEffect_ISR( void )
 	//	Static local variable 8 bit integer counter initialized to 0
 	static uint8_t counter = 0;
 	static uint8_t deltacounter = 0;
-	static uint16_t throwaway = 0;
-	if (throwaway <THROWAWAY){
-		throwaway++;
-		return;
-	}
 	ES_Event PostEvent;
 	uint32_t ThisCapture, CurrentPeriod;
 		
