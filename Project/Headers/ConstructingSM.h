@@ -22,5 +22,8 @@ static ES_Event DuringShooting( ES_Event Event);
 static ES_Event DuringReloading(ES_Event ThisEvent);
 void UpdateStatus( void );
 uint32_t getPeriod( void );
+uint8_t getBallCount(void);
+void SetBallCount(uint8_t count);
+
 
 #endif /*ConstructingSM_H */

@@ -18,11 +18,14 @@
 /*----------------------------- Include Files -----------------------------*/
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "MapKeys.h"
 #include "LOC_HSM.h"
 #include "MasterHSM.h"
+#include "constants.h"
+#include "ByteTransferSM.h"
 
 
 /*----------------------------- Module Defines ----------------------------*/
@@ -118,41 +121,6 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
               break;
 						
 						case '2' :
-							ThisEvent.EventType = ES_EOT;
-							ThisEvent.EventParam = 0;
-							PostLOC_SM(ThisEvent);
-						
-							break;
-						
-						case '3' :
-							ThisEvent.EventType = ES_EOT;
-							ThisEvent.EventParam = 1;
-							PostLOC_SM(ThisEvent);
-							
-							break;
-						
-						case '4' :
-							ThisEvent.EventType = ES_EOT;
-							ThisEvent.EventParam = 2;
-							PostLOC_SM(ThisEvent);
-							
-							break;
-						
-						case '5' :
-							ThisEvent.EventType = ES_EOT;
-							ThisEvent.EventParam = 3;
-							PostLOC_SM(ThisEvent);
-						
-							break;
-						
-						case '6' :
-							ThisEvent.EventType = ES_EOT;
-							ThisEvent.EventParam = 4;
-							PostLOC_SM(ThisEvent);
-						
-							break;
-						
-						case '7' :
 							ThisEvent.EventType = ES_COMMAND;
 							ThisEvent.EventParam = 120;
 							printf("Report Command\r\n");
@@ -160,7 +128,7 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 						
 							break;
 						
-						case '8' :
+						case '3' :
 							
 							ThisEvent.EventType = ES_COMMAND;
 							ThisEvent.EventParam = 112;
@@ -169,12 +137,34 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 						
 							break;
 						
-						case '9' :
-							
+						case '4' :
 							ThisEvent.EventType = ES_LOC_COMPLETE;
 							printf("ES_LOC_COMPLETE\r\n");						
 							PostMasterSM(ThisEvent);
 							break;
+						
+						case '5' :
+							
+							ThisEvent.EventType = ES_LOC_COMPLETE;
+							printf("ES_LOC_COMPLETE: GameStatus = Waiting\r\n");						
+							PostMasterSM(ThisEvent);
+							SetSB3_Byte(getSB3_Byte() & ~GAME_STATUS_MASK);
+							break;
+						
+						case '6' :
+							ThisEvent.EventType = ES_LOC_COMPLETE;
+							printf("ES_LOC_COMPLETE: GameStatus = Game Started\r\n");						
+							PostMasterSM(ThisEvent);
+							SetSB3_Byte(getSB3_Byte() | GAME_STATUS_MASK);
+							break;
+						
+						case '7':
+							ThisEvent.EventType = ES_DRIVE_ALONG_TAPE;
+							ThisEvent.EventParam = rand() % 3 + 1;
+							printf("ES_DRIVE_ALONG_TAPE: Target = %i", ThisEvent.EventParam);
+							PostMasterSM(ThisEvent);
+							break;
+													
 						
 						case 'A':
 							ThisEvent.EventType = ES_ARRIVED_AT_STATION;
@@ -195,7 +185,27 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							ThisEvent.EventType = ES_STATION_DETECTED;
 							printf("ES_STATION_DETECTED\r\n");
 							PostMasterSM(ThisEvent);
-
+							break;
+						
+	
+						case 'Z':
+							ThisEvent.EventType = ES_TIMEOUT;
+							ThisEvent.EventParam = SHOOTING_TIMER;
+							printf("ES_TIMEOUT: SHOOTING_TIMER\r\n");
+							PostMasterSM(ThisEvent);
+							break;
+						case 'X':
+							ThisEvent.EventType = ES_TIMEOUT;
+							ThisEvent.EventParam = GAME_TIMER;
+							printf("ES_TIMEOUT: GAME_TIMER\r\n");
+							PostMasterSM(ThisEvent);
+							break;
+						case 'C':
+							ThisEvent.EventType = ES_TIMEOUT;
+							ThisEvent.EventParam = FREE_4_ALL_TIMER;
+							printf("ES_TIMEOUT: FREE_4_ALL_TIMER\r\n");
+							PostMasterSM(ThisEvent);
+							break;
         }
 
     }

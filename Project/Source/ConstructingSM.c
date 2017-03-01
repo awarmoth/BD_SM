@@ -632,3 +632,11 @@ uint32_t getPeriod( void )
 {
 	return HallSensorPeriod;
 }
+
+uint8_t getBallCount(void) {
+	return BallCount;
+}
+
+void SetBallCount(uint8_t count) {
+	BallCount = count;
+}
