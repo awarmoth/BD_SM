@@ -487,6 +487,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\PWM_Module.c</FilePath>
             </File>
+            <File>
+              <FileName>ShootingSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ShootingSM.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -636,6 +641,11 @@
               <FileName>DrivingAlongTapeSM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\DrivingAlongTapeSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>ShootingSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ShootingSM.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1271,6 +1281,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\PWM_Module.c</FilePath>
             </File>
+            <File>
+              <FileName>ShootingSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ShootingSM.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1420,6 +1435,11 @@
               <FileName>DrivingAlongTapeSM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\DrivingAlongTapeSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>ShootingSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ShootingSM.h</FilePath>
             </File>
           </Files>
         </Group>
