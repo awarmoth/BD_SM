@@ -5,7 +5,7 @@
  #define CheckOff3 0
  #define SM_TEST 1
  #define TEAM_COLOR RED
- #define LOC_TEST 0
+ #define NO_LOC 1
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
  
@@ -50,6 +50,14 @@
  #define ALL_GOALS_ACTIVE 0x07
  #define ALL_STAGES_ACTIVE 0x07
  
+ #define MAX_BAD_RESPONSES 10 
+ #define RESPONSE_NOT_READY 0
+ #define RESPONSE_READY 0xAA
+ 
+ #define ACK 0
+ #define NACK 0x03
+ #define INACTIVE 0x02
+ 
 // Masks
  #define GREEN_SCORE_MASK ~(BIT6HI | BIT7HI)
  #define RED_SCORE_MASK ~(BIT6HI | BIT7HI) 
@@ -57,6 +65,9 @@
  #define GAME_STATUS_RIGHT_SHIFT 7
  #define REPORT_STATUS_MASK (BIT6HI | BIT7HI)
  #define REPORT_STATUS_RIGHT_SHIFT 6
+ #define REPORT_ACK 0
+ #define REPORT_INACTIVE (BIT7HI)
+ #define REPORT_NACK (BIT6HI | BIT7HI)
 
 // Locations
  #define LOCATION_MASK (BIT3HI | BIT2HI | BIT1HI | BIT0HI)
