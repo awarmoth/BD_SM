@@ -50,6 +50,7 @@
 // flag for tracking whether returning to normal PWM from 0 or 100 duty cycle
 static bool restoreA;
 static bool restoreB;
+static bool restoreFW;
 //int for tracking motor direction
 //static int directionA;
 //static int directionB;
@@ -115,6 +116,57 @@ void InitPWM(void) {
 //	directionB = 1;                 
 }
 
+void InitFlywheelPWM(void)
+{
+// Enable the clock to the PWM Module
+	HWREG(SYSCTL_RCGCPWM) |= SYSCTL_RCGCPWM_R0;
+	
+	// Enable the clock to Port D
+	HWREG(SYSCTL_RCGCGPIO) |= SYSCTL_RCGCGPIO_R3;
+	
+	// Select the system clock/32
+	HWREG(SYSCTL_RCC) = (HWREG(SYSCTL_RCC) & ~SYSCTL_RCC_PWMDIV_M) | (SYSCTL_RCC_USEPWMDIV | SYSCTL_RCC_PWMDIV_32);
+	
+	// Make sure that the PWM module clock has gotten going
+	while ((HWREG(SYSCTL_PRPWM) & SYSCTL_PRPWM_R0) != SYSCTL_PRPWM_R0)
+		;
+	
+	// Disable the PWM generator while initializing
+	// We are using PWM generator 3
+	HWREG(PWM0_BASE+PWM_O_3_CTL) = 0;
+	
+	restoreFW = true;
+	//restoreB = true;
+	
+	
+	// Set generator to go to 1 at rising B, 0 on falling 
+	HWREG(PWM0_BASE+PWM_O_3_GENB) = (PWM_3_GENB_ACTCMPBU_ONE | PWM_3_GENB_ACTCMPBD_ZERO );
+	
+	// Set the load to ½ the desired period of 5 ms since going up and down
+	HWREG(PWM0_BASE+PWM_O_3_LOAD) = ((PWM_LOAD_VALUE)) >> 1;
+	
+		// Set the initial duty cycle on B to 50%
+	HWREG(PWM0_BASE+PWM_O_3_CMPB) = HWREG(PWM0_BASE+PWM_O_3_LOAD)>>1;
+	
+	// Enable the PWM outputs
+	HWREG(PWM0_BASE+PWM_O_ENABLE) |= (PWM_ENABLE_PWM7EN);
+	
+	// Select the alternate function for PD1
+	HWREG(GPIO_PORTD_BASE+GPIO_O_AFSEL) |= (BIT1HI);
+	
+	// Choose to map PWM to those pins
+	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) & 0Xffffff0f) + (4<<(1*BitsPerNibble)); 
+	
+	// Enable pin1 on Port D as digital output
+	HWREG(GPIO_PORTD_BASE+GPIO_O_DEN) |= (BIT1HI);
+	
+	// Set the up/down count mode
+	// Enable the PWM generator
+	// Make generator updates locally synchronized to zero count
+	HWREG(PWM0_BASE+PWM_O_3_CTL) = (PWM_0_CTL_MODE | PWM_0_CTL_ENABLE | PWM_0_CTL_GENBUPD_LS);
+
+}
+
 void SetDutyA(uint8_t duty) {
 	// New Value for comparator to set duty cycle
 //	duty*=9/10;
@@ -173,6 +225,33 @@ void SetDutyB(uint8_t duty) {
 	}
 }
 
+
+void SetFlywheelDuty(uint8_t duty) {
+		// New Value for comparator to set duty cycle
+	static uint32_t newCmp;
+
+	newCmp = HWREG(PWM0_BASE+PWM_O_3_LOAD)*(100-duty)/100;
+
+	if (duty == 100 | duty == 0) {
+		restoreFW = true;
+		if (duty == 100) {
+			// To program 100% DC, simply set the action on Zero to set the output to one
+			HWREG( PWM0_BASE+PWM_O_3_GENB) = PWM_3_GENB_ACTZERO_ONE;
+		} else {
+			// To program 0% DC, simply set the action on Zero to set the output to zero
+			HWREG( PWM0_BASE+PWM_O_3_GENB) = PWM_3_GENB_ACTZERO_ZERO;
+		}
+	} else {
+		// if returning from 0 or 100
+		if (restoreFW) {
+			restoreFW = false;
+			// restore normal operation
+			HWREG( PWM0_BASE+PWM_O_3_GENB) = (PWM_3_GENB_ACTCMPBU_ONE | PWM_3_GENB_ACTCMPBD_ZERO );
+		}
+		// write new comparator value to register
+		HWREG( PWM0_BASE+PWM_O_3_CMPB) = newCmp;
+	}
+}
 //void ChangeDirectionA(void) {
 //	directionA *=-1;
 //	if (directionA == -1) {
