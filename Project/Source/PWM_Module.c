@@ -54,8 +54,8 @@ static bool restoreFW;
 //int for tracking motor direction
 //static int directionA;
 //static int directionB;
-static uint8_t LastDirA=0;
-static uint8_t LastDirB=0;
+static uint8_t LastDirA=1;
+static uint8_t LastDirB=1;
 
 
 void InitPWM(void) {

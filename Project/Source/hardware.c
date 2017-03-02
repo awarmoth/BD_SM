@@ -55,9 +55,7 @@ void InitializePins(void) {
 	Init_Beacon_Receiver();
 	InitPWM();
 	InitFlywheelPWM();
-	//SetFlywheelDuty(0);
-	SetDutyA(0);
-	SetDutyB(0);
+	SetFlywheelDuty(0);
 	MagneticTimerInit();
 	OneShotTimerInit();
 	LoadingMotorInit();
