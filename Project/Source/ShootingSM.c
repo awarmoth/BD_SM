@@ -1,7 +1,7 @@
 //module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
 //ShootingState_t: AlignToGoal; 
 
-static uint8_t Shooting_Timeout_Flag = 0;
+static bool Shooting_Timeout_Flag;
 
 void StartShootingSM(ES_Event CurrentEvent)  
 {
@@ -38,18 +38,18 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 	switch(CurrentState)
 	{
 		// If CurrentState is AlignToGoal
-                case (CurrentState == AlignToGoal):
+        case (CurrentState == AlignToGoal):
 		{
 			// Run DuringAlignToGoal and store the output in CurrentEvent
 			CurrentEvent = DuringAlignToGoal(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
-                        if (CurrentEvent.EventType != ES_NO_EVENT)
+            if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_GOAL_BEACON_DETECTED
-                                if (CurrentEvent.EventType == ES_GOAL_BEACON_DETECTED)
+                if (CurrentEvent.EventType == ES_GOAL_BEACON_DETECTED)
 				{
 					// Stop rotating
-                                        //ROTATE//////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //ROTATE//////////////////////////////////////////////////////////////////////////////////////////////////////
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to Firing
@@ -61,12 +61,12 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-                                ReturnEven.EventType = ES_NO_EVENT;
-			// EndIf
+                ReturnEvent.EventType = ES_NO_EVENT;
+				// EndIf
 			}
 		
-		// End AlignToGoal block
-                break;
+			// End AlignToGoal block
+            break;
 		}
 	
 		// If CurrentState is Firing

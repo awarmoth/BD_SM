@@ -253,7 +253,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 						Controller = CONTROLLER_OFF;
 						/*****************Stop driving******************/
 						SetDutyA(0);
-						SetDutyA(0);
+						SetDutyB(0);
 						
 						// Set ReturnEvent to ES_ArrivedAtStation
 						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
@@ -304,7 +304,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					Controller = CONTROLLER_OFF;
 					/*****************Stop driving******************/
 					SetDutyA(0);
-					SetDutyA(0);
+					SetDutyB(0);
 					
 					// Set ReturnEvent to ES_ArrivedAtReload	
 					ReturnEvent.EventType = ES_ARRIVED_AT_RELOAD;
@@ -321,6 +321,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 			}
 			// Endf
 		}
+		break;
 		// End DrivingToReload block
 	}//end switch
 		
