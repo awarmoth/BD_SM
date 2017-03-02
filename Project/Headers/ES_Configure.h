@@ -29,7 +29,7 @@
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 3
+#define NUM_SERVICES 4
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service.
@@ -79,11 +79,11 @@
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public function prototypes
-#define SERV_3_HEADER "TestHarnessService3.h"
+#define SERV_3_HEADER "FiringService.h"
 // the name of the Init function
-#define SERV_3_INIT InitTestHarnessService3
+#define SERV_3_INIT InitFiringService
 // the name of the run function
-#define SERV_3_RUN RunTestHarnessService3
+#define SERV_3_RUN RunFiringService
 // How big should this services Queue be?
 #define SERV_3_QUEUE_SIZE 3
 #endif
@@ -279,7 +279,8 @@ typedef enum {  ES_NO_EVENT = 0,
 								ES_NORMAL_GAME_COMPLETE,
 								ES_FIRE_COMPLETE,
 								ES_TAPE_DETECTED,
-								ES_FIRE
+								ES_FIRE,
+								ES_GOAL_BEACON_DETECTED
 								} ES_EventTyp_t ;
 
 /****************************************************************************/
@@ -332,7 +333,7 @@ typedef enum {  ES_NO_EVENT = 0,
 #define TIMER2_RESP_FUNC PostMasterSM
 #define TIMER3_RESP_FUNC PostMasterSM
 #define TIMER4_RESP_FUNC PostMasterSM
-#define TIMER5_RESP_FUNC TIMER_UNUSED
+#define TIMER5_RESP_FUNC PostFiringService
 #define TIMER6_RESP_FUNC TIMER_UNUSED
 #define TIMER7_RESP_FUNC TIMER_UNUSED
 #define TIMER8_RESP_FUNC TIMER_UNUSED

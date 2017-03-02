@@ -16,6 +16,6 @@ typedef enum { AlignToGoal, Firing, WaitForShotResult, WaitForScoreUpdate, Align
 ES_Event RunShootingSM( ES_Event CurrentEvent );
 void StartShootingSM ( ES_Event CurrentEvent );
 void setGameTimeoutFlag(bool flag);
-void getGameTimeoutFlag(void);
+bool getGameTimeoutFlag(void);
 
 #endif /*ShootingSM_H */

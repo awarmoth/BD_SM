@@ -4,6 +4,49 @@
 #include "MasterHSM.h"
 #include "FiringService.h"
 #include "LOC_HSM.h"
+#include "ShootingSM.h"
+#include "constants.h"
+#include "MasterHSM.h"
+#include "SPI_Module.h"
+#include "ByteTransferSM.h"
+#include "LOC_HSM.h"
+#include "ConstructingSM.h"
+#include "DrivingAlongTapeSM.h"
+#include "hardware.h"
+#include "FiringService.h"
+
+#include "constants.h"
+
+#include <stdint.h>
+#include <stdbool.h>
+#include "termio.h"
+
+#include "ES_Configure.h"
+#include "ES_Framework.h"
+#include "ES_DeferRecall.h"
+
+// the headers to access the GPIO subsystem
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_sysctl.h"
+#include "inc/hw_timer.h"
+#include "inc/hw_nvic.h"
+
+
+// the headers to access the TivaWare Library
+#include "driverlib/sysctl.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/gpio.h"
+#include "driverlib/timer.h"
+#include "driverlib/interrupt.h"
+
+#include "BITDEFS.H"
+#include <Bin_Const.h>
+
+#ifndef ALL_BITS
+#define ALL_BITS (0xff<<2)
+#endif
 
 static bool ExitShootingFlag;
 static bool GameTimeoutFlag = false;
@@ -55,7 +98,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 	switch(CurrentState)
 	{
 		// If CurrentState is AlignToGoal
-        case (CurrentState == AlignToGoal):
+        case (AlignToGoal):
 		{
 			// Run DuringAlignToGoal and store the output in CurrentEvent
 			CurrentEvent = DuringAlignToGoal(CurrentEvent);
@@ -66,7 +109,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
                 if (CurrentEvent.EventType == ES_GOAL_BEACON_DETECTED) //MAY NEED TO ADD A GUARD CONDITION WITH A TIMER TO MAKE SURE FLYWHEEL IS AT DESIRED SPEED
 				{
 					// Stop rotating
-                    //STOP ROTATE//////////////////////////////////////////////////////////////////////////////////////////////////////
+					SetMotorController(STOP_DRIVING);
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to Firing
@@ -103,7 +146,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
                     ExitShootingFlag = true;
                 }
 				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
-                else if((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == NORMAL_GAME_TIMER))
+                else if((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == GAME_TIMER))
 				{
 					// Transform ReturnEvent to ES_NO_EVENT to consume it
 					ReturnEvent.EventType = ES_NO_EVENT;
@@ -169,7 +212,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent.EventType == ES_NO_EVENT;
+				ReturnEvent.EventType = ES_NO_EVENT;
 			}
 			// EndIf
 			break;
@@ -202,7 +245,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					uint8_t NewScore; // = getScore //how about changing getGreenScore and getRedScore to getScore(teamcolor)?
 					
 					// If NewScore = Score
-					if(NewScore = Score)
+					if(NewScore == Score)
 					{
 						// Set NextState to Firing
 						NextState = Firing;
@@ -240,14 +283,14 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 				if(CurrentEvent.EventType == ES_TAPE_DETECTED)
 				{
 					// Transform ReturnEvent to ES_SHOOTING_COMPLETE
-					ReturnEvent.EventType = ES_SHOOTING_COMPLETE)
+					ReturnEvent.EventType = ES_SHOOTING_COMPLETE;
 					// If GameTimeoutFlag Set
 					if(GameTimeoutFlag)
 					{
 						// Post ES_NORMAL_GAME_COMPLETE to Master
 						ES_Event NewEvent;
 						NewEvent.EventType = ES_NORMAL_GAME_COMPLETE;
-						PostMasterHSM(NewEvent);
+						PostMasterSM(NewEvent);
 					}// EndIf
 				// EndIf
 				}
@@ -272,7 +315,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		RunShootingSM(CurrentEvent);
 		
 		// Set CurrentState to NextState
-		CurrentEvent = NextState;
+		CurrentState = NextState;
 		// Run ShootingSM with EntryEvent to allow lower level SMs to enter
 		RunShootingSM(EntryEvent);
 	}// EndIf
@@ -295,6 +338,12 @@ static ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Start rotating // direction based on team color
+		uint8_t TeamColor = getTeamColor();
+		if (TeamColor == GREEN) {
+			SetMotorController(ROTATE_CCW);
+		} else {
+			SetMotorController(ROTATE_CW);
+		}
 		// Set OldScore to getScore
 		//reset exit flag
 		ExitShootingFlag = false;
@@ -312,7 +361,7 @@ static ES_Event DuringFiring(ES_Event ThisEvent)
 	// local variable ReturnEvent
 	ES_Event ReturnEvent;
 	// local variable Event2Post
-	Es_Event Event2Post;
+	ES_Event Event2Post;
 	// Initialize ReturnEvent to ThisEvent
 	ReturnEvent = ThisEvent;
 	
@@ -343,7 +392,8 @@ static ES_Event DuringWaitForShotResult(ES_Event ThisEvent)
 	{
 		// Start SHOT_RESULT_TIMER
 		ES_Timer_InitTimer(SHOT_RESULT_TIMER, BALL_AIR_TIME);
-	} EndIf
+	} 
+//	EndIf
 	
 	// Return ReturnEvent
 	return ReturnEvent;
@@ -368,7 +418,7 @@ static ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventParam = Byte2Write;
 		Event2Post.EventType = ES_COMMAND;
-		PostLOC_HSM(Event2Post);
+		PostLOC_SM(Event2Post);
 	}
 	// EndIf
 	
@@ -387,19 +437,25 @@ static ES_Event DuringAlignToTape(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		// Start rotating // direction based on team color, opposite of AlignToGoal
+		uint8_t TeamColor = getTeamColor();
+		if (TeamColor == GREEN) {
+			SetMotorController(ROTATE_CW);
+		} else {
+			SetMotorController(ROTATE_CCW);
+		}
+		// direction based on team color, opposite of AlignToGoal
 	}// EndIf
 	
 	// Return ReturnEvent
 	return ReturnEvent;
 }
 
-void setGameTimeoutFlag(bool flag);
+void setGameTimeoutFlag(bool flag)
 {
 	GameTimeoutFlag = flag;
 }
 
-void getGameTimeoutFlag(void);
+bool getGameTimeoutFlag(void)
 {
 	return GameTimeoutFlag;
 }

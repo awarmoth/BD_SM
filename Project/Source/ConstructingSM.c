@@ -3,6 +3,7 @@
 #include "LOC_HSM.h"
 #include "DrivingAlongTapeSM.h"
 #include "PWM_Module.h"
+#include "hardware.h"
 
 #include "ConstructingSM.h"
 #include "ByteTransferSM.h"
@@ -395,7 +396,7 @@ ES_Event DuringDrivingAlongTape(ES_Event ThisEvent)
 		RunDrivingAlongTapeSM(ThisEvent);
 		SetDutyA(0);
 		SetDutyB(0);
-		SetController(CONTROLLER_OFF);
+		SetMotorController(STOP_DRIVING);
 	// Else
 	}
 	else
@@ -632,12 +633,4 @@ void HallEffectOneShotTimer_ISR( void )
 uint32_t getPeriod( void )
 {
 	return HallSensorPeriod;
-}
-
-uint8_t getBallCount(void) {
-	return BallCount;
-}
-
-void SetBallCount(uint8_t count) {
-	BallCount = count;
 }

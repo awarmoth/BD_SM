@@ -2,16 +2,16 @@
 .\outputs\hardware.o: .\Headers\ES_Configure.h
 .\outputs\hardware.o: .\Headers\ES_Framework.h
 .\outputs\hardware.o: .\Headers\ES_Port.h
-.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdio.h
+.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h
 .\outputs\hardware.o: .\Headers\termio.h
-.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdlib.h
 .\outputs\hardware.o: C:\ti\TivaWare_C_Series-2.1.0.12573\utils/uartstdio.h
-.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdarg.h
 .\outputs\hardware.o: .\Headers\bitdefs.h
 .\outputs\hardware.o: .\Headers\Bin_Const.h
 .\outputs\hardware.o: .\Headers\ES_Types.h
-.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\outputs\hardware.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdbool.h
 .\outputs\hardware.o: .\Headers\ES_General.h
 .\outputs\hardware.o: .\Headers\ES_CheckEvents.h
 .\outputs\hardware.o: .\Headers\ES_PostList.h
@@ -32,3 +32,4 @@
 .\outputs\hardware.o: .\Headers\constants.h
 .\outputs\hardware.o: .\Headers\ADMulti.h
 .\outputs\hardware.o: .\Headers\PWM_Module.h
+.\outputs\hardware.o: .\Headers\MasterHSM.h

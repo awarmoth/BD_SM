@@ -71,6 +71,7 @@
 #include "PWM_Module.h"
 #include "ADMulti.h"
 #include "DrivingAlongTapeSM.h"
+#include "hardware.h"
 
 /* include header files for this state machine as well as any machines at the
    next lower level in the hierarchy that are sub-machines to this machine

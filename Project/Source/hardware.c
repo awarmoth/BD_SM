@@ -30,15 +30,13 @@ static void AD_Init(void);
 static void MagneticTimerInit(void);
 static void OneShotTimerInit(void);
 
-static void Controller = CONTROLLER_OFF;
-static void LastController = POSITION_CONTROLLER;
-static void LeftCommand = 0;
-static void RightCommand = 0;
-static void RightResonanceSensor = FORWARD_RIGHT_RESONANCE_AD;
-static void LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
-static void TapeWatchFlag = 0;
-static void LastRightResonanceVal;
-static void LastLeftResonanceVal;
+static uint8_t Controller = CONTROLLER_OFF;
+static uint8_t LastController = POSITION_CONTROLLER;
+static uint8_t LeftCommand = 0;
+static uint8_t RightCommand = 0;
+static uint8_t RightResonanceSensor = FORWARD_RIGHT_RESONANCE_AD;
+static uint8_t LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
+static uint8_t TapeWatchFlag = 0;
 static uint32_t RightResonanceHistory[TAPE_WATCH_WINDOW] = {0};
 static uint32_t LeftResonanceHistory[TAPE_WATCH_WINDOW] = {0};
 
@@ -202,7 +200,7 @@ static void OneShotTimerInit(void)
 }
 
 
-void Controller_ISR(void)
+void Motor_Controller_ISR(void)
 {
 	// printf("Averaged Period: %i\r\n", getPeriod());
 	//clear interrupt
@@ -230,7 +228,7 @@ void Controller_ISR(void)
 	//else if desired control is velocity 
 	else if (Controller == VELOCITY_CONTROLLER)
 	{
-		static unit8_t counter = 0;
+		static uint8_t TapeCounter = 0;
 		// if the last controller was not velocity
 		if (LastController != VELOCITY_CONTROLLER)
 		{
@@ -244,7 +242,7 @@ void Controller_ISR(void)
 		if (TapeWatchFlag == 1)
 		{
 			// shift the resonance sensor history
-			for (uint8_t i = (TAPE_WATCH_WINDOW - 1); i--; i > 0)
+			for (uint8_t i = (TAPE_WATCH_WINDOW - 1); i > 0 ; i--)
 			{
 				RightResonanceHistory[i] = RightResonanceHistory[i-1];
 				LeftResonanceHistory[i] = LeftResonanceHistory[i-1];
@@ -268,7 +266,7 @@ void Controller_ISR(void)
 				uint32_t NewLeftAverage = 0;
 				uint32_t OldLeftAverage = 0;
 				// calculate the average of the latest and oldest periods
-				for (uint8_t i = 0; i++; i < (uint8_t)(TAPE_WATCH_WINDOW/2))
+				for (uint8_t i = 0; i < (uint8_t)(TAPE_WATCH_WINDOW/2);i++)
 				{
 					NewRightAverage += RightResonanceHistory[i];
 					OldRightAverage += RightResonanceHistory[i+(uint8_t)(TAPE_WATCH_WINDOW/2)];
@@ -290,7 +288,7 @@ void Controller_ISR(void)
 					// post a tape detected event
 					ES_Event ThisEvent;
 					ThisEvent.EventType = ES_TAPE_DETECTED;
-					PostMasterHSM(ThisEvent);
+					PostMasterSM(ThisEvent);
 				}
 			}
 		}
@@ -401,7 +399,7 @@ void SetMotorController(uint8_t control){
 		SetDirectionA(FORWARD_DIR);
 		SetDirectionB(FORWARD_DIR);
 		RightResonanceSensor = FORWARD_RIGHT_RESONANCE_AD;
-		LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD
+		LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
 		Controller = POSITION_CONTROLLER;
 	}
 	else if (control == DRIVE_ON_TAPE_REVERSE)
@@ -409,7 +407,7 @@ void SetMotorController(uint8_t control){
 		SetDirectionA(REVERSE_DIR);
 		SetDirectionB(REVERSE_DIR);
 		RightResonanceSensor = REVERSE_RIGHT_RESONANCE_AD;
-		LeftResonanceSensor = REVERSE_LEFT_RESONANCE_AD
+		LeftResonanceSensor = REVERSE_LEFT_RESONANCE_AD;
 		Controller = POSITION_CONTROLLER;
 	}
 	else if (control == STOP_DRIVING)
@@ -427,7 +425,7 @@ void FindTape(void)
 	ADC_MultiRead(TapeVals);
 	uint32_t RightResonanceVal = TapeVals[RightResonanceSensor];
 	uint32_t LeftResonanceVal = TapeVals[LeftResonanceSensor];
-	for (uint8_t i = 0; i++; i <= TAPE_WATCH_WINDOW)
+	for (uint8_t i = 0; i <= TAPE_WATCH_WINDOW;i++)
 	{
 		RightResonanceHistory[i] = RightResonanceVal;
 		LeftResonanceHistory[i] = LeftResonanceVal;

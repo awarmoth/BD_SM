@@ -1,30 +1,75 @@
 //module level variables: MyPriority, CurrentState
-//FiringState_t: Waiting, MovingLatchDown, MovingPusherUp, MovingPusherDown, MovingLatchUp, SendingUp, SendingDown, Idling
+//FiringState_t: WaitingFire, SendingUp, SendingDown, Idling
 //Module level functions: InitLoadServo, SendLoadServo
 //Module defines: LATCH_SERVO, LATCH_DOWN, LATCH_DOWN_TIME, LATCH_UP, LATCH_UP_TIME, LATCH_SERVO_TIMER, PUSHER_SERVO, PUSHER_DOWN, PUSHER_DOWN_TIME, PUSHER_UP
 //PUSHER_UP_TIME, PUSHER_SERVO_TIMER, LOAD_SERVO_UP, LOAD_SERVO_DOWN, LOAD_UP_TIME, LOAD_WAIT_TIME, LOAD_DOWN_TIME, LOAD_SERVO_TIMER
+
+#include "MasterHSM.h"
+#include "SPI_Module.h"
+#include "ByteTransferSM.h"
+#include "LOC_HSM.h"
+#include "ConstructingSM.h"
+#include "DrivingAlongTapeSM.h"
+#include "hardware.h"
+#include "FiringService.h"
+
+#include "constants.h"
+
+#include <stdint.h>
+#include <stdbool.h>
+#include "termio.h"
+
+#include "ES_Configure.h"
+#include "ES_Framework.h"
+#include "ES_DeferRecall.h"
+
+// the headers to access the GPIO subsystem
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_sysctl.h"
+#include "inc/hw_timer.h"
+#include "inc/hw_nvic.h"
+
+
+// the headers to access the TivaWare Library
+#include "driverlib/sysctl.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/gpio.h"
+#include "driverlib/timer.h"
+#include "driverlib/interrupt.h"
+
+#include "BITDEFS.H"
+#include <Bin_Const.h>
+
+#ifndef ALL_BITS
+#define ALL_BITS (0xff<<2)
+#endif
+
+// readability defines
+
+#include "BITDEFS.H"
 
 #define LOAD_SERVO_UP 180
 #define LOAD_SERVO_DOWN 0
 #define LOAD_UP_TIME 500
 #define LOAD_WAIT_TIME 1000
 #define LOAD_DOWN_TIME 500
-#define LOAD_SERVO_TIMER 3
 
 
 static uint8_t MyPriority;
 static FiringState_t CurrentState;
 
 static void InitLoadServo(void);
-static void SendLoadServo(void);
+static void SendLoadServo(uint8_t position);
 
 
 bool InitFiringService(uint8_t Priority)
 {
 	// Initialize MyPriority to Priority
 	MyPriority = Priority;
-	//Initialize CurrentState to Waiting
-	CurrentState = Waiting;
+	//Initialize CurrentState to WaitingFire
+	CurrentState = WaitingFire;
 	
 	//Initialize the PWM mode for the servos
 	InitLoadServo();
@@ -58,8 +103,8 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 	
 	switch(CurrentState)
 	{
-		// If CurrentState is Waiting
-		case Waiting:
+		// If CurrentState is WaitingFire
+		case WaitingFire:
 		{
 			// If ThisEvent is ES_FIRE
 			if(ThisEvent.EventType == ES_FIRE)
@@ -72,7 +117,7 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 				NextState = SendingUp;
 			}// EndIf
 			break;
-		} //End Waiting block
+		} //End WaitingFire block
 	
 		// If CurrentState is SendingUp
 		case SendingUp:
@@ -113,10 +158,10 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 			{
 				//Post ES_FIRE_COMPLETE to MasterHSM
 				ES_Event NewEvent;
-				NewEvent.EventType == ES_FIRE_COMPLETE;
-				PostMasterHSM(NewEvent);
-				// Set NextState to Waiting
-				NextState = Waiting;
+				NewEvent.EventType = ES_FIRE_COMPLETE;
+				PostMasterSM(NewEvent);
+				// Set NextState to WaitingFire
+				NextState = WaitingFire;
 			}// EndIf
 			break;
 		}// End SendingDown block
