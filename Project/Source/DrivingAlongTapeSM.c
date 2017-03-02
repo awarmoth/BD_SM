@@ -96,7 +96,6 @@ static DrivingState_t CurrentState;
 static uint8_t LastStation = INITIAL_STATION;
 static uint8_t TargetStation;
 static int8_t Direction;
-static uint8_t Controller = CONTROLLER_OFF;
 
 
 /*------------------------------ Module Code ------------------------------*/
@@ -250,7 +249,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 						MakeTransition = true;
 						
 						/*******Disable wire following control law********/
-						Controller = CONTROLLER_OFF;
+						SetMotorController(STOP_DRIVING);
 						/*****************Stop driving******************/
 						SetDutyA(0);
 						SetDutyA(0);
@@ -301,7 +300,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					MakeTransition = true;
 					
 					/*******Disable wire following control law********/
-					Controller = CONTROLLER_OFF;
+					SetMotorController(STOP_DRIVING);
 					/*****************Stop driving******************/
 					SetDutyA(0);
 					SetDutyA(0);
@@ -422,7 +421,7 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Turn on Controller
-		Controller = POSITION_CONTROLLER;
+		SetMotorController(DRIVE_ON_TAPE_FORWARD);
 	}
 	// EndIf
 	
@@ -455,7 +454,7 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 			// Turn on Controller
-		Controller = POSITION_CONTROLLER;
+		SetMotorController(DRIVE_ON_TAPE_FORWARD);
 	}
 	// EndIf
 	
@@ -464,7 +463,7 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	{
 		// Set LastStation to supply depot
 		LastStation = SUPPLY_DEPOT;
-		Controller = CONTROLLER_OFF;
+		SetMotorController(STOP_DRIVING);
 	}
 	// EndIf
 	
@@ -477,87 +476,3 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	return ReturnEvent;
 }
 
-void Controller_ISR(void)
-{
-	// printf("Averaged Period: %i\r\n", getPeriod());
-	//clear interrupt
-	HWREG(WTIMER1_BASE+TIMER_O_ICR)=TIMER_ICR_TATOCINT;
-	static float LastError_POS = 0;
-	static float LastControl_POS = 0;
-	static float Kp_POS = 0.1;
-	static float Kd_POS = 0.005;
-	int8_t LeftControl = 0;
-	int8_t RightControl = 0;
-	//write requested commands
-	//if desired control is no controller
-	if (Controller == CONTROLLER_OFF)
-	{
-		//stop motors
-		SetDutyA(0);
-		SetDutyB(0);
-	}
-	//if desired control strategy is velocity control
-		//error is command minus RPM
-		//control is u[k]=(Kp+KiT/2)e[k]-(KiT/2-Kp)e[k-1]+u[k-1]
-		//update previous errors and controls
-		//if control is greater than nominal
-			//control equals nominal
-			//update last control as nominal
-	//write control to motors
-	//else if desired control strategy is position control
-	else if (Controller == POSITION_CONTROLLER)
-	{
-		//read sensor values
-		uint32_t MotorVals[2];
-		ADC_MultiRead(MotorVals);
-		float RightVal = MotorVals[0];
-		float LeftVal = MotorVals[1];
-		//error is the difference between the command and (Left - Right) (error is positive for rightward drift)
-		float Error = COMMAND_DIFF - (LeftVal - RightVal);
-		//control is u[k]=(Kp+2Kd/T)*e[k]+(Kp-2Kd/T)e[k-1]-u[k-2]
-		float Control = (Kp_POS + Kd_POS)*Error + (Kp_POS - Kd_POS)*LastError_POS-LastControl_POS;
-		//if control is positive, want L-R to increase: slow L
-		if (Control > 0)
-		{
-			//left control is the nominal - control
-			LeftControl = LEFT_MAX_DUTY - Control;
-			//right control is the nominal
-			RightControl = RIGHT_MAX_DUTY;
-			//if the left control is < 0
-			if (LeftControl<0)
-			{
-				//left control is 0
-				LeftControl = 0;
-				//update control as nominal value
-				Control = LEFT_MAX_DUTY;
-			}
-		}
-		//else if control is negative, want L-R to decrease: slow R
-		else if (Control < 0)
-		{
-			//left control is the nominal
-			LeftControl = LEFT_MAX_DUTY;
-			//right control is the nominal + control
-			RightControl = RIGHT_MAX_DUTY + Control;
-			//if the right control is < 0
-			if (RightControl < 0)
-			{
-				//right control is 0
-				RightControl = 0;
-				//update last control as the nominal*-1
-				Control = -1*RIGHT_MAX_DUTY;
-			}
-		}
-		//update previous errors and controls
-		LastControl_POS = Control;
-		LastError_POS = Error;
-		//write control values (A is Right, B is Left)
-		//printf("%d, %d\r\n", (uint16_t)RightVal, (uint16_t)LeftVal);
-		SetDutyA((uint8_t)RightControl);
-		SetDutyB((uint8_t)LeftControl);
-	}
-}
-
-void SetController(uint8_t control){
-	Controller = control;
-}
