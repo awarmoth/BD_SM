@@ -202,8 +202,11 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_TAPE_DETECTED");
 							PostMasterSM(ThisEvent);
 							break;
-						
-						
+						case 'E':
+							ThisEvent.EventType = ES_FIRE;
+							printf("ES_FIRE");
+							PostMasterSM(ThisEvent);
+							break;
 						
 						case 'A':
 							ThisEvent.EventType = ES_ARRIVED_AT_STATION;
@@ -264,27 +267,15 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_TIMEOUT: SHOT_RESULT_TIMER\r\n");
 							PostMasterSM(ThisEvent);
 							break;
+						case 'B':
+							ThisEvent.EventType = ES_TIMEOUT;
+							ThisEvent.EventParam = LOAD_SERVO_TIMER;
+							printf("ES_TIMEOUT: LOAD_SERVO_TIMER\r\n");
+							PostMasterSM(ThisEvent);
+							break;
         }
 
     }
     
   return ReturnEvent;
 }
-
-//								ES_START,
-//								ES_TEAM_SWITCH,
-//								ES_DRIVE_ALONG_TAPE,
-//								ES_ARRIVED_AT_STATION,
-//								ES_ARRIVED_AT_RELOAD,
-//								ES_REORIENT,
-//								ES_GOAL_READY,
-//								ES_SHOOTING_COMPLETE,
-//								ES_RELOAD_COMPLETE,
-//								ES_RELOAD_START,
-//								ES_NORM_GAME_COMPLETE,
-//								ES_STATION_DETECTED,
-//								ES_FRONT_BUMP_DETECTED,
-//								ES_FREE_4_ALL_COMPLETE,
-//								ES_START_FREE_4_ALL,
-//								ES_NORMAL_GAME_COMPLETE
-

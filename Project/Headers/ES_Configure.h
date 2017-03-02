@@ -278,7 +278,8 @@ typedef enum {  ES_NO_EVENT = 0,
 								ES_START_FREE_4_ALL,
 								ES_NORMAL_GAME_COMPLETE,
 								ES_FIRE_COMPLETE,
-								ES_TAPE_DETECTED
+								ES_TAPE_DETECTED,
+								ES_FIRE
 								} ES_EventTyp_t ;
 
 /****************************************************************************/
@@ -355,5 +356,6 @@ typedef enum {  ES_NO_EVENT = 0,
 #define GAME_TIMER 2
 #define FREE_4_ALL_TIMER 3
 #define SHOT_RESULT_TIMER 4
+#define LOAD_SERVO_TIMER 5
 
 #endif /* CONFIGURE_H */
