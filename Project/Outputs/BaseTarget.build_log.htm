@@ -32,11 +32,9 @@ compiling DrivingAlongTapeSM.c...
 compiling ADMulti.c...
 compiling PWM_Module.c...
 compiling ShootingSM.c...
-Source\ShootingSM.c(51): warning:  #550-D: variable "ExitShootingFlag" was set but never used
-  static bool ExitShootingFlag;
-Source\ShootingSM.c(55): warning:  #177-D: variable "MyPriority" was declared but never referenced
+Source\ShootingSM.c(53): warning:  #177-D: variable "MyPriority" was declared but never referenced
   static uint8_t MyPriority;
-Source\ShootingSM.c: 2 warnings, 0 errors
+Source\ShootingSM.c: 1 warning, 0 errors
 compiling FiringService.c...
 assembling startup_rvmdk.S...
 compiling ES_CheckEvents.c...
@@ -54,20 +52,32 @@ compiling retarget.c...
 compiling termio.c...
 compiling uartstdio.c...
 linking...
-Program Size: Code=11648 RO-data=1176 RW-data=156 ZI-data=2788  
+Program Size: Code=12636 RO-data=1176 RW-data=164 ZI-data=2788  
 After Build - User command #1: fromelf --bin --output .\Outputs\BaseTarget.bin .\Outputs\BaseTarget.axf
-".\Outputs\BaseTarget.axf" - 0 Error(s), 7 Warning(s).
+".\Outputs\BaseTarget.axf" - 0 Error(s), 6 Warning(s).
 Load "\\\\testarossa\\Users$\\millerm2\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
 Programming Done.
 Verify OK.
-Load "\\\\testarossa\\Users$\\millerm2\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
+</pre>
+</body>
+</html>
+s$\\millerm2\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
 Programming Done.
 Verify OK.
-\ShootingSM.c(296): warning:  #12-D: parsing restarts here after previous syntax error
+amework\\Project\\Outputs\\BaseTarget.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.
+1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.
+ere after previous syntax error
                                 }
 Source\ShootingSM.c(318): error:  #513: a value of type "ShootingState_t" cannot be assigned to an entity of type "ES_Event"
                 CurrentEvent = NextState;

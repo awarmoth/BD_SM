@@ -142,7 +142,7 @@
 //define ball counters
 #define BALL_START_COUNT 3
 #define NO_BALLS 0
-#define MAX_BALLS
+#define MAX_BALLS 5
 
 #define SHOT_CLOCK_TIME 20000
-#define BALL_AIR_TIME 5000 //will probably want to lower this
+#define BALL_AIR_TIME 1000 //will probably want to lower this

@@ -235,7 +235,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							// Set ReturnEvent parameter to getLocation //from Report Status byte
 							ReturnEvent.EventParam = getLocation();
 							//station is open, so start the shot clock
-							ES_Timer_InitTimer(SHOOTING_TIMER, SHOT_CLOCK_TIME);
+							//ES_Timer_InitTimer(SHOOTING_TIMER, SHOT_CLOCK_TIME);
 						}
 						// Else If ReportStatus = NACK
 						else if (ReportStatus == NACK || ReportStatus == INACTIVE)

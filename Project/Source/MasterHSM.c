@@ -483,5 +483,8 @@ void incrementBallCount(void)
 
 void decrementBallCount(void)
 {
-	BallCount--;
+	if(BallCount > 0)
+	{
+		BallCount--;
+	}
 }

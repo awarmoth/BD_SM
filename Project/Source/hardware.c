@@ -204,7 +204,7 @@ void Motor_Controller_ISR(void)
 {
 	// printf("Averaged Period: %i\r\n", getPeriod());
 	//clear interrupt
-	HWREG(WTIMER1_BASE+TIMER_O_ICR)=TIMER_ICR_TATOCINT;
+	HWREG(WTIMER2_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	static float LastError_POS = 0;
 	static float LastControl_POS = 0;
 	static float Kp_POS = 0.1;

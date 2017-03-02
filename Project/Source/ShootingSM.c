@@ -6,10 +6,8 @@
 #include "LOC_HSM.h"
 #include "ShootingSM.h"
 #include "constants.h"
-#include "MasterHSM.h"
 #include "SPI_Module.h"
 #include "ByteTransferSM.h"
-#include "LOC_HSM.h"
 #include "ConstructingSM.h"
 #include "DrivingAlongTapeSM.h"
 #include "hardware.h"
@@ -98,15 +96,16 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 	switch(CurrentState)
 	{
 		// If CurrentState is AlignToGoal
-        case (AlignToGoal):
+    case (AlignToGoal):
 		{
+			printf("ShootingSM: AlignToGoal\r\n");
 			// Run DuringAlignToGoal and store the output in CurrentEvent
 			CurrentEvent = DuringAlignToGoal(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
-            if (CurrentEvent.EventType != ES_NO_EVENT)
+      if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_GOAL_BEACON_DETECTED
-                if (CurrentEvent.EventType == ES_GOAL_BEACON_DETECTED) //MAY NEED TO ADD A GUARD CONDITION WITH A TIMER TO MAKE SURE FLYWHEEL IS AT DESIRED SPEED
+        if (CurrentEvent.EventType == ES_GOAL_BEACON_DETECTED) //MAY NEED TO ADD A GUARD CONDITION WITH A TIMER TO MAKE SURE FLYWHEEL IS AT DESIRED SPEED
 				{
 					// Stop rotating
 					SetMotorController(STOP_DRIVING);
@@ -121,49 +120,55 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
-                ReturnEvent.EventType = ES_NO_EVENT;
+        ReturnEvent.EventType = ES_NO_EVENT;
 				// EndIf
 			}
 		
 			// End AlignToGoal block
-            break;
+      break;
 		}
 	
 		// If CurrentState is Firing
         case (Firing):
         {
-			// Run DuringFiring and store the output in CurrentEvent
-            CurrentEvent = DuringFiring(CurrentEvent);
-			// If CurrentEvent is not ES_NO_EVENT
-            if (CurrentEvent.EventType != ES_NO_EVENT)
+					printf("ShootingSM: Firing\r\n");
+					// Run DuringFiring and store the output in CurrentEvent
+					CurrentEvent = DuringFiring(CurrentEvent);
+					// If CurrentEvent is not ES_NO_EVENT
+          if (CurrentEvent.EventType != ES_NO_EVENT)
+          {
+						// If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
+            if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOOTING_TIMER))
             {
-				// If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
-                if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOOTING_TIMER))
-                {
-					// Transform ReturnEvent to ES_NO_EVENT
-                    CurrentEvent.EventType = ES_NO_EVENT;
-					// Set ShootingTimeoutFlag
-                    ExitShootingFlag = true;
-                }
-				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
-                else if((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == GAME_TIMER))
-				{
+							// Transform ReturnEvent to ES_NO_EVENT
+              CurrentEvent.EventType = ES_NO_EVENT;
+							// Set ShootingTimeoutFlag
+              ExitShootingFlag = true;
+            }
+					// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
+          else if((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == GAME_TIMER))
+					{
 					// Transform ReturnEvent to ES_NO_EVENT to consume it
 					ReturnEvent.EventType = ES_NO_EVENT;
 					// Set GameTimeoutFlag
 					setGameTimeoutFlag(true);
-				}
+					}
 				//Else If CurrentEvent is ES_FIRE_COMPLETE and normal game has ended (we want to enter FFA)
 				else if ((CurrentEvent.EventType == ES_FIRE_COMPLETE) && GameTimeoutFlag)
 				{
+					decrementBallCount();
+					printf("Ball count is now %d\r\n", getBallCount());
 					//Set NextState to AlignToTape
 					NextState = AlignToTape;
 					//Set MakeTransition to true
 					MakeTransition = true;
+					printf("here instead");
 				}
 				// Else If CurrentEvent is ES_FIRE_COMPLETE and the normal game has not ended
-				else if ((CurrentEvent.EventType == ES_FIRE_COMPLETE) && (!GameTimeoutFlag))
+				else if ((CurrentEvent.EventType == ES_FIRE_COMPLETE) && (~GameTimeoutFlag))
 				{
+					decrementBallCount();
+					printf("Ball count is now %d\r\n", getBallCount());
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set BallCount to getBallCount
@@ -175,6 +180,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					{
 						// Set ExitFlag
 						ExitShootingFlag = true;
+						printf("exitflag");
 					}
 					// EndIf
 				}// EndIf
@@ -193,6 +199,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		// If CurrentState is WaitForShotResult
 		case WaitForShotResult:
 		{
+			printf("ShootingSM: WaitForShotResult\r\n");
 			// Run DuringWaitForShotResult and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForShotResult(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -222,6 +229,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		// If CurrentState is WaitForScoreUpdate
 		case WaitForScoreUpdate:
 		{
+			printf("ShootingSM: WaitForScoreUpdate\r\n");
 			// Run DuringWaitForScoreUpdate and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForScoreUpdate(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -242,10 +250,10 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					MakeTransition = true;
 					
 	//****************** Initialize NewScore to getScore ****************//
-					uint8_t NewScore; // = getScore //how about changing getGreenScore and getRedScore to getScore(teamcolor)?
+					uint8_t NewScore = getScoreRed(); //how about changing getGreenScore and getRedScore to getScore(teamcolor)?
 					
 					// If NewScore = Score
-					if(NewScore == Score)
+					if((NewScore == Score) && (ExitShootingFlag == false))
 					{
 						// Set NextState to Firing
 						NextState = Firing;
@@ -274,6 +282,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		// If CurrentState is AlignToTape
 		case AlignToTape:
 		{
+			printf("ShootingSM: AlignToTape\r\n");
 			// Run DuringAlignToTape and store the output in CurrentEvent
 			CurrentEvent = DuringAlignToTape(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -374,6 +383,7 @@ static ES_Event DuringFiring(ES_Event ThisEvent)
 		PostFiringService(Event2Post);
 	// EndIf
 	}
+
 	// Return ReturnEvent
 	return ReturnEvent;
 }

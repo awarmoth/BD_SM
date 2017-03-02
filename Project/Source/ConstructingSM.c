@@ -4,6 +4,7 @@
 #include "DrivingAlongTapeSM.h"
 #include "PWM_Module.h"
 #include "hardware.h"
+#include "ShootingSM.h"
 
 #include "ConstructingSM.h"
 #include "ByteTransferSM.h"
@@ -463,19 +464,19 @@ ES_Event DuringShooting(ES_Event ThisEvent)
 		(ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Start ShootingSM with ThisEvent
-		//StartShootingSM(ThisEvent);
+		StartShootingSM(ThisEvent);
 	}
 	// Else If ThisEvent is ES_EXIT
 	else if (ThisEvent.EventType == ES_EXIT)
 	{
 		// Run ShootingSM with ThisEvent
-		//RunShootingSM(ThisEvent);
+		RunShootingSM(ThisEvent);
 	}
 	// Else
 	else
 	{
 		// Run ShootingSM with ThisEvent and store result in ReturnEvent
-		//ReturnEvent = RunShootingSM(ThisEvent);
+		ReturnEvent = RunShootingSM(ThisEvent);
 	}
 	// EndIf
 	

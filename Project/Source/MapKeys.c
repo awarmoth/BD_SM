@@ -239,6 +239,11 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_DRIVE_ALONG_TAPE: Target = %i", ThisEvent.EventParam);
 							PostMasterSM(ThisEvent);
 							break;
+						case 'J':
+							ThisEvent.EventType = ES_GOAL_BEACON_DETECTED;
+							printf("ES_GOAL_BEACON_DETECTED");
+							PostMasterSM(ThisEvent);
+							break;
 						
 						
 						
