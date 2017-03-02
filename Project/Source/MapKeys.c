@@ -198,8 +198,12 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_FIRE_COMPLETE: GameTimeout = %i, Exit = %i", Exit, GameTimeout); 
 							break;
 						case 'W':
-							ThisEvent.EventType = 
-		
+							ThisEvent.EventType = ES_TAPE_DETECTED;
+							printf("ES_TAPE_DETECTED");
+							PostMasterSM(ThisEvent);
+							break;
+						
+						
 						
 						case 'A':
 							ThisEvent.EventType = ES_ARRIVED_AT_STATION;

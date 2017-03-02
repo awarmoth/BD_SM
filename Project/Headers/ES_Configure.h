@@ -277,7 +277,8 @@ typedef enum {  ES_NO_EVENT = 0,
 								ES_FREE_4_ALL_COMPLETE,
 								ES_START_FREE_4_ALL,
 								ES_NORMAL_GAME_COMPLETE,
-								ES_FIRE_COMPLETE
+								ES_FIRE_COMPLETE,
+								ES_TAPE_DETECTED
 								} ES_EventTyp_t ;
 
 /****************************************************************************/
