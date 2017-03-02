@@ -452,7 +452,7 @@ uint8_t getScoreGreen(void) {
 }
 
 uint8_t getScoreRed(void) {
-	return SB2_Byte & RED_SCORE_MASK;
+	return SB3_Byte & RED_SCORE_MASK;
 
 }
 uint8_t getGameState(void) {

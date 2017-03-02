@@ -120,3 +120,4 @@
 #define MAX_BALLS
 
 #define SHOT_CLOCK_TIME 20000
+#define BALL_AIR_TIME 5000 //will probably want to lower this
