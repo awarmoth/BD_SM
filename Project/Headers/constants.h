@@ -106,10 +106,10 @@
 //define controller constants
 #define LEFT_MAX_DUTY 50
 #define RIGHT_MAX_DUTY 50
-#define RIGHT_CCW_COMMAND 100
-#define RIGHT_CW_COMMAND 100
-#define LEFT_CCW_COMMAND 100
-#define LEFT_CW_COMMAND 100
+#define RIGHT_CCW_COMMAND 50
+#define RIGHT_CW_COMMAND 50
+#define LEFT_CCW_COMMAND 50
+#define LEFT_CW_COMMAND 50
 #define COMMAND_DIFF 0
 
 #define RIGHT_CCW_DIR 1

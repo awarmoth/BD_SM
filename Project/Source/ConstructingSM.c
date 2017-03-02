@@ -41,6 +41,7 @@
 #define ALL_BITS (0xff<<2)
 #endif
 
+
 // readability defines
 
 #include "BITDEFS.H"
