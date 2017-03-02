@@ -1,6 +1,8 @@
 //module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
 //ShootingState_t: AlignToGoal; 
 
+#include "MasterHSM.h"
+
 static bool ExitShootingFlag;
 static bool GameTimeoutFlag = false;
 
@@ -92,51 +94,92 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					// Transform ReturnEvent to ES_NO_EVENT
                     CurrentEvent.EventType = ES_NO_EVENT;
 					// Set ShootingTimeoutFlag
-                    Shooting_Timeout_Flag = true;
+                    ExitShootingFlag = true;
                 }
 				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
-                else if((ThisEvent.EventType == ES_TIMEOUT) && (ThisEvent.EventParam == NORMAL_GAME_TIMER))
+                else if((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == NORMAL_GAME_TIMER))
 				{
 					// Transform ReturnEvent to ES_NO_EVENT to consume it
 					ReturnEvent.EventType = ES_NO_EVENT;
 					// Set GameTimeoutFlag
-				// Else If CurrentEvent is ES_FIRE_COMPLETE
+					setGameTimeoutFlag(true);
+				}
+				//Else If CurrentEvent is ES_FIRE_COMPLETE and normal game has ended (we want to enter FFA)
+				else if ((CurrentEvent.EventType == ES_FIRE_COMPLETE) && GameTimeoutFlag)
+				{
+					//Set NextState to AlignToTape
+					NextState = AlignToTape;
+					//Set MakeTransition to true
+					MakeTransition = true;
+				}
+				// Else If CurrentEvent is ES_FIRE_COMPLETE and the normal game has not ended
+				else if ((CurrentEvent.EventType == ES_FIRE_COMPLETE) && (!GameTimeoutFlag))
+				{
 					// Set MakeTransition to true
+					MakeTransition = true;
 					// Set BallCount to getBallCount
+					BallCount = getBallCount();
 					// Set NextState to WaitForShotResult
-					// If BallCount = 0 or GameTimeoutFlag Set or ShootingTimeout Flag Set
+					NextState = WaitForShotResult;
+					// If BallCount = 0
+					if(BallCount == NO_BALLS)
+					{
 						// Set ExitFlag
+						ExitShootingFlag = true;
+					}
 					// EndIf
 				}// EndIf
-		
+			}
 			// Else
+			else
+			{
 				// Set ReturnEvent to ES_NO_EVENT
+				ReturnEvent.EventType = ES_NO_EVENT;
+			}
 			// EndIf
-		
+			break;
+		}
 		// End Firing block
 
 		// If CurrentState is WaitForShotResult
-	
+		case WaitForShotResult:
+		{
 			// Run DuringWaitForShotResult and store the output in CurrentEvent
-		
+			CurrentEvent = DuringWaitForShotResult(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
+			if(CurrentEvent.EventType != ES_NO_EVENT)
+			{
 				// If CurrentEvent is ES_TIMEOUT from SHOT_RESULT_TIMER
+				if((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOT_RESULT_TIMER))
+				{
 					// Set MakeTransition to true
+					MakeTransition = true;
 					// Set NextState to WaitForScoreUpdate
+					NextState = WaitForScoreUpdate;
 				// EndIf
-				
+				}
+			}
 			// Else
+			else
+			{
 				// Set ReturnEvent to ES_NO_EVENT
+				ReturnEvent.EventType == ES_NO_EVENT;
+			}
 			// EndIf
-		
+			break;
 		// End WaitForShotResult block
-	
-		// If CurrentState is WaitForScoreUpdate
-	
-			// Run DuringWaitForScoreUpdate and store the output in CurrentEvent
+		}
 		
+		// If CurrentState is WaitForScoreUpdate
+		case WaitForScoreUpdate:
+		{
+			// Run DuringWaitForScoreUpdate and store the output in CurrentEvent
+			CurrentEvent = DuringWaitForScoreUpdate(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
+			if(CurrentEvent.EventType != ES_NO_EVENT)
+			{
 				// If CurrentEvent is ES_LOC_COMPLETE
+				if(CurrentEvent.EventType == ES_LOC_COMPLETE)
 					// Get response bytes from LOC
 					// SetSB1_Byte(getSB1_Byte())
 					// SetSB2_Byte(getSB2_Byte())
@@ -151,11 +194,12 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					// EndIf
 					// Score = NewScore
 				// EndIf
-		
+			}
 			// Else
 				// Set ReturnEvent to ES_NO_EVENT
 			// EndIf
-		
+			break;
+		}
 		// End WaitForScoreUpdate block
 
 		// If CurrentState is AlignToTape

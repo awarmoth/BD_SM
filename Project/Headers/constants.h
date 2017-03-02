@@ -118,3 +118,5 @@
 #define BALL_START_COUNT 3
 #define NO_BALLS 0
 #define MAX_BALLS
+
+#define SHOT_CLOCK_TIME 20000

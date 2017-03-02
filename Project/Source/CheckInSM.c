@@ -7,7 +7,7 @@
 #include "constants.h"
 #include "termio.h"
 
-#define SHOOT_TIME 20000 //station is open for shooting for 20 seconds
+] //station is open for shooting for 20 seconds
 
 // module level variables: 
  static CheckInState_t CurrentState;
@@ -234,7 +234,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							// Set ReturnEvent parameter to getLocation //from Report Status byte
 							ReturnEvent.EventParam = getLocation();
 							//station is open, so start the shot clock
-							ES_Timer_InitTimer(SHOT_CLOCK_TIMER, SHOOT_TIME);
+							ES_Timer_InitTimer(SHOOTING_TIMER, SHOT_CLOCK_TIME);
 						}
 						// Else If ReportStatus = NACK
 						else if (ReportStatus == NACK || ReportStatus == INACTIVE)
