@@ -7,12 +7,18 @@
 #include "constants.h"
 #include "termio.h"
 
+#define SHOOT_TIME 20000 //station is open for shooting for 20 seconds
+
 // module level variables: 
  static CheckInState_t CurrentState;
  static uint8_t ResponseReady;
  static uint8_t ReportStatus;
  static uint8_t BadResponseCounter = 0;
  static uint8_t Byte2Write;
+ static ES_Event DuringReporting_1 ( ES_Event ThisEvent );
+ static ES_Event DuringWaitForResponse_1 ( ES_Event ThisEvent );
+ static ES_Event DuringReporting_2 ( ES_Event ThisEvent );
+ static ES_Event DuringWaitForResponse_2 ( ES_Event ThisEvent );
 
 
 void StartCheckInSM(ES_Event CurrentEvent)
@@ -227,6 +233,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							ReturnEvent.EventType = ES_GOAL_READY;
 							// Set ReturnEvent parameter to getLocation //from Report Status byte
 							ReturnEvent.EventParam = getLocation();
+							//station is open, so start the shot clock
+							ES_Timer_InitTimer(SHOT_CLOCK_TIMER, SHOOT_TIME);
 						}
 						// Else If ReportStatus = NACK
 						else if (ReportStatus == NACK || ReportStatus == INACTIVE)
@@ -278,7 +286,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 // End RunCheckInSM
 
 
-ES_Event DuringReporting_1(ES_Event ThisEvent)
+static ES_Event DuringReporting_1(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	ES_Event ReturnEvent;
@@ -316,7 +324,7 @@ ES_Event DuringReporting_1(ES_Event ThisEvent)
 // End DuringReporting_1
 
 
-ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
+static ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	ES_Event ReturnEvent;
@@ -343,7 +351,7 @@ ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 // End DuringWaitForResponse_1
 
 
-ES_Event DuringReporting_2(ES_Event ThisEvent)
+static ES_Event DuringReporting_2(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	ES_Event ReturnEvent;
@@ -377,7 +385,7 @@ ES_Event DuringReporting_2(ES_Event ThisEvent)
 // End DuringReporting_2
 
 
-ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
+static ES_Event DuringWaitForResponse_2(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	ES_Event ReturnEvent;

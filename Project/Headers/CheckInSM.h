@@ -13,10 +13,10 @@ typedef enum { Reporting_1, WaitForResponse_1, Reporting_2, WaitForResponse_2 } 
 
 ES_Event RunCheckInSM( ES_Event CurrentEvent );
 void StartCheckInSM ( ES_Event CurrentEvent );
-ES_Event DuringReporting_1 ( ES_Event ThisEvent );
-ES_Event DuringWaitForResponse_1 ( ES_Event ThisEvent );
-ES_Event DuringReporting_2 ( ES_Event ThisEvent );
-ES_Event DuringWaitForResponse_2 ( ES_Event ThisEvent );
+//ES_Event DuringReporting_1 ( ES_Event ThisEvent );
+//ES_Event DuringWaitForResponse_1 ( ES_Event ThisEvent );
+//ES_Event DuringReporting_2 ( ES_Event ThisEvent );
+//ES_Event DuringWaitForResponse_2 ( ES_Event ThisEvent );
 uint8_t getPeriodCode(uint32_t Period);
 void ClearBadResponseCounter(void);
 

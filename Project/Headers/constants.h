@@ -113,3 +113,8 @@
 
 #define CONTROLLER_TIME_US 2000
 #define TICKS_PER_US 40
+
+//define ball counters
+#define BALL_START_COUNT 3
+#define NO_BALLS 0
+#define MAX_BALLS

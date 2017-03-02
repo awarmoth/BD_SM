@@ -1,7 +1,16 @@
 //module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
 //ShootingState_t: AlignToGoal; 
 
-static bool Shooting_Timeout_Flag;
+static bool ExitShootingFlag;
+static bool GameTimeoutFlag = false;
+
+//module functions
+static ES_Event DuringAlignToGoal(ES_Event ThisEvent);
+static ES_Event DuringFiring(ES_Event ThisEvent);
+static ES_Event DuringWaitForShotResult(ES_Event ThisEvent);
+static ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent);
+static ES_Event DuringAlignToTape(ES_Event ThisEvent);
+
 
 void StartShootingSM(ES_Event CurrentEvent)  
 {
@@ -70,24 +79,26 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		}
 	
 		// If CurrentState is Firing
-                case (Firing):
-                {
+        case (Firing):
+        {
 			// Run DuringFiring and store the output in CurrentEvent
-                        CurrentEvent = DuringFiring(CurrentEvent);
+            CurrentEvent = DuringFiring(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
-                        if (CurrentEvent.EventType != ES_NO_EVENT)
-                        {
+            if (CurrentEvent.EventType != ES_NO_EVENT)
+            {
 				// If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
-                                if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOOTING_TIMER))
-                                {
+                if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOOTING_TIMER))
+                {
 					// Transform ReturnEvent to ES_NO_EVENT
-                                        CurrentEvent.EventType = ES_NO_EVENT;
+                    CurrentEvent.EventType = ES_NO_EVENT;
 					// Set ShootingTimeoutFlag
-                                        Shooting_Timeout_Flag = 1;
-                                }
+                    Shooting_Timeout_Flag = true;
+                }
 				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
-                                else if
-					// Transform ReturnEvent to ES_NO_EVENT
+                else if((ThisEvent.EventType == ES_TIMEOUT) && (ThisEvent.EventParam == NORMAL_GAME_TIMER))
+				{
+					// Transform ReturnEvent to ES_NO_EVENT to consume it
+					ReturnEvent.EventType = ES_NO_EVENT;
 					// Set GameTimeoutFlag
 				// Else If CurrentEvent is ES_FIRE_COMPLETE
 					// Set MakeTransition to true
@@ -96,7 +107,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					// If BallCount = 0 or GameTimeoutFlag Set or ShootingTimeout Flag Set
 						// Set ExitFlag
 					// EndIf
-				// EndIf
+				}// EndIf
 		
 			// Else
 				// Set ReturnEvent to ES_NO_EVENT
@@ -182,7 +193,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 
 
 
-ES_Event DuringAlignToGoal(ES_Event ThisEvent)
+static ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	
@@ -191,7 +202,8 @@ ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 		// Start rotating // direction based on team color
 		// Set OldScore to getScore
-		// Clear timeout flags
+		//reset exit flag
+		ExitShootingFlag = false;
 	// EndIf
 	
 	// Return ReturnEvent
@@ -200,7 +212,7 @@ ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 
 
 
-ES_Event DuringFiring(ES_Event ThisEvent)
+static ES_Event DuringFiring(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	// local variable Event2Post
@@ -218,7 +230,7 @@ ES_Event DuringFiring(ES_Event ThisEvent)
 
 
 
-ES_Event DuringWaitForShotResult(ES_Event ThisEvent)
+static ES_Event DuringWaitForShotResult(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	
@@ -234,7 +246,7 @@ ES_Event DuringWaitForShotResult(ES_Event ThisEvent)
 
 
 
-ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent)
+static ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	// local variable Event2Post
@@ -251,7 +263,7 @@ ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent)
 }
 
 
-ES_Event DuringAlignToTape(ES_Event ThisEvent)
+static ES_Event DuringAlignToTape(ES_Event ThisEvent)
 {
 	// local variable ReturnEvent
 	
@@ -265,4 +277,12 @@ ES_Event DuringAlignToTape(ES_Event ThisEvent)
 	
 }
 
+void setGameTimeoutFlag(bool flag);
+{
+	GameTimeoutFlag = flag;
+}
 
+void getGameTimeoutFlag(void);
+{
+	return GameTimeoutFlag;
+}
