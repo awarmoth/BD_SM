@@ -228,7 +228,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 		
 		// If CurrentState is Shooting
 		case(Shooting):
-			if (SM_TEST) printf("Shooting: GettingTargetStation\r\n");
+			if (SM_TEST) printf("Constructing: Shooting\r\n");
 			// Run DuringShooting and store the output in CurrentEvent
 			CurrentEvent = DuringShooting(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT

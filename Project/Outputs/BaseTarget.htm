@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Outputs\BaseTarget.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Outputs\BaseTarget.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Wed Mar 01 00:52:18 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Thu Mar 02 00:20:36 2017
 <BR><P>
 <H3>Maximum Stack Usage =        304 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -476,13 +476,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[57]"></a>CPUgetPRIMASK_cpsid</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, es_port.o(i.CPUgetPRIMASK_cpsid))
-<BR><BR>[Called By]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_EnQueueFIFO
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_DeQueue
+<BR><BR>[Called By]<UL><LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_DeQueue
+<LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_EnQueueFIFO
 </UL>
 
 <P><STRONG><a name="[58]"></a>CPUsetPRIMASK</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, es_port.o(i.CPUsetPRIMASK))
-<BR><BR>[Called By]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_EnQueueFIFO
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_DeQueue
+<BR><BR>[Called By]<UL><LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_DeQueue
+<LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_EnQueueFIFO
 </UL>
 
 <P><STRONG><a name="[e]"></a>Check4Keystroke</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, eventcheckers.o(i.Check4Keystroke))
@@ -507,7 +507,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_rvmdk.o(RESET)
 </UL>
-<P><STRONG><a name="[4f]"></a>DuringReporting_1</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, checkinsm.o(i.DuringReporting_1))
+<P><STRONG><a name="[4f]"></a>DuringReporting_1</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, checkinsm.o(i.DuringReporting_1))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152 + Unknown Stack Size
 <LI>Call Chain = DuringReporting_1 &rArr; getPeriodCode &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -612,10 +612,10 @@ Global Symbols
 <P><STRONG><a name="[5e]"></a>ES_Run</STRONG> (Thumb, 84 bytes, Stack size 16 bytes, es_framework.o(i.ES_Run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = ES_Run &rArr; _HW_Process_Pending_Ints &rArr; ES_Timer_Tick_Resp &rArr; ES_GetMSBitSet
 </UL>
-<BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_CheckUserEvents
+<BR>[Calls]<UL><LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_DeQueue
+<LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_CheckUserEvents
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_HW_Process_Pending_Ints
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_GetMSBitSet
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_DeQueue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -776,7 +776,7 @@ Global Symbols
 <LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
 </UL>
 
-<P><STRONG><a name="[76]"></a>RunCheckInSM</STRONG> (Thumb, 354 bytes, Stack size 32 bytes, checkinsm.o(i.RunCheckInSM))
+<P><STRONG><a name="[76]"></a>RunCheckInSM</STRONG> (Thumb, 336 bytes, Stack size 32 bytes, checkinsm.o(i.RunCheckInSM))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184 + Unknown Stack Size
  + In Cycle
 <LI>Call Chain = RunCheckInSM &rArr;  RunCheckInSM (Cycle)
