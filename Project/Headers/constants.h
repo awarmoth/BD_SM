@@ -138,3 +138,11 @@
 #define TAPE_THRESHOLD 20
 #define MOTOR_CONTROLLER_TIME_US 2000
 #define TICKS_PER_US 40
+
+//define ball counters
+#define BALL_START_COUNT 3
+#define NO_BALLS 0
+#define MAX_BALLS
+
+#define SHOT_CLOCK_TIME 20000
+#define BALL_AIR_TIME 5000 //will probably want to lower this

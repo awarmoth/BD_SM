@@ -39,6 +39,9 @@ uint8_t getGameState(void);
 uint8_t getResponseReady(void);
 uint8_t getReportStatus(void);
 uint8_t getLocation(void);
+uint8_t getBallCount(void);
+void incrementBallCount(void);
+void decrementBallCount(void);
 
 
 #endif /*MasterHSM_H */

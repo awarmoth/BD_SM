@@ -54,6 +54,7 @@ static uint8_t SB2_Byte;
 static uint8_t SB3_Byte;
 static uint8_t RR_Byte;
 static uint8_t RS_Byte;
+static uint8_t BallCount;
 
 bool InitMasterSM(uint8_t Priority)
 {
@@ -66,6 +67,7 @@ bool InitMasterSM(uint8_t Priority)
 	// Initialize the SPI module
 	InitSPI_Comm();
 	InitializePins();
+	BallCount = BALL_START_COUNT;
 	// Call StartMasterSM with ThisEvent as the passed parameter
 	StartMasterSM(ThisEvent);
 	// Return true
@@ -450,7 +452,7 @@ uint8_t getScoreGreen(void) {
 }
 
 uint8_t getScoreRed(void) {
-	return SB2_Byte & RED_SCORE_MASK;
+	return SB3_Byte & RED_SCORE_MASK;
 
 }
 uint8_t getGameState(void) {
@@ -469,3 +471,17 @@ uint8_t getLocation(void) {
 	return RS_Byte & LOCATION_MASK;
 }
 
+uint8_t getBallCount(void)
+{
+	return BallCount;
+}
+
+void incrementBallCount(void)
+{
+	BallCount++;
+}
+
+void decrementBallCount(void)
+{
+	BallCount--;
+}
