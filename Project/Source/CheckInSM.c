@@ -7,7 +7,7 @@
 #include "constants.h"
 #include "termio.h"
 
-] //station is open for shooting for 20 seconds
+ //station is open for shooting for 20 seconds
 
 // module level variables: 
  static CheckInState_t CurrentState;
