@@ -487,6 +487,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\FiringService.c</FilePath>
             </File>
+            <File>
+              <FileName>PWM10Tiva.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM10Tiva.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -646,6 +651,11 @@
               <FileName>FiringService.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\FiringService.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM10Tiva.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1272,6 +1282,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\FiringService.c</FilePath>
             </File>
+            <File>
+              <FileName>PWM10Tiva.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM10Tiva.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1431,6 +1446,11 @@
               <FileName>FiringService.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\FiringService.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM10Tiva.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -12,6 +12,7 @@
 #include "DrivingAlongTapeSM.h"
 #include "hardware.h"
 #include "FiringService.h"
+#include "PWM_Module.h"
 
 #include "constants.h"
 
@@ -346,6 +347,7 @@ static ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		SetFlywheelDuty(60);
 		// Start rotating // direction based on team color
 		uint8_t TeamColor = getTeamColor();
 		if (TeamColor == GREEN) {
@@ -447,6 +449,7 @@ static ES_Event DuringAlignToTape(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		SetFlywheelDuty(0);
 		uint8_t TeamColor = getTeamColor();
 		if (TeamColor == GREEN) {
 			SetMotorController(ROTATE_CW);

@@ -29,10 +29,10 @@
 #endif
 
 // Standard Configuration for timer
-#define GenA_Normal (PWM_0_GENA_ACTCMPAU_ONE | PWM_0_GENA_ACTCMPAD_ZERO )
-#define GenA_Invert (PWM_0_GENA_ACTCMPAU_ZERO | PWM_0_GENA_ACTCMPAD_ONE )
-#define GenB_Normal (PWM_0_GENB_ACTCMPBU_ONE | PWM_0_GENB_ACTCMPBD_ZERO )
-#define GenB_Invert (PWM_0_GENB_ACTCMPBU_ZERO | PWM_0_GENB_ACTCMPBD_ONE )
+#define Gen0A_Normal (PWM_0_GENA_ACTCMPAU_ONE | PWM_0_GENA_ACTCMPAD_ZERO )
+#define Gen0A_Invert (PWM_0_GENA_ACTCMPAU_ZERO | PWM_0_GENA_ACTCMPAD_ONE )
+#define Gen1A_Normal (PWM_1_GENA_ACTCMPAU_ONE | PWM_1_GENA_ACTCMPAD_ZERO )
+#define Gen1A_Invert (PWM_1_GENA_ACTCMPAU_ZERO | PWM_1_GENA_ACTCMPAD_ONE )
 // System clock frequency
 #define TicksPerMS 40000
 // Clock scaled to avoid overflow
@@ -54,8 +54,8 @@ static bool restoreFW;
 //int for tracking motor direction
 //static int directionA;
 //static int directionB;
-static uint8_t LastDirA=0;
-static uint8_t LastDirB=0;
+static uint8_t LastDirA=1;
+static uint8_t LastDirB=1;
 
 
 void InitPWM(void) {
@@ -77,94 +77,45 @@ void InitPWM(void) {
 	
 	// Disable the PWM generator while initializing
 	HWREG(PWM0_BASE+PWM_O_0_CTL) = 0;
+	HWREG(PWM0_BASE+PWM_O_1_CTL) = 0;
+	
+	restoreA = true;
+	restoreB = true;
 	
 	// Set generator to go up to 1 at rising A, 0 on falling A
-	HWREG(PWM0_BASE+PWM_O_0_GENA) = GenA_Normal;
+	HWREG(PWM0_BASE+PWM_O_0_GENA) = Gen0A_Normal;
 	
 	// Set generator to go to 1 at rising B, 0 on falling B
-	HWREG(PWM0_BASE+PWM_O_0_GENB) = GenB_Normal;
+	HWREG(PWM0_BASE+PWM_O_1_GENA) = Gen1A_Normal;
 	
 	// Set the load to ½ the desired period of 5 ms since going up and down
 	HWREG(PWM0_BASE+PWM_O_0_LOAD) = ((PWM_LOAD_VALUE)) >> 1;
+	HWREG(PWM0_BASE+PWM_O_1_LOAD) = ((PWM_LOAD_VALUE)) >> 1;
 	
 	// Set the initial duty cycle on A to 50%
 	HWREG(PWM0_BASE+PWM_O_0_CMPA) = HWREG(PWM0_BASE+PWM_O_0_LOAD)>>1;
 	
 		// Set the initial duty cycle on B to 50%
-	HWREG(PWM0_BASE+PWM_O_0_CMPB) = HWREG(PWM0_BASE+PWM_O_0_LOAD)>>1;
+	HWREG(PWM0_BASE+PWM_O_1_CMPA) = HWREG(PWM0_BASE+PWM_O_1_LOAD)>>2;
 	
 	// Enable the PWM outputs
-	HWREG(PWM0_BASE+PWM_O_ENABLE) |= (PWM_ENABLE_PWM1EN | PWM_ENABLE_PWM0EN);
+	HWREG(PWM0_BASE+PWM_O_ENABLE) |= (PWM_ENABLE_PWM1EN | PWM_ENABLE_PWM2EN);
 	
-	// Select the alternate function for PB6 and PB7
-	HWREG(GPIO_PORTB_BASE+GPIO_O_AFSEL) |= (BIT7HI | BIT6HI);
+	// Select the alternate function for PB4 and PB7
+	HWREG(GPIO_PORTB_BASE+GPIO_O_AFSEL) |= (BIT7HI | BIT4HI);
 	
 	// Choose to map PWM to those pins
-	HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) & 0X00ffffff) + (4<<(7*BitsPerNibble)) + (4<<(6*BitsPerNibble)); 
+	HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) & 0X0ff0ffff) + (4<<(7*BitsPerNibble)) + (4<<(4*BitsPerNibble)); 
 	
-	// Enable pins 6 and 7 on Port B for digital outputs
-	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (BIT7HI | BIT6HI);
+	// Enable pins 4 and 7 on Port B for digital outputs
+	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (BIT7HI | BIT4HI);
 	
 	// Set the up/down count mode
 	// Enable the PWM generator
 	// Make generator updates locally synchronized to zero count
-	HWREG(PWM0_BASE+PWM_O_0_CTL) = (PWM_0_CTL_MODE | PWM_0_CTL_ENABLE | PWM_0_CTL_GENAUPD_LS | PWM_0_CTL_GENBUPD_LS);                 
-}
-
-void SetDutyA(uint8_t duty) {
-	// New Value for comparator to set duty cycle
-//	duty*=9/10;
-	static uint32_t newCmp;
-	if (LastDirA == REVERSE) duty = 100 - duty;
-	//printf("dutyA:%i",duty);
-	// set new comparator value based on duty cycle
-	newCmp = HWREG(PWM0_BASE+PWM_O_0_LOAD)*(100-duty)/100;
-	if (duty == 100 | duty == 0) {
-		restoreA = true;
-		if (duty == 100) {
-			// To program 100% DC, simply set the action on Zero to set the output to one
-			HWREG( PWM0_BASE+PWM_O_0_GENA) = PWM_0_GENA_ACTZERO_ONE;
-		} else {
-			// To program 0% DC, simply set the action on Zero to set the output to zero
-			HWREG( PWM0_BASE+PWM_O_0_GENA) = PWM_0_GENA_ACTZERO_ZERO;
-			}
-	} else {
-		// if returning from 0 or 100
-		if (restoreA) {
-			restoreA = false;
-			// restore normal operation
-			HWREG( PWM0_BASE+PWM_O_0_GENA) = GenA_Normal;
-		}
-		// write new comparator value to register
-		HWREG( PWM0_BASE+PWM_O_0_CMPA) = newCmp;
-	}
-}
-
-void SetDutyB(uint8_t duty) {
-		// New Value for comparator to set duty cycle
-	static uint32_t newCmp;
-	if (LastDirB == REVERSE) duty = 100 - duty;
-	// set new comparator value based on duty cycle
-	newCmp = HWREG(PWM0_BASE+PWM_O_0_LOAD)*(100-duty)/100;
-	if (duty == 100 | duty == 0) {
-		restoreB = true;
-		if (duty == 100) {
-			// To program 100% DC, simply set the action on Zero to set the output to one
-			HWREG( PWM0_BASE+PWM_O_0_GENB) = PWM_0_GENB_ACTZERO_ONE;
-		} else {
-			// To program 0% DC, simply set the action on Zero to set the output to zero
-			HWREG( PWM0_BASE+PWM_O_0_GENB) = PWM_0_GENB_ACTZERO_ZERO;
-		}
-	} else {
-		// if returning from 0 or 100
-		if (restoreB) {
-			restoreB = false;
-			// restore normal operation
-			HWREG( PWM0_BASE+PWM_O_0_GENB) = GenB_Normal;
-		}
-		// write new comparator value to register
-		HWREG( PWM0_BASE+PWM_O_0_CMPB) = newCmp;
-	}
+	HWREG(PWM0_BASE+PWM_O_0_CTL) = (PWM_0_CTL_MODE | PWM_0_CTL_ENABLE | PWM_0_CTL_GENAUPD_LS);
+	HWREG(PWM0_BASE+PWM_O_1_CTL) = (PWM_0_CTL_MODE | PWM_0_CTL_ENABLE | PWM_0_CTL_GENAUPD_LS);
+            
 }
 
 void InitFlywheelPWM(void)
@@ -218,6 +169,66 @@ void InitFlywheelPWM(void)
 
 }
 
+void SetDutyA(uint8_t duty) {
+	// New Value for comparator to set duty cycle
+//	duty*=9/10;
+	static uint32_t newCmp;
+	if (LastDirA == REVERSE) duty = 100 - duty;
+	//printf("dutyA:%i",duty);
+	// set new comparator value based on duty cycle
+	newCmp = HWREG(PWM0_BASE+PWM_O_0_LOAD)*(100-duty)/100;
+//	printf("NewCmpA:%i\r\n",newCmp);
+	if (duty == 100 | duty == 0) {
+		restoreA = true;
+		if (duty == 100) {
+			// To program 100% DC, simply set the action on Zero to set the output to one
+			HWREG( PWM0_BASE+PWM_O_0_GENA) = PWM_0_GENA_ACTZERO_ONE;
+		} else {
+			// To program 0% DC, simply set the action on Zero to set the output to zero
+			HWREG( PWM0_BASE+PWM_O_0_GENA) = PWM_0_GENA_ACTZERO_ZERO;
+			}
+	} else {
+		// if returning from 0 or 100
+		if (restoreA) {
+			restoreA = false;
+			// restore normal operation
+			HWREG( PWM0_BASE+PWM_O_0_GENA) = Gen0A_Normal;
+		}
+		// write new comparator value to register
+		HWREG( PWM0_BASE+PWM_O_0_CMPA) = newCmp;
+	}
+}
+
+void SetDutyB(uint8_t duty) {
+		// New Value for comparator to set duty cycle
+	static uint32_t newCmp;
+	if (LastDirB == REVERSE) duty = 100 - duty;
+	// set new comparator value based on duty cycle
+	newCmp = HWREG(PWM0_BASE+PWM_O_1_LOAD)*(100-duty)/100;
+//	printf("NewCmpB:%i\r\n",newCmp);
+	if (duty == 100 | duty == 0) {
+		restoreB = true;
+		if (duty == 100) {
+			// To program 100% DC, simply set the action on Zero to set the output to one
+			HWREG( PWM0_BASE+PWM_O_1_GENA) = PWM_1_GENA_ACTZERO_ONE;
+		} else {
+			// To program 0% DC, simply set the action on Zero to set the output to zero
+			HWREG( PWM0_BASE+PWM_O_1_GENA) = PWM_1_GENA_ACTZERO_ZERO;
+		}
+	} else {
+		// if returning from 0 or 100
+		if (restoreB) {
+			restoreB = false;
+			// restore normal operation
+			HWREG( PWM0_BASE+PWM_O_1_GENA) = Gen1A_Normal;
+		}
+		// write new comparator value to register
+		HWREG( PWM0_BASE+PWM_O_1_CMPA) = newCmp;
+	}
+}
+
+
+
 
 void SetFlywheelDuty(uint8_t duty) {
 		// New Value for comparator to set duty cycle
@@ -246,13 +257,14 @@ void SetFlywheelDuty(uint8_t duty) {
 	}
 }
 
+
 void SetDirectionA(uint8_t dir) {
 	if (dir==REVERSE) {
-		HWREG(PWM0_BASE+PWM_O_0_GENA) = GenA_Invert;
+		HWREG(PWM0_BASE+PWM_O_0_GENA) = Gen0A_Invert;
 		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) |= (GPIO_PIN_0);
 	} 
 	else if (dir==FORWARD) {
-		HWREG(PWM0_BASE+PWM_O_0_GENA) = GenA_Normal;
+		HWREG(PWM0_BASE+PWM_O_0_GENA) = Gen0A_Normal;
 		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(GPIO_PIN_0);
 	}
 	LastDirA=dir;
@@ -260,11 +272,11 @@ void SetDirectionA(uint8_t dir) {
 
 void SetDirectionB(uint8_t dir) {
 	if (dir==REVERSE) {
-		HWREG(PWM0_BASE+PWM_O_0_GENB) = GenB_Invert;
+		HWREG(PWM0_BASE+PWM_O_1_GENA) = Gen1A_Invert;
 		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) |= (GPIO_PIN_1);
 	} 
 	else if (dir==FORWARD) {
-		HWREG(PWM0_BASE+PWM_O_0_GENB) = GenB_Normal;
+		HWREG(PWM0_BASE+PWM_O_1_GENA) = Gen1A_Normal;
 		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(GPIO_PIN_1);
 	}
 	LastDirB=dir;

@@ -137,6 +137,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 					}
 					// Set GameState to getGameState
 					GameState = getGameState();
+					printf("GameState: %i",GameState);
 					// If GameState is WAITING_FOR_START
 					if (GameState == WAITING_FOR_START)
 					{	

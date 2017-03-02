@@ -5,7 +5,7 @@
  #define CheckOff3 0
  #define SM_TEST 1
  #define TEAM_COLOR RED
- #define NO_LOC 1
+ #define NO_LOC 0
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
  
