@@ -191,6 +191,15 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							break;
 						
 													
+						case 'Q':
+							ThisEvent.EventType = ES_FIRE_COMPLETE;
+							bool GameTimeout = getGameTimeout();
+							bool Exit = getExitFlag();
+							printf("ES_FIRE_COMPLETE: GameTimeout = %i, Exit = %i", Exit, GameTimeout); 
+							break;
+						case 'W':
+							ThisEvent.EventType = 
+		
 						
 						case 'A':
 							ThisEvent.EventType = ES_ARRIVED_AT_STATION;
@@ -243,6 +252,12 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							ThisEvent.EventType = ES_TIMEOUT;
 							ThisEvent.EventParam = FREE_4_ALL_TIMER;
 							printf("ES_TIMEOUT: FREE_4_ALL_TIMER\r\n");
+							PostMasterSM(ThisEvent);
+							break;
+						case 'V':
+							ThisEvent.EventType = ES_TIMEOUT;
+							ThisEvent.EventParam = SHOT_RESULT_TIMER;
+							printf("ES_TIMEOUT: SHOT_RESULT_TIMER\r\n");
 							PostMasterSM(ThisEvent);
 							break;
         }

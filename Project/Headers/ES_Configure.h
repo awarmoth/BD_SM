@@ -276,7 +276,8 @@ typedef enum {  ES_NO_EVENT = 0,
 								ES_FRONT_BUMP_DETECTED,
 								ES_FREE_4_ALL_COMPLETE,
 								ES_START_FREE_4_ALL,
-								ES_NORMAL_GAME_COMPLETE
+								ES_NORMAL_GAME_COMPLETE,
+								ES_FIRE_COMPLETE
 								} ES_EventTyp_t ;
 
 /****************************************************************************/
@@ -325,10 +326,10 @@ typedef enum {  ES_NO_EVENT = 0,
 // priority in servicing them
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC PostLOC_SM
-#define TIMER1_RESP_FUNC TIMER_UNUSED
-#define TIMER2_RESP_FUNC TIMER_UNUSED
-#define TIMER3_RESP_FUNC TIMER_UNUSED
-#define TIMER4_RESP_FUNC TIMER_UNUSED
+#define TIMER1_RESP_FUNC PostMasterSM
+#define TIMER2_RESP_FUNC PostMasterSM
+#define TIMER3_RESP_FUNC PostMasterSM
+#define TIMER4_RESP_FUNC PostMasterSM
 #define TIMER5_RESP_FUNC TIMER_UNUSED
 #define TIMER6_RESP_FUNC TIMER_UNUSED
 #define TIMER7_RESP_FUNC TIMER_UNUSED
@@ -352,5 +353,6 @@ typedef enum {  ES_NO_EVENT = 0,
 #define SHOOTING_TIMER 1
 #define GAME_TIMER 2
 #define FREE_4_ALL_TIMER 3
+#define SHOT_RESULT_TIMER 4
 
 #endif /* CONFIGURE_H */
