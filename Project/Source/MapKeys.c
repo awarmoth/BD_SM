@@ -193,9 +193,9 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 													
 						case 'Q':
 							ThisEvent.EventType = ES_FIRE_COMPLETE;
-							bool GameTimeout = getGameTimeout();
-							bool Exit = getExitFlag();
-							printf("ES_FIRE_COMPLETE: GameTimeout = %i, Exit = %i", Exit, GameTimeout); 
+							//bool GameTimeout = getGameTimeout();
+							//bool Exit = getExitFlag();
+							//printf("ES_FIRE_COMPLETE: GameTimeout = %i, Exit = %i", Exit, GameTimeout); 
 							break;
 						case 'W':
 							ThisEvent.EventType = ES_TAPE_DETECTED;
