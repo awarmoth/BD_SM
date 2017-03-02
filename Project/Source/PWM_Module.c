@@ -64,8 +64,8 @@ void InitPWM(void) {
 	// Enable the clock to Port B
 	HWREG(SYSCTL_RCGCGPIO) |= SYSCTL_RCGCGPIO_R1;
 	
-	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (GPIO_PIN_4 | GPIO_PIN_5);
-	HWREG(GPIO_PORTB_BASE+GPIO_O_DIR) |= (GPIO_PIN_4 | GPIO_PIN_5);
+	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (GPIO_PIN_0 | GPIO_PIN_1);
+	HWREG(GPIO_PORTB_BASE+GPIO_O_DIR) |= (GPIO_PIN_0 | GPIO_PIN_1);
 	
 	// Select the system clock/32
 	HWREG(SYSCTL_RCC) = (HWREG(SYSCTL_RCC) & ~SYSCTL_RCC_PWMDIV_M) | (SYSCTL_RCC_USEPWMDIV | SYSCTL_RCC_PWMDIV_32);
@@ -98,14 +98,14 @@ void InitPWM(void) {
 	// Enable the PWM outputs
 	HWREG(PWM0_BASE+PWM_O_ENABLE) |= (PWM_ENABLE_PWM1EN | PWM_ENABLE_PWM0EN);
 	
-	// Select the alternate function for PB6 and PB7
-	HWREG(GPIO_PORTB_BASE+GPIO_O_AFSEL) |= (BIT7HI | BIT6HI);
+	// Select the alternate function for PB4 and PB7
+	HWREG(GPIO_PORTB_BASE+GPIO_O_AFSEL) |= (BIT7HI | BIT4HI);
 	
 	// Choose to map PWM to those pins
-	HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) & 0X00ffffff) + (4<<(7*BitsPerNibble)) + (4<<(6*BitsPerNibble)); 
+	HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) & 0X00ffffff) + (4<<(7*BitsPerNibble)) + (4<<(4*BitsPerNibble)); 
 	
-	// Enable pins 6 and 7 on Port B for digital outputs
-	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (BIT7HI | BIT6HI);
+	// Enable pins 4 and 7 on Port B for digital outputs
+	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (BIT7HI | BIT4HI);
 	
 	// Set the up/down count mode
 	// Enable the PWM generator
@@ -173,36 +173,14 @@ void SetDutyB(uint8_t duty) {
 	}
 }
 
-//void ChangeDirectionA(void) {
-//	directionA *=-1;
-//	if (directionA == -1) {
-//		HWREG(PWM0_BASE+PWM_O_0_GENA) = GenA_Invert;
-//		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) |= (GPIO_PIN_4);
-//	} else {
-//		HWREG(PWM0_BASE+PWM_O_0_GENA) = GenA_Normal;
-//		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(GPIO_PIN_4);
-//	}
-//}
-
-//void ChangeDirectionB(void) {
-//	directionB *=-1;
-//	if (directionB == -1) {
-//		HWREG(PWM0_BASE+PWM_O_0_GENB) = GenB_Invert;
-//		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) |= (GPIO_PIN_5);
-//	} else {
-//		HWREG(PWM0_BASE+PWM_O_0_GENB) = GenB_Normal;
-//		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(GPIO_PIN_5);
-//	}
-//}
-
 void SetDirectionA(uint8_t dir) {
 	if (dir==REVERSE) {
 		HWREG(PWM0_BASE+PWM_O_0_GENA) = GenA_Invert;
-		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) |= (GPIO_PIN_4);
+		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) |= (GPIO_PIN_0);
 	} 
 	else if (dir==FORWARD) {
 		HWREG(PWM0_BASE+PWM_O_0_GENA) = GenA_Normal;
-		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(GPIO_PIN_4);
+		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(GPIO_PIN_0);
 	}
 	LastDirA=dir;
 }
@@ -210,11 +188,11 @@ void SetDirectionA(uint8_t dir) {
 void SetDirectionB(uint8_t dir) {
 	if (dir==REVERSE) {
 		HWREG(PWM0_BASE+PWM_O_0_GENB) = GenB_Invert;
-		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) |= (GPIO_PIN_5);
+		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) |= (GPIO_PIN_1);
 	} 
 	else if (dir==FORWARD) {
 		HWREG(PWM0_BASE+PWM_O_0_GENB) = GenB_Normal;
-		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(GPIO_PIN_5);
+		HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(GPIO_PIN_1);
 	}
 	LastDirB=dir;
 }

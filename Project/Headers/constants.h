@@ -146,3 +146,12 @@
 
 #define SHOT_CLOCK_TIME 20000
 #define BALL_AIR_TIME 1000 //will probably want to lower this
+
+//Servo motor constants
+#define NUM_MOTOR 1
+#define MIN_MOT_POS 1700
+#define MAX_MOT_POS 3200
+#define MOT_FREQ 25000
+#define MOTOR_PERIOD 		250
+#define TIMING_CHANNEL 	0
+#define TIME_MOT_GROUP 	0

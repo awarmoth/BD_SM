@@ -19,6 +19,7 @@ Module file for exectuing all hardware initialization
 #include "driverlib/gpio.h"
 #include "driverlib/timer.h"
 #include "constants.h"
+#include "PWM10Tiva.h"
 
 #include "ADMulti.h"
 #include "PWM_Module.h"
@@ -29,6 +30,7 @@ static void Init_Controller(void);
 static void AD_Init(void);
 static void MagneticTimerInit(void);
 static void OneShotTimerInit(void);
+static void LoadingMotorInit(void);
 
 static uint8_t Controller = CONTROLLER_OFF;
 static uint8_t LastController = POSITION_CONTROLLER;
@@ -46,6 +48,7 @@ void InitializePins(void) {
 	InitPWM();
 	MagneticTimerInit();
 	OneShotTimerInit();
+	LoadingMotorInit();
 }
 
 static void Init_Controller(void)
@@ -148,6 +151,30 @@ static void MagneticTimerInit(void)
 	
 	// Enable timer and enable to stall when stopped by debugger
 	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+}
+
+/****************************************************************************
+ Function
+    LoadingMotorInit
+
+ Parameters
+   None
+
+ Returns
+   None
+
+ Description
+   Function that sets up the encoder timer system
+ Author
+   Matthew Miller			1/19/17
+****************************************************************************/
+static void LoadingMotorInit(void)
+{
+	// initialize PWM port
+	PWM_TIVA_Init(NUM_MOTOR);
+	
+	// initialize period of the timing motor
+	PWM_TIVA_SetPeriod(MOT_FREQ, TIME_MOT_GROUP);
 }
 
 /****************************************************************************
