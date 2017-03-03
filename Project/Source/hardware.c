@@ -61,8 +61,6 @@ void InitializePins(void) {
 	SetFlywheelDuty(0);
 	MagneticTimerInit();
 	OneShotTimerInit();
-	LoadingMotorInit();
-	ES_Timer_InitTimer(ISR_TIMER,ISR_TIMEOUT);
 }
 
 static void Init_Controller(void)
@@ -145,7 +143,7 @@ static void MagneticTimerInit(void)
 	// Set up the alternate function for Port D0
 	HWREG(GPIO_PORTD_BASE+GPIO_O_AFSEL) |= BIT0HI;
 	
-	// Map bit 0’s alternate function
+	// Map bit 0â€™s alternate function
 	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) & 0xfffffff0) + 7;
 	
 	// Enable pin on port D for digital I/O
