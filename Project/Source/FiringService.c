@@ -52,8 +52,8 @@
 
 #include "BITDEFS.H"
 
-#define LOAD_SERVO_UP 0
-#define LOAD_SERVO_DOWN 500
+#define LOAD_SERVO_UP 300
+#define LOAD_SERVO_DOWN 2000
 #define LOAD_UP_TIME 500
 #define LOAD_WAIT_TIME 1000
 #define LOAD_DOWN_TIME 500

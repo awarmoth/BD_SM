@@ -327,17 +327,17 @@ void InitServoPWM(void)
 void SetServoPosition(uint16_t position) {
 		// New Value for comparator to set duty cycle
 	static uint32_t newCmp;	
-	
-	if((position > 625))
+/*	
+	if((position > 2000))
 	{
 		printf("Invalid servo position. No new comparator value set.\r\n");
 	}
 	else
-	{
+	{*/
 		newCmp = HWREG(PWM0_BASE+PWM_O_1_LOAD)*(11875-position)/12500;
 		// write new comparator value to register
 		HWREG(PWM0_BASE+PWM_O_1_CMPA) = newCmp;
-	}
+//	}
 	
 	/*
 	if (duty == 100 | duty == 0) {
