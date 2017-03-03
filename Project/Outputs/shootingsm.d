@@ -2,8 +2,8 @@
 .\outputs\shootingsm.o: .\Headers\MasterHSM.h
 .\outputs\shootingsm.o: .\Headers\ES_Configure.h
 .\outputs\shootingsm.o: .\Headers\ES_Types.h
-.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h
+.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdbool.h
 .\outputs\shootingsm.o: .\Headers\ES_Events.h
 .\outputs\shootingsm.o: .\Headers\FiringService.h
 .\outputs\shootingsm.o: .\Headers\LOC_HSM.h
@@ -17,10 +17,10 @@
 .\outputs\shootingsm.o: .\Headers\PWM_Module.h
 .\outputs\shootingsm.o: .\Headers\constants.h
 .\outputs\shootingsm.o: .\Headers\termio.h
-.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdio.h
+.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdlib.h
 .\outputs\shootingsm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\utils/uartstdio.h
-.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdarg.h
 .\outputs\shootingsm.o: .\Headers\ES_Framework.h
 .\outputs\shootingsm.o: .\Headers\ES_Port.h
 .\outputs\shootingsm.o: .\Headers\bitdefs.h
