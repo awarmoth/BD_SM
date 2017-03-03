@@ -328,9 +328,9 @@ void SetServoPosition(uint16_t position) {
 		// New Value for comparator to set duty cycle
 	static uint32_t newCmp;	
 	
-	if((position > 625) || (position < 0))
+	if((position > 625))
 	{
-		printf("Invalid servo position. No new comparator value set."\r\n);
+		printf("Invalid servo position. No new comparator value set.\r\n");
 	}
 	else
 	{

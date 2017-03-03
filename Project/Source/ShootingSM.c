@@ -51,7 +51,6 @@ static bool ExitShootingFlag;
 static bool GameTimeoutFlag = false;
 static uint8_t Score;
 static uint8_t BallCount;
-static uint8_t MyPriority;
 static ShootingState_t CurrentState;
 
 //module functions
