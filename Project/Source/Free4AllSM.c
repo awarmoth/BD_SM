@@ -154,87 +154,109 @@ ES_Event RunFFA_SM(ES_Event CurrentEvent)
 			// EndIf
 			// Else CurrentEvent must be an ES_NO_EVENT
 			else {
-				Update ReturnEvent to be an ES_NO_EVENT
+				// Update ReturnEvent to be an ES_NO_EVENT
 				ReturnEvent.EventType = ES_NO_EVENT;
 			}
 			// EndIf
 		break;
 		// End Firing block
 		
-		If CurrentState is ReloadingFFA 
+		// If CurrentState is ReloadingFFA 
 		case (ReloadingFFA)
-			Run DuringReloading and store the output in CurrentEvent
-			
-			If CurrentEvent is not ES_NO_EVENT
-				If CurrentEvent is ES_RELOAD_COMPLETE
-					Post ES_FIRE to Firing Service
-					Set MakeTransition to true
-					Set NextState to RapidFiringFFA
-				EndIf
-				
-				//do we need an else if there as an ES_TIMEOUT because the game ended?
-				
-			EndIf
-			
-			Else CurrentEvent must have been an ES_NO_EVENT
-				Update ReturnEvent to be ES_NO_EVENT
-			EndIf
+			// Run DuringReloadingFFA and store the output in CurrentEvent
+			CurrentEvent = DuringReloadingFFA(CurrentEvent);
+			// If CurrentEvent is not ES_NO_EVENT
+			if (CurrentEvent.EventType != ES_NO_EVENT){
+				// If CurrentEvent is ES_RELOAD_COMPLETE
+				if (CurrentEvent.EventType == ES_RELOAD_COMPLETE) {
+					// Post ES_FIRE to Firing Service
+					PostFiringService(ES_FIRE);
+					// Set MakeTransition to true
+					MakeTransition = true;
+					// Set NextState to RapidFiringFFA
+					NextState = RapidFiringFFA;
+				}
+				// EndIf
+			}			
+			// Else CurrentEvent must have been an ES_NO_EVENT
+			else {
+				// Update ReturnEvent to be ES_NO_EVENT
+				ReturnEvent.EventType = ES_NO_EVENT;
+			}
+			// EndIf
+		break;
+		// End Reloading block
 		
-		End Reloading block
-		
-		If CurrentState is RapidFiringFFA
-		
-			Run DuringRapidFiringFFA and store the output in CurrentEvent
-			
-			If CurrentEvent is not ES_NO_EVENT
-				If CurrentEvent is ES_FIRE_COMPLETE and ball count is NO_BALLS
-					Set MakeTransition to true
-					Set NextState to Reloading
-				EndIf
-				
-				Else If CurrentEvent is ES_RELOAD_COMPLETE and ball count is MAX_BALLS
-					Set MakeTransition to true
-					Set NextState to Firing
-				EndIf
-				
-				Else If CurrentEvent is ES_FIRE_COMPLETE //ball count not zero
-					Post ES_FIRE to Firing Service
-					If FFA_Timeout flag set then post ES_FFA_COMPLETE to MasterHSM //do we need to post? Shouldn't we just transform and pass back up?
-					Set MakeTransition to true
-				EndIf
-				
-				Else If CurrentEvent is ES_RELOAD_COMPLETE //ball count not 5
-					Post ES_RELOAD to Reload Service
-					Set MakeTransition to true //do these need to make transitions? State doesn't do anything on entry or exit
-				EndIf
-				
-				Else If CurrentEvent is ES_TIMEOUT and timer is FFA_TIMER
-					Consume the event and set the FFA_Timeout flag to true //why don't we just pass back up an end game event?
-					Set MakeTransition to true
-				EndIf
-			EndIf
-			
-			Else CurrentEvent must be an ES_NO_EVENT
-				Update ReturnEvent to an ES_NO_EVENT
-			EndIf
-		
-		End RapidFiringFFA block
+		// If CurrentState is RapidFiringFFA
+		case(RapidFiringFFA):
+			// Run DuringRapidFiringFFA and store the output in CurrentEvent
+			CurrentEvent = DuringRapidFiringFFA(CurrentEvent);
+			// If CurrentEvent is not ES_NO_EVENT
+			if (CurrentEvent.EventType != ES_NO_EVENT) {
+				// If CurrentEvent is ES_FIRE_COMPLETE and ball count is NO_BALLS
+				if ((CurrentEvent.EventType == ES_FIRE_COMPLETE) && (BallCount == NO_BALLS)) {
+					// Set MakeTransition to true
+					MakeTransition = true;
+					// Set NextState to ReloadingFFA
+					NextState = ReloadingFFA
+				}
+				// EndIf
+				// Else If CurrentEvent is ES_RELOAD_COMPLETE and ball count is MAX_BALLS
+				else if ((CurrentEvent.EventType == ES_RELOAD_COMPLETE) && (BallCount = MAX_BALLS)) {
+					// Set MakeTransition to true
+					MakeTransition = true;
+					// Set NextState to FiringFFA
+					NextState = FiringFFA;
+				}
+				// EndIf
+				// Else If CurrentEvent is ES_FIRE_COMPLETE //ball count not zero
+				else if (CurrentEvent.EventType = ES_FIRE_COMPLETE) {
+					// Post ES_FIRE to Firing Service
+					PostFiringService(ES_FIRE);
+					// If FFA_Timeout flag set then post ES_FFA_COMPLETE to MasterHSM
+					if (FFA_Timeout) PostMasterSM(ES_FFA_COMPLETE);
+				}
+				// EndIf
+				// Else If CurrentEvent is ES_RELOAD_COMPLETE //ball count not 5
+				else if (CurrentEvent.EventType == ES_RELOAD_COMPLETE){
+					// Post ES_RELOAD to Reload Service
+					PostReloadService(ES_RELOAD);
+				}
+				// EndIf
+				// Else If CurrentEvent is ES_TIMEOUT and timer is FFA_TIMER
+				else if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == FFA_TIMER)){
+					// Consume the event and set the FFA_Timeout flag to true
+					ReturnEvent.EventType = ES_NO_EVENT;
+					FFA_Timeout = true;
+				}
+				// EndIf
+			}
+			// EndIf
+			// Else CurrentEvent must be an ES_NO_EVENT
+			else {
+				// Update ReturnEvent to an ES_NO_EVENT
+				ReturnEvent.EventType = ES_NO_EVENT;
+			}
+			// EndIf
+		break;
+		// End RapidFiringFFA block	
+	// If MakeTransition is true
+	if (MakeTransition) {
+		// Set CurrentEvent to ES_EXIT
+		CurrentEvent.EventType = ES_EXIT;
+		// Run the FFA state machine with CurrentEvent to allow lower level SMs to exit
+		RunFFA_SM(CurrentEvent);
+		// Set CurrentState to NextState
+		CurrentState = NextState;
+		// Run the FFA state machine with EntryEvent to allow lower level SMs to enter
+		RunFFA_SM(EntryEvent);
+	}
+	// EndIf
 	
-	If MakeTransition is true
-	
-		Set CurrentEvent to ES_EXIT
-		Run the FFA state machine with CurrentEvent to allow lower level SMs to exit
-		
-		Set CurrentState to NextState
-		Run the FFA state machine with EntryEvent to allow lower level SMs to enter
-	
-	EndIf
-	
-	Return ReturnEvent
+	// Return ReturnEvent
+	return ReturnEvent;
 
-}
-End RunFFA_SM
-
+// End RunFFA_SM
 
 
 static ES_Event DuringWaitingFFA(ES_Event ThisEvent)
