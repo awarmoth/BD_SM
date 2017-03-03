@@ -4,8 +4,8 @@
  ****************************************************************************/
  #define CheckOff3 0
  #define SM_TEST 1
- #define TEAM_COLOR GREEN
- #define NO_LOC 1
+ #define TEAM_COLOR RED
+ #define NO_LOC 0
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
  
@@ -145,7 +145,7 @@
 #define MAX_BALLS 5
 
 #define SHOT_CLOCK_TIME 20000
-#define BALL_AIR_TIME 1000 //will probably want to lower this
+#define BALL_AIR_TIME 5000 //will probably want to lower this
 
 //Servo motor constants
 #define NUM_MOTOR 1

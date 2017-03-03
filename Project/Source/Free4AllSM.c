@@ -107,44 +107,62 @@ ES_Event RunFFA_SM(ES_Event CurrentEvent)
 					MakeTransition = true;
 				}
 				// Else If CurrentEvent is ES_FFA_READY
-				else if (CurrentEvent)
-					Set NextState to RapidFiringFFA
-					Set MakeTransition to true
-				
-				EndIf
-			EndIf
-			
-			Else CurrentEvent must be an ES_NO_EVENT
+				else if (CurrentEvent.EventType = ES_FFA_READY) {
+					// Set NextState to RapidFiringFFA
+					NextState = RapidFiringFFA;
+					// Set MakeTransition to true
+					MakeTransition = true;
+				}
+				// EndIf
+			}
+			// EndIf
+			// Else CurrentEvent must be an ES_NO_EVENT
+			else {
+				// Update ReturnEvent to be an ES_NO_EVENT
+				ReturnEvent.EventType = ES_NO_EVENT;
+			}
+			// EndIf
+		break;
+		// End AlignFFA block
+		
+		// If CurrentState is FiringFFA
+		case (FiringFFA):
+			// Run DuringFiring and store the output in CurrentEvent
+			CurrentEvent = DuringFiringFFA(CurrentEvent);
+			// If CurrentEvent is not ES_NO_EVENT
+			if (CurrentEvent.EventType != ES_NO_EVENT) {
+				// If CurrentEvent is ES_FIRE_COMPLETE
+				if (CurrentEvent.EventType == ES_FIRE_COMPLETE) {
+					// Post ES_RELOAD to Reload Service
+					PostReloadService(ES_RELOAD);
+					// Set MakeTransition to true
+					MakeTransition = true;
+					// Set NextState to RapidFiringFFA
+					NextState = RapidFiringFFA;
+				}
+				// EndIf
+				// Else If CurrentEvent is ES_TIMEOUT and the timer is FFA_TIMER
+				else if ((CurrentEvent.EventType == ES_TIMEOUT) && CurrentEvent.EventParam = FFA_TIMER){
+					// Consume the event and set the FFA_Timeout flag to true
+					ReturnEvent.EventType = ES_NO_EVENT;
+					FFA_Timeout = true;
+					// Set MakeTransition to true
+					MakeTransition = true;
+				}
+				// EndIf
+			}
+			// EndIf
+			// Else CurrentEvent must be an ES_NO_EVENT
+			else {
 				Update ReturnEvent to be an ES_NO_EVENT
-			EndIf
+				ReturnEvent.EventType = ES_NO_EVENT;
+			}
+			// EndIf
+		break;
+		// End Firing block
 		
-		End AlignFFA block
-		
-		If CurrentState is Firing
-			
-			Run DuringFiring and store the output in CurrentEvent
-			
-			If CurrentEvent is not ES_NO_EVENT
-				If CurrentEvent is ES_FIRE_COMPLETE
-					Post ES_RELOAD to Reload Service
-					Set MakeTransition to true
-					Set NextState to RapidFiringFFA
-				EndIf
-				
-				Else If CurrentEvent is ES_TIMEOUT and the timer is FFA_TIMER
-					Consume the event and set the FFA_Timeout flag to true //Why do we consume? Isn't the game over? Shouldn't we just pass a game over event back up?
-					Set MakeTransition to true
-				EndIf
-			EndIf
-			
-			Else CurrentEvent must be an ES_NO_EVENT
-				Update ReturnEvent to be an ES_NO_EVENT
-			EndIf
-		
-		End Firing block
-		
-		If CurrentState is Reloading 
-		
+		If CurrentState is ReloadingFFA 
+		case (ReloadingFFA)
 			Run DuringReloading and store the output in CurrentEvent
 			
 			If CurrentEvent is not ES_NO_EVENT

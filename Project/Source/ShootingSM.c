@@ -457,6 +457,9 @@ static ES_Event DuringAlignToTape(ES_Event ThisEvent)
 		}
 		// direction based on team color, opposite of AlignToGoal
 	}// EndIf
+	if (ThisEvent.EventType == ES_EXIT) {
+		SetMotorController(CONTROLLER_OFF);
+	}
 	
 	// Return ReturnEvent
 	return ReturnEvent;

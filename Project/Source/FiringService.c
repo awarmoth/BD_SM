@@ -75,6 +75,7 @@ bool InitFiringService(uint8_t Priority)
 	
 	//Initialize the PWM mode for the servos
 	InitLoadServo();
+	SendLoadServo(LOAD_SERVO_DOWN);
 	
 	// Return true
 	return true;
