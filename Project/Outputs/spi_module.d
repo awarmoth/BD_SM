@@ -1,11 +1,11 @@
 .\outputs\spi_module.o: Source\SPI_Module.c
-.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h
-.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdbool.h
+.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\outputs\spi_module.o: .\Headers\termio.h
-.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdio.h
-.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdlib.h
+.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\outputs\spi_module.o: C:\ti\TivaWare_C_Series-2.1.0.12573\utils/uartstdio.h
-.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdarg.h
+.\outputs\spi_module.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\outputs\spi_module.o: .\Headers\ES_Configure.h
 .\outputs\spi_module.o: .\Headers\ES_Framework.h
 .\outputs\spi_module.o: .\Headers\ES_Port.h

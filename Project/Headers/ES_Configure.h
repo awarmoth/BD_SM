@@ -334,7 +334,7 @@ typedef enum {  ES_NO_EVENT = 0,
 #define TIMER3_RESP_FUNC PostMasterSM
 #define TIMER4_RESP_FUNC PostMasterSM
 #define TIMER5_RESP_FUNC PostFiringService
-#define TIMER6_RESP_FUNC TIMER_UNUSED
+#define TIMER6_RESP_FUNC PostMasterSM
 #define TIMER7_RESP_FUNC TIMER_UNUSED
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
@@ -358,5 +358,6 @@ typedef enum {  ES_NO_EVENT = 0,
 #define FREE_4_ALL_TIMER 3
 #define SHOT_RESULT_TIMER 4
 #define LOAD_SERVO_TIMER 5
+#define ISR_TIMER 6
 
 #endif /* CONFIGURE_H */

@@ -32,6 +32,8 @@ Module file for exectuing all hardware initialization
 #define LOWER_FREQ_THRESHOLD 1400
 #define UPPER_FREQ_THRESHOLD 1500
 
+#define ISR_TIMEOUT 100
+
 static void Init_Controller(void);
 static void AD_Init(void);
 static void Init_Beacon_Receiver(void);
@@ -48,6 +50,7 @@ static uint8_t LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
 static uint8_t TapeWatchFlag = 0;
 static uint32_t RightResonanceHistory[TAPE_WATCH_WINDOW] = {0};
 static uint32_t LeftResonanceHistory[TAPE_WATCH_WINDOW] = {0};
+static bool ISR_Flag = false;
 
 void InitializePins(void) {
 	Init_Controller();
@@ -59,6 +62,7 @@ void InitializePins(void) {
 	MagneticTimerInit();
 	OneShotTimerInit();
 	LoadingMotorInit();
+	ES_Timer_InitTimer(ISR_TIMER,ISR_TIMEOUT);
 }
 
 static void Init_Controller(void)
@@ -512,6 +516,7 @@ static void Init_Beacon_Receiver(void)
 
 void Beacon_Receiver_ISR(void)
 {
+	ISR_Flag = true;
 	static uint32_t LastTime = 0;
 	//clear the source of the interrupt
 	HWREG(WTIMER0_BASE+TIMER_O_ICR)=TIMER_ICR_CBECINT;
@@ -523,7 +528,7 @@ void Beacon_Receiver_ISR(void)
 	if ((Frequency>=LOWER_FREQ_THRESHOLD)&&(Frequency<=UPPER_FREQ_THRESHOLD))
 	{
 		//Disable Beacon Detection
-		HWREG(WTIMER0_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
+		//HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
 		//post a beacon detected event
 		ES_Event ThisEvent;
 		ThisEvent.EventType = ES_GOAL_BEACON_DETECTED;
@@ -531,4 +536,8 @@ void Beacon_Receiver_ISR(void)
 	}
 	//update the last time of detection
 	LastTime = Time;
+}
+
+bool getISRFlag(void) {
+	return ISR_Flag;
 }

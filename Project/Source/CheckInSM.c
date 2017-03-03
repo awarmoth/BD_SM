@@ -120,7 +120,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					}
 					else
 					{
-						// if (SM_TEST) printf("ReportStatus1 = %i\r\n",ReportStatus);
+						if (SM_TEST) printf("ReportStatus1 = %i\r\n",ReportStatus);
 						// If ReportStatus = ACK
 						if ( ReportStatus == ACK )
 						{
@@ -226,7 +226,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Else
 					else
 					{
-						//if (SM_TEST) printf("ReportStatus2 = %i\r\n",ReportStatus);
+						if (SM_TEST) printf("ReportStatus2 = %i\r\n",ReportStatus);
 						// If ReportStatus = ACK
 						if (ReportStatus == ACK)
 						{
