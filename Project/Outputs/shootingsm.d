@@ -14,6 +14,7 @@
 .\outputs\shootingsm.o: .\Headers\ConstructingSM.h
 .\outputs\shootingsm.o: .\Headers\DrivingAlongTapeSM.h
 .\outputs\shootingsm.o: .\Headers\hardware.h
+.\outputs\shootingsm.o: .\Headers\PWM_Module.h
 .\outputs\shootingsm.o: .\Headers\constants.h
 .\outputs\shootingsm.o: .\Headers\termio.h
 .\outputs\shootingsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdio.h

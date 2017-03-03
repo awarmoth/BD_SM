@@ -30,6 +30,7 @@
 .\outputs\hardware.o: C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib/gpio.h
 .\outputs\hardware.o: C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib/timer.h
 .\outputs\hardware.o: .\Headers\constants.h
+.\outputs\hardware.o: .\Headers\PWM10Tiva.h
 .\outputs\hardware.o: .\Headers\ADMulti.h
 .\outputs\hardware.o: .\Headers\PWM_Module.h
 .\outputs\hardware.o: .\Headers\MasterHSM.h

@@ -82,8 +82,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopA1X>0</nStopA1X>
-            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -145,6 +143,7 @@
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>1</RestoreTracepoints>
             <RestoreSysVw>1</RestoreSysVw>
+            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>3</TargetSelection>
@@ -227,7 +226,6 @@
             <useUlib>0</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
-            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -362,13 +360,6 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
-            <v6Lang>1</v6Lang>
-            <v6LangP>1</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
-            <v6Lto>0</v6Lto>
-            <v6WtE>0</v6WtE>
-            <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--c99</MiscControls>
               <Define>rvmdk PART_TM4C123GH6PM TARGET_IS_TM4C123_RB1</Define>
@@ -386,7 +377,6 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -491,6 +481,16 @@
               <FileName>ShootingSM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ShootingSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>FiringService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\FiringService.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM10Tiva.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -647,6 +647,16 @@
               <FileType>5</FileType>
               <FilePath>.\Headers\ShootingSM.h</FilePath>
             </File>
+            <File>
+              <FileName>FiringService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\FiringService.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM10Tiva.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -705,13 +715,6 @@
                 <uSurpInc>2</uSurpInc>
                 <uC99>2</uC99>
                 <useXO>2</useXO>
-                <v6Lang>0</v6Lang>
-                <v6LangP>0</v6LangP>
-                <vShortEn>2</vShortEn>
-                <vShortWch>2</vShortWch>
-                <v6Lto>2</v6Lto>
-                <v6WtE>2</v6WtE>
-                <v6Rtti>2</v6Rtti>
                 <VariousControls>
                   <MiscControls></MiscControls>
                   <Define></Define>
@@ -729,7 +732,6 @@
                 <NoWarn>2</NoWarn>
                 <uSurpInc>2</uSurpInc>
                 <useXO>2</useXO>
-                <uClangAs>2</uClangAs>
                 <VariousControls>
                   <MiscControls></MiscControls>
                   <Define></Define>
@@ -803,7 +805,6 @@
       <TargetName>SPI_Integration</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>TM4C123GH6PM</Device>
@@ -876,8 +877,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopA1X>0</nStopA1X>
-            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -939,9 +938,10 @@
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>1</RestoreTracepoints>
             <RestoreSysVw>1</RestoreSysVw>
+            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>8</TargetSelection>
+          <TargetSelection>3</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -1021,7 +1021,6 @@
             <useUlib>0</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
-            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -1156,13 +1155,6 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
-            <v6Lang>1</v6Lang>
-            <v6LangP>1</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
-            <v6Lto>0</v6Lto>
-            <v6WtE>0</v6WtE>
-            <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--c99</MiscControls>
               <Define>rvmdk PART_TM4C123GH6PM TARGET_IS_TM4C123_RB1</Define>
@@ -1180,7 +1172,6 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -1285,6 +1276,16 @@
               <FileName>ShootingSM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ShootingSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>FiringService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\FiringService.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM10Tiva.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1441,6 +1442,16 @@
               <FileType>5</FileType>
               <FilePath>.\Headers\ShootingSM.h</FilePath>
             </File>
+            <File>
+              <FileName>FiringService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\FiringService.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM10Tiva.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1499,13 +1510,6 @@
                 <uSurpInc>2</uSurpInc>
                 <uC99>2</uC99>
                 <useXO>2</useXO>
-                <v6Lang>0</v6Lang>
-                <v6LangP>0</v6LangP>
-                <vShortEn>2</vShortEn>
-                <vShortWch>2</vShortWch>
-                <v6Lto>2</v6Lto>
-                <v6WtE>2</v6WtE>
-                <v6Rtti>2</v6Rtti>
                 <VariousControls>
                   <MiscControls></MiscControls>
                   <Define></Define>
@@ -1523,7 +1527,6 @@
                 <NoWarn>2</NoWarn>
                 <uSurpInc>2</uSurpInc>
                 <useXO>2</useXO>
-                <uClangAs>2</uClangAs>
                 <VariousControls>
                   <MiscControls></MiscControls>
                   <Define></Define>

@@ -12,8 +12,9 @@
 #include "DrivingAlongTapeSM.h"
 #include "hardware.h"
 #include "FiringService.h"
+#include "PWM10Tiva.h"
 
-#include "constants.h"
+#include "constants.h" 
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -50,8 +51,8 @@
 
 #include "BITDEFS.H"
 
-#define LOAD_SERVO_UP 180
-#define LOAD_SERVO_DOWN 0
+#define LOAD_SERVO_UP 1700
+#define LOAD_SERVO_DOWN 3200
 #define LOAD_UP_TIME 500
 #define LOAD_WAIT_TIME 1000
 #define LOAD_DOWN_TIME 500
@@ -61,7 +62,7 @@ static uint8_t MyPriority;
 static FiringState_t CurrentState;
 
 static void InitLoadServo(void);
-static void SendLoadServo(uint8_t position);
+static void SendLoadServo(uint16_t position);
 
 
 bool InitFiringService(uint8_t Priority)
@@ -238,7 +239,8 @@ static void InitLoadServo(void)
 */
 }
 
-static void SendLoadServo(uint8_t position)
+static void SendLoadServo(uint16_t position)
 {
+	PWM_TIVA_SetPulseWidth(position, TIMING_CHANNEL);
 }
 
