@@ -5,7 +5,7 @@
  #define CheckOff3 0
  #define SM_TEST 1
  #define TEAM_COLOR RED
- #define NO_LOC 0
+ #define NO_LOC 1
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
  
@@ -86,8 +86,8 @@
  #define ONE_SHOT_TIMEOUT 20000000
  
  // Magnetic sensors
- #define RUN_AVERAGE_LENGTH 20
- #define THROWAWAY 0
+ #define RUN_AVERAGE_LENGTH 200
+ #define MAX_THROWAWAY 200
  #define TICKS_PER_USEC 40
  #define MAX_ALLOWABLE_PER (TICKS_PER_USEC*1361)
  #define MIN_ALLOWABLE_PER (TICKS_PER_USEC*472)

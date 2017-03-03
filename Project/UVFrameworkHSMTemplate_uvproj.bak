@@ -657,6 +657,11 @@
               <FileType>5</FileType>
               <FilePath>.\Headers\PWM10Tiva.h</FilePath>
             </File>
+            <File>
+              <FileName>PWM_Module.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM_Module.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1451,6 +1456,11 @@
               <FileName>PWM10Tiva.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\PWM10Tiva.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM_Module.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM_Module.h</FilePath>
             </File>
           </Files>
         </Group>
