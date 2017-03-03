@@ -35,6 +35,8 @@
 #include "BITDEFS.H"
 #include <Bin_Const.h>
 
+#define ISR_TIMEOUT 100
+
 #ifndef ALL_BITS
 #define ALL_BITS (0xff<<2)
 #endif
@@ -119,7 +121,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	{
 		// If CurrentState is Waiting2Start
 		case(Waiting2Start):
-		if (SM_TEST) printf("Master: Waiting2Start\r\n");
+		//if (SM_TEST) printf("Master: Waiting2Start\r\n");
 		// Run DuringWaiting2Start and store the output in CurrentEvent
 			CurrentEvent = DuringWaiting2Start(CurrentEvent);
 //			printf("curr event: %i",CurrentEvent.EventType);
@@ -159,6 +161,9 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				{
 					// Set MakeTransition to true
 					MakeTransition = true;
+				} else if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == ISR_TIMER)){
+					//printf("flag %i", getISRFlag());
+					ES_Timer_InitTimer(ISR_TIMER,ISR_TIMEOUT);
 				}
 				// EndIf
 			}

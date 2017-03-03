@@ -542,12 +542,17 @@ void HallEffect_ISR( void )
 	//	Static local variable LastTen array initialized to ten zeros
 	static uint32_t LastTen[RUN_AVERAGE_LENGTH];
 	static uint32_t LastDeltas[RUN_AVERAGE_LENGTH];
+	static uint16_t Throwaway = 0;
 	if (initHallEffect){
 		for (int i=0;i<RUN_AVERAGE_LENGTH;i++){
 			LastTen[i] = 0;
 			LastDeltas[i] = 0;
 		}
 		initHallEffect = false;
+	}
+	if (Throwaway< MAX_THROWAWAY){
+		Throwaway++;
+		return;
 	}
 	//	Static local variable 8 bit integer counter initialized to 0
 	static uint8_t counter = 0;
@@ -596,6 +601,8 @@ void HallEffect_ISR( void )
 		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 15) {
 		//	Post ES_StationDetected Event
 			PostEvent.EventType = ES_STATION_DETECTED;
+			Throwaway = 0;
+			
 			PostMasterSM(PostEvent);
 			//printf("Good Frequency: %i\r\n", HallSensorPeriod);
 			

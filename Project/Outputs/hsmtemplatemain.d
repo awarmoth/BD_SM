@@ -18,3 +18,4 @@
 .\outputs\hsmtemplatemain.o: .\Headers\ES_PostList.h
 .\outputs\hsmtemplatemain.o: .\Headers\ES_Events.h
 .\outputs\hsmtemplatemain.o: .\Headers\ES_Timers.h
+.\outputs\hsmtemplatemain.o: .\Headers\EnablePA25_PB23_PD7_PF0.h

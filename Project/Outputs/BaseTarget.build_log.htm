@@ -3,49 +3,40 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-U:\awarmoth\My Documents\The_Framework\Project\UVFrameworkHSMTemplate.uvproj
+\\testarossa\Users$\millerm2\My Documents\The_Framework\Project\UVFrameworkHSMTemplate.uvproj
 Project File Date:  03/02/2017
 
 <h2>Output:</h2>
 Build target 'BaseFrameworkTarget'
-compiling PWM_Module.c...
+compiling MasterHSM.c...
+Source\MasterHSM.c(353): warning:  #177-D: function "DuringFree4All" was declared but never referenced
+  static ES_Event DuringFree4All(ES_Event ThisEvent)
+Source\MasterHSM.c(382): warning:  #177-D: function "DuringGameComplete" was declared but never referenced
+  static ES_Event DuringGameComplete(ES_Event ThisEvent)
+Source\MasterHSM.c: 2 warnings, 0 errors
+compiling hardware.c...
+Source\hardware.c(88): warning:  #61-D: integer operation result is out of range
+        HWREG(NVIC_PRI24)=(HWREG(NVIC_PRI24)&~NVIC_PRI24_INTD_M)|(0x6<<NVIC_PRI24_INTD_S);
+Source\hardware.c(88): warning:  #68-D: integer conversion resulted in a change of sign
+        HWREG(NVIC_PRI24)=(HWREG(NVIC_PRI24)&~NVIC_PRI24_INTD_M)|(0x6<<NVIC_PRI24_INTD_S);
+Source\hardware.c(548): warning:  #1-D: last line of file ends without a newline
+  }
+Source\hardware.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=14692 RO-data=1728 RW-data=176 ZI-data=2816  
+Program Size: Code=15112 RO-data=1728 RW-data=184 ZI-data=4256  
 After Build - User command #1: fromelf --bin --output .\Outputs\BaseTarget.bin .\Outputs\BaseTarget.axf
-".\Outputs\BaseTarget.axf" - 0 Error(s), 0 Warning(s).
-Load "U:\\awarmoth\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
+".\Outputs\BaseTarget.axf" - 0 Error(s), 5 Warning(s).
+Load "\\\\testarossa\\Users$\\millerm2\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
 Programming Done.
 Verify OK.
-)
-Source\MasterHSM.c: 2 warnings, 0 errors
-compiling LOC_HSM.c...
-compiling hardware.c...
-Source\hardware.c(84): warning:  #61-D: integer operation result is out of range
-        HWREG(NVIC_PRI24)=(HWREG(NVIC_PRI24)&~NVIC_PRI24_INTD_M)|(0x6<<NVIC_PRI24_INTD_S);
-Source\hardware.c(84): warning:  #68-D: integer conversion resulted in a change of sign
-        HWREG(NVIC_PRI24)=(HWREG(NVIC_PRI24)&~NVIC_PRI24_INTD_M)|(0x6<<NVIC_PRI24_INTD_S);
-Source\hardware.c(507): warning:  #61-D: integer operation result is out of range
-        HWREG(NVIC_PRI23)=(HWREG(NVIC_PRI23)&~NVIC_PRI23_INTD_M)|(0x6<<NVIC_PRI23_INTD_S);
-Source\hardware.c(507): warning:  #68-D: integer conversion resulted in a change of sign
-        HWREG(NVIC_PRI23)=(HWREG(NVIC_PRI23)&~NVIC_PRI23_INTD_M)|(0x6<<NVIC_PRI23_INTD_S);
-Source\hardware.c(534): warning:  #1-D: last line of file ends without a newline
-  }
-Source\hardware.c: 5 warnings, 0 errors
-compiling SPI_Module.c...
-compiling ByteTransferSM.c...
-compiling CheckInSM.c...
-compiling ConstructingSM.c...
-compiling DrivingAlongTapeSM.c...
-compiling ADMulti.c...
-compiling PWM_Module.c...
-compiling ShootingSM.c...
-Source\ShootingSM.c(54): warning:  #177-D: variable "MyPriority" was declared but never referenced
+referenced
   static uint8_t MyPriority;
 Source\ShootingSM.c: 1 warning, 0 errors
 compiling FiringService.c...
 compiling PWM10Tiva.c...
+compiling EnablePA25_PB23_PD7_PF0.c...
 assembling startup_rvmdk.S...
 compiling ES_CheckEvents.c...
 compiling ES_DeferRecall.c...
@@ -62,11 +53,20 @@ compiling retarget.c...
 compiling termio.c...
 compiling uartstdio.c...
 linking...
-Program Size: Code=14692 RO-data=1728 RW-data=176 ZI-data=2816  
+Program Size: Code=15136 RO-data=1728 RW-data=184 ZI-data=4256  
 After Build - User command #1: fromelf --bin --output .\Outputs\BaseTarget.bin .\Outputs\BaseTarget.axf
-".\Outputs\BaseTarget.axf" - 0 Error(s), 9 Warning(s).
-Load "U:\\awarmoth\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
+".\Outputs\BaseTarget.axf" - 0 Error(s), 7 Warning(s).
+Load "\\\\testarossa\\Users$\\millerm2\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
 Programming Done.
 Verify OK.
+256  
+After Build - User command #1: fromelf --bin --output .\Outputs\BaseTarget.bin .\Outputs\BaseTarget.axf
+".\Outputs\BaseTarget.axf" - 0 Error(s), 9 Warning(s).
+Load "\\\\testarossa\\Users$\\millerm2\\My Documents\\The_Framework\\Project\\Outputs\\BaseTarget.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.
+et not created
