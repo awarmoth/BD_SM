@@ -346,7 +346,7 @@ static ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		SetFlywheelDuty(60);
+		HWREG(WTIMER5_BASE+TIMER_O_CTL) |= TIMER_CTL_TBEN;
 		// Start rotating // direction based on team color
 		uint8_t TeamColor = getTeamColor();
 		if (TeamColor == GREEN) {
@@ -364,7 +364,21 @@ static ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 	
 }
 
-
+static ES_Event DuringWarmingUp(ES_Event ThisEvent) {
+	// local variable ReturnEvent
+	ES_Event ReturnEvent;
+	// Initialize ReturnEvent to ThisEvent
+	ReturnEvent = ThisEvent;
+	
+	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
+		ES_Timer_InitTimer(SHOOTING_TIMER, WARM_UP_TIME);
+	}// EndIf
+	
+	// Return ReturnEvent
+	return ReturnEvent;	
+}
 
 static ES_Event DuringFiring(ES_Event ThisEvent)
 {
@@ -378,6 +392,7 @@ static ES_Event DuringFiring(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		SetFlywheelDuty(60);
 		// Set Event2Post to a ES_FIRE
 		Event2Post.EventType = ES_FIRE;
 		// Post Event2Post to Firing Service

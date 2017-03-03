@@ -522,19 +522,23 @@ void Beacon_Receiver_ISR(void)
 	HWREG(WTIMER5_BASE+TIMER_O_ICR)=TIMER_ICR_CBECINT;
 	ISR_Flag = true;
 	static uint32_t LastTime = 0;
+	static uint8_t counter = 0;
 	//capture the time at which the beacon was detected
 	uint32_t Time = HWREG(WTIMER5_BASE+TIMER_O_TBR);
 	//calculate the frequency
 	uint32_t Frequency = TICKS_PER_S/(Time-LastTime);
 	//if the frequency of detection matches the expected beacon frequency
-	if ((Frequency>=LOWER_FREQ_THRESHOLD)&&(Frequency<=UPPER_FREQ_THRESHOLD))
-	{
+	if ((Frequency>=LOWER_FREQ_THRESHOLD)&&(Frequency<=UPPER_FREQ_THRESHOLD)) counter++;
+	else counter /= 2;
+	printf("%i/r/n",Frequency);
+	if (counter == 10) {
 		//Disable Beacon Detection
-		//HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
+		HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
 		//post a beacon detected event
 		ES_Event ThisEvent;
 		ThisEvent.EventType = ES_GOAL_BEACON_DETECTED;
 		PostMasterSM(ThisEvent);
+		counter = 0;
 	}
 	//update the last time of detection
 	LastTime = Time;

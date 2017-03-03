@@ -104,8 +104,8 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 50
-#define RIGHT_MAX_DUTY 50
+#define LEFT_MAX_DUTY 60
+#define RIGHT_MAX_DUTY 60
 #define RIGHT_CCW_COMMAND 50
 #define RIGHT_CW_COMMAND 50
 #define LEFT_CCW_COMMAND 50
@@ -144,6 +144,7 @@
 #define NO_BALLS 0
 #define MAX_BALLS 5
 
+#define WARM_UP_TIME 2000
 #define SHOT_CLOCK_TIME 20000
 #define BALL_AIR_TIME 5000 //will probably want to lower this
 
