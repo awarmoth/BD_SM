@@ -58,7 +58,7 @@ void InitializePins(void) {
 	SetFlywheelDuty(0);
 	MagneticTimerInit();
 	OneShotTimerInit();
-	LoadingMotorInit();
+	//LoadingMotorInit();
 }
 
 static void Init_Controller(void)

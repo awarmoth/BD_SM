@@ -7,9 +7,11 @@
 
 void InitPWM(void);
 void InitFlywheelPWM(void);
+void InitServoPWM(void);
 void SetDutyA(uint8_t duty);
 void SetDutyB (uint8_t duty);
 void SetFlywheelDuty(uint8_t duty);
+void SetServoPosition(uint16_t position);
 //void ChangeDirectionA(void);
 //void ChangeDirectionB(void);
 void SetDirectionA(uint8_t dir);
