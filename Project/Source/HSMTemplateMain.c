@@ -33,11 +33,13 @@
 #include "ES_Framework.h"
 #include "ES_Timers.h"
 #include "ES_Events.h"
+#include "EnablePA25_PB23_PD7_PF0.h"
 
 #define clrScrn() 	puts("\x1b[2J")
 
 int main (void)
 {
+	PortFunctionInit();
   ES_Return_t ErrorType;
     
 // Your hardware initialization function calls go here
