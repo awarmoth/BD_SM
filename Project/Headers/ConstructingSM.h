@@ -23,6 +23,7 @@ uint8_t getScore(void);
 uint8_t getTargetGoal(void);
 void setGameTimeoutFlag(bool flag);
 bool getGameTimeoutFlag(void);
+bool getHasLeftStage (void);
 
 
 #endif /*ConstructingSM_H */

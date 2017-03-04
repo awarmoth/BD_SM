@@ -193,7 +193,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 
 		// If CurrentState is CheckIn
 		case(CheckIn):
-			// if (SM_TEST) printf("Constructing: CheckIn\r\n");
+			if (SM_TEST) printf("Constructing: CheckIn\r\n");
 			// Run DuringCheckIn and store the output in CurrentEvent
 			CurrentEvent = DuringCheckIn(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -744,4 +744,8 @@ void setGameTimeoutFlag(bool flag)
 bool getGameTimeoutFlag(void)
 {
 	return GameTimeoutFlag;
+}
+
+bool getHasLeftStage(void) {
+	return HasLeftStage;
 }
