@@ -9,13 +9,11 @@
 
 // typedefs for the states
 // State definitions for use with the query function
-typedef enum { AlignToGoal, Firing, WarmingUp, WaitForShotResult, WaitForScoreUpdate, AlignToTape } ShootingState_t ;
+typedef enum { AlignToGoal, Firing, WarmingUp, WaitForShotResult, WaitForScoreUpdate } ShootingState_t ;
 
 // Public Function Prototypes
 
 ES_Event RunShootingSM( ES_Event CurrentEvent );
 void StartShootingSM ( ES_Event CurrentEvent );
-void setGameTimeoutFlag(bool flag);
-bool getGameTimeoutFlag(void);
 
 #endif /*ShootingSM_H */

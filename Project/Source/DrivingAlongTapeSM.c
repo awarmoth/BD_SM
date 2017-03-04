@@ -478,3 +478,9 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	return ReturnEvent;
 }
 
+
+uint8_t getLastStation(void){
+	return LastStation;
+}
+
+

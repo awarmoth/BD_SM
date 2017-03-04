@@ -508,6 +508,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\EnablePA25_PB23_PD7_PF0.c</FilePath>
             </File>
+            <File>
+              <FileName>ReloadingService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ReloadingService.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -682,6 +687,11 @@
               <FileName>EnablePA25_PB23_PD7_PF0.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\EnablePA25_PB23_PD7_PF0.h</FilePath>
+            </File>
+            <File>
+              <FileName>ReloadingService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ReloadingService.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1336,6 +1346,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\EnablePA25_PB23_PD7_PF0.c</FilePath>
             </File>
+            <File>
+              <FileName>ReloadingService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ReloadingService.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1510,6 +1525,11 @@
               <FileName>EnablePA25_PB23_PD7_PF0.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\EnablePA25_PB23_PD7_PF0.h</FilePath>
+            </File>
+            <File>
+              <FileName>ReloadingService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ReloadingService.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -16,6 +16,7 @@
 ".\outputs\firingservice.o"
 ".\outputs\pwm10tiva.o"
 ".\outputs\enablepa25_pb23_pd7_pf0.o"
+".\outputs\reloadingservice.o"
 "C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib"
 ".\outputs\startup_rvmdk.o"
 ".\outputs\es_checkevents.o"

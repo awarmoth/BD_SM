@@ -24,3 +24,4 @@
 .\outputs\es_framework.o: .\Headers\LOC_HSM.h
 .\outputs\es_framework.o: .\Headers\MasterHSM.h
 .\outputs\es_framework.o: .\Headers\FiringService.h
+.\outputs\es_framework.o: .\Headers\ReloadingService.h

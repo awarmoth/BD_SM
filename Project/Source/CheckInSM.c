@@ -116,11 +116,13 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					{ 
 						// Transform ReturnEvent to ES_Reorient
 						ReturnEvent.EventType = ES_REORIENT;
+						BadResponseCounter = 0;
 					// Else
 					}
 					else
 					{
 						if (SM_TEST) printf("ReportStatus1 = %i\r\n",ReportStatus);
+						
 						// If ReportStatus = ACK
 						if ( ReportStatus == ACK )
 						{
@@ -222,6 +224,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					{
 						// Transform ReturnEvent to ES_Reorient
 						ReturnEvent.EventType = ES_REORIENT;
+						BadResponseCounter = 0;
 					}
 					// Else
 					else
@@ -230,12 +233,13 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 						// If ReportStatus = ACK
 						if (ReportStatus == ACK)
 						{
+							BadResponseCounter = 0;
 							// Transform ReturnEvent to ES_GOAL_READY
 							ReturnEvent.EventType = ES_GOAL_READY;
 							// Set ReturnEvent parameter to getLocation //from Report Status byte
 							ReturnEvent.EventParam = getLocation();
 							//station is open, so start the shot clock
-							//ES_Timer_InitTimer(SHOOTING_TIMER, SHOT_CLOCK_TIME);
+							ES_Timer_InitTimer(SHOOTING_TIMER, SHOT_CLOCK_TIME);
 						}
 						// Else If ReportStatus = NACK
 						else if (ReportStatus == NACK || ReportStatus == INACTIVE)
@@ -313,7 +317,6 @@ static ES_Event DuringReporting_1(ES_Event ThisEvent)
 		Event2Post.EventParam = Byte2Write;
 		if (NO_LOC) printf("Posting Command: Report to LOC\r\n");
 		else PostLOC_SM(Event2Post);		// Reinitialize variables
-		BadResponseCounter = 0;
 		ResponseReady = RESPONSE_NOT_READY;
 	}
 	// EndIf

@@ -19,3 +19,4 @@
 .\outputs\es_postlist.o: .\Headers\LOC_HSM.h
 .\outputs\es_postlist.o: .\Headers\MasterHSM.h
 .\outputs\es_postlist.o: .\Headers\FiringService.h
+.\outputs\es_postlist.o: .\Headers\ReloadingService.h

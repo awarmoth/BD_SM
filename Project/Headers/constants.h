@@ -6,6 +6,8 @@
  #define SM_TEST 1
  #define TEAM_COLOR RED
  #define NO_LOC 1
+ #define BALL_TRACKING 0
+ #define TAPE_TEST 1
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
  
@@ -156,3 +158,10 @@
 #define MOTOR_PERIOD 		250
 #define TIMING_CHANNEL 	0
 #define TIME_MOT_GROUP 	0
+
+
+#define NUM_PULSES 10
+#define DELIVERY_TIME 3000
+#define PULSE_HIGH_TIME 10
+#define PULSE_LOW_TIME 30
+

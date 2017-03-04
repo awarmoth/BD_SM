@@ -6,6 +6,7 @@
 #include "DrivingAlongTapeSM.h"
 #include "hardware.h"
 #include "FiringService.h"
+#include "ReloadingService.h"
 
 #include "constants.h" 
 
@@ -45,9 +46,9 @@
 #include "BITDEFS.H"
 
 //module level variables: MyPriority, CurrentState, PulseCounter
-uint8_t MyPriority;
-ReloadState_t CurrentState;
-uint8_t PulseCounter;
+static uint8_t MyPriority;
+static ReloadState_t CurrentState;
+static uint8_t PulseCounter;
 //ReloadState_t: WaitingReload, Emitting_High, Emitting_Low, Wait4Delivery
 
 static void Enable_IR_Emitter (void);
@@ -57,15 +58,13 @@ static void Disable_IR_Emitter (void);
 
 bool InitReloadingService(uint8_t Priority)
 {
-//	local variable ThisEvent
-	ES_Event ThisEvent;
 //	Initialize MyPriority to Priority
 	MyPriority = Priority;
 //	Initialize CurrentState to WaitingReload
 	CurrentState = WaitingReload;
 //	Disable the IR Emitter
-	//******//
-//	Return true
+	Disable_IR_Emitter();
+	//	Return true
 	return true;
 }
 //End InitReloadingService
@@ -95,6 +94,7 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 
 	switch(CurrentState){
 		case(WaitingReload):
+			if (SM_TEST) printf("Reloading: WaitingReload");
 			// If ThisEvent is ES_RELOAD_START
 			if (ThisEvent.EventType == ES_RELOAD_START) {
 				// Enable the IR Emitter
@@ -112,12 +112,13 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 
 		//	If CurrentState is Emitting_High
 		case(Emitting_High):
+			if (SM_TEST) printf("Reloading: Emitting_High");
 			// If ThisEvent is ES_TIMEOUT
-			if ((ThisEvent.EventType == ES_TIMEOUT) && (ThisEvent.EventParam = IR_PULSE_TIMER)){
+			if ((ThisEvent.EventType == ES_TIMEOUT) && (ThisEvent.EventParam == IR_PULSE_TIMER)){
 				// Disable the IR Emitter
 				Disable_IR_Emitter();
 				// Set NextState to Emitting_Low
-				NextState = Emitting_Low
+				NextState = Emitting_Low;
 				// Increment PulseCounter
 				PulseCounter++;
 				// Start IR_PULSE_TIMER for PULSE_LOW_TIME
@@ -129,9 +130,10 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 
 		// If CurrentState is Emitting_Low
 		case(Emitting_Low):
+			if (SM_TEST) printf("Reloading: Emitting_Low");
 			// If ThisEvent is ES_TIMEOUT and PulseCounter is less than NUM_PULSES
 			if ((ThisEvent.EventType == ES_TIMEOUT) && 
-				(ThisEvent.EventParam=IR_PULSE_TIMER) &&
+				(ThisEvent.EventParam == IR_PULSE_TIMER) &&
 				 (PulseCounter < NUM_PULSES)){
 				// Enable the IR Emitter
 				Enable_IR_Emitter();
@@ -141,8 +143,8 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 				ES_Timer_InitTimer(IR_PULSE_TIMER,PULSE_HIGH_TIME);
 			// Else If ThisEvent is ES_TIMEOUT and PulseCounter is equal to NUM_PULSES
 			} else if ((ThisEvent.EventType == ES_TIMEOUT) && 
-				(ThisEvent.EventParam=IR_PULSE_TIMER) &&
-				 (PulseCounter = NUM_PULSES)){
+				(ThisEvent.EventParam == IR_PULSE_TIMER) &&
+				 (PulseCounter == NUM_PULSES)){
 				// Set NextState to Wait4Delivery
 				NextState = Wait4Delivery;
 				// Clear PulseCounter
@@ -156,10 +158,15 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 
 		// If CurrentState is Wait4Delivery
 		case(Wait4Delivery):
+			if (SM_TEST) printf("Reloading: Wait4Delivery");
 			// If ThisEvent is ES_TIMEOUT
 			if ((ThisEvent.EventType == ES_TIMEOUT) && (ThisEvent.EventParam == IR_PULSE_TIMER)) {
 				// Post ES_RELOAD_COMPLETE to MasterHSM
-				PostMasterSM(ES_RELOAD_COMPLETE);
+				ES_Event Event2Post;
+				Event2Post.EventType = ES_RELOAD_COMPLETE;
+				if (!BALL_TRACKING) incrementBallCount();
+				if (SM_TEST) printf("Ball count is now %d\r\n", getBallCount());
+				PostMasterSM(Event2Post);
 				// Set NextState to WaitingReload
 				NextState = WaitingReload;
 			}
@@ -173,7 +180,7 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 	CurrentState = NextState;
 	//	Return ReturnEvent
 	return ReturnEvent;
-//}
+}
 //End RunReloadingService
 
 

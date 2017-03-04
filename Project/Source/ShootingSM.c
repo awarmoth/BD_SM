@@ -58,8 +58,9 @@ static ES_Event DuringAlignToGoal(ES_Event ThisEvent);
 static ES_Event DuringFiring(ES_Event ThisEvent);
 static ES_Event DuringWaitForShotResult(ES_Event ThisEvent);
 static ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent);
-static ES_Event DuringAlignToTape(ES_Event ThisEvent);
 static ES_Event DuringWarmingUp(ES_Event ThisEvent);
+
+static uint8_t getFlywheelDuty(uint8_t TargetGoal,uint8_t LastStation);
 
 
 void StartShootingSM(ES_Event CurrentEvent)  
@@ -156,38 +157,35 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					// If CurrentEvent is not ES_NO_EVENT
           if (CurrentEvent.EventType != ES_NO_EVENT)
           {
+						GameTimeoutFlag = getGameTimeoutFlag();
 						// If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
             if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOOTING_TIMER))
             {
 							// Transform ReturnEvent to ES_NO_EVENT
-              CurrentEvent.EventType = ES_NO_EVENT;
+              ReturnEvent.EventType = ES_NO_EVENT;
 							// Set ShootingTimeoutFlag
               ExitShootingFlag = true;
             }
 					// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
           else if((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == GAME_TIMER))
 					{
-					// Transform ReturnEvent to ES_NO_EVENT to consume it
-					ReturnEvent.EventType = ES_NO_EVENT;
-					// Set GameTimeoutFlag
-					setGameTimeoutFlag(true);
+						// Transform ReturnEvent to ES_NO_EVENT
+              ReturnEvent.EventType = ES_NO_EVENT;
+						// Set GameTimeoutFlag
+						setGameTimeoutFlag(true);
 					}
 				//Else If CurrentEvent is ES_FIRE_COMPLETE and normal game has ended (we want to enter FFA)
 				else if ((CurrentEvent.EventType == ES_FIRE_COMPLETE) && GameTimeoutFlag)
 				{
-					decrementBallCount();
-					printf("Ball count is now %d\r\n", getBallCount());
-					//Set NextState to AlignToTape
-					NextState = AlignToTape;
-					//Set MakeTransition to true
-					MakeTransition = true;
-					printf("here instead");
+					if (!BALL_TRACKING) decrementBallCount();
+					if (SM_TEST) printf("Ball count is now %d\r\n", getBallCount());
+					ReturnEvent.EventType = ES_SHOOTING_COMPLETE;
 				}
 				// Else If CurrentEvent is ES_FIRE_COMPLETE and the normal game has not ended
 				else if ((CurrentEvent.EventType == ES_FIRE_COMPLETE) && (~GameTimeoutFlag))
 				{
-					decrementBallCount();
-					printf("Ball count is now %d\r\n", getBallCount());
+					if (!BALL_TRACKING) decrementBallCount();
+					if (SM_TEST) printf("Ball count is now %d\r\n", getBallCount());
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set BallCount to getBallCount
@@ -232,6 +230,15 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					// Set NextState to WaitForScoreUpdate
 					NextState = WaitForScoreUpdate;
 				// EndIf
+				} else {
+					// If CurrentEvent is ES_TIMEOUT from SHOOTING_TIMER
+            if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOOTING_TIMER))
+            {
+							// Transform ReturnEvent to ES_NO_EVENT
+              ReturnEvent.EventType = ES_NO_EVENT;
+							// Set ShootingTimeoutFlag
+              ExitShootingFlag = true;
+            }
 				}
 			}
 			// Else
@@ -271,7 +278,14 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					
 	//****************** Initialize NewScore to getScore ****************//
 					uint8_t NewScore;
-					if (!NO_LOC) {NewScore = getScoreRed();} //how about changing getGreenScore and getRedScore to getScore(teamcolor)?
+					if (!NO_LOC){
+						uint8_t Team = getTeamColor();
+						if (Team == GREEN){
+							NewScore = getScoreGreen();
+						}else {
+							NewScore = getScoreRed();
+						}
+					}
 					else {NewScore = getScore();}
 					// If NewScore = Score
 					if((NewScore == Score) && (ExitShootingFlag == false))
@@ -280,16 +294,22 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 						NextState = Firing;
 					}
 					// Else
-					else //we must have scored
+					else //we must have scored or 20s is up
 					{
-						// Set NextState to AlignToTape
-						NextState = AlignToTape;
+						// Transform to ShootingComplete
+						ReturnEvent.EventType = ES_SHOOTING_COMPLETE;
 					}
 					// EndIf
 					// Score = NewScore
 					Score = NewScore;
 				}// EndIf
-			}
+			} else if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == SHOOTING_TIMER))
+            {
+							// Transform ReturnEvent to ES_NO_EVENT
+              ReturnEvent.EventType = ES_NO_EVENT;
+							// Set ShootingTimeoutFlag
+              ExitShootingFlag = true;
+            }
 			// Else
 			else
 			{
@@ -300,40 +320,6 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		}
 		// End WaitForScoreUpdate block
 
-		// If CurrentState is AlignToTape
-		case AlignToTape:
-		{
-			printf("ShootingSM: AlignToTape\r\n");
-			// Run DuringAlignToTape and store the output in CurrentEvent
-			CurrentEvent = DuringAlignToTape(CurrentEvent);
-			// If CurrentEvent is not ES_NO_EVENT
-			if(CurrentEvent.EventType != ES_NO_EVENT)
-			{
-				// If CurrentEvent is ES_TAPE_DETECTED
-				if(CurrentEvent.EventType == ES_TAPE_DETECTED)
-				{
-					// Transform ReturnEvent to ES_SHOOTING_COMPLETE
-					ReturnEvent.EventType = ES_SHOOTING_COMPLETE;
-					// If GameTimeoutFlag Set
-					if(GameTimeoutFlag)
-					{
-						// Post ES_NORMAL_GAME_COMPLETE to Master
-						ES_Event NewEvent;
-						NewEvent.EventType = ES_NORMAL_GAME_COMPLETE;
-						PostMasterSM(NewEvent);
-					}// EndIf
-				// EndIf
-				}
-			}
-			
-			// Else
-			else
-			{
-				// Set ReturnEvent to ES_NO_EVENT
-				ReturnEvent.EventType = ES_NO_EVENT;
-			}// EndIf
-			break;
-		}// End AlignToTape block
 	}//End switch
 	
 	// If MakeTransition is true
@@ -375,11 +361,12 @@ static ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 		} else {
 			SetMotorController(ROTATE_CW);
 		}
-		// Set OldScore to getScore
+		Score = getScore();
 		//reset exit flag
 		ExitShootingFlag = false;
-	}// EndIf
-	
+	} else if (ThisEvent.EventType == ES_EXIT) {
+		// EndIf
+	}
 	// Return ReturnEvent
 	return ReturnEvent;
 	
@@ -394,6 +381,8 @@ static ES_Event DuringWarmingUp(ES_Event ThisEvent) {
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		uint8_t duty = getFlywheelDuty(getTargetGoal(),getLastStation());
+		SetFlywheelDuty(duty); 
 		ES_Timer_InitTimer(WARM_UP_TIMER, WARM_UP_TIME);
 	}// EndIf
 	
@@ -413,7 +402,6 @@ static ES_Event DuringFiring(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		SetFlywheelDuty(60);
 		// Set Event2Post to a ES_FIRE
 		Event2Post.EventType = ES_FIRE;
 		// Post Event2Post to Firing Service
@@ -474,40 +462,6 @@ static ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent)
 	return ReturnEvent;
 }
 
-
-static ES_Event DuringAlignToTape(ES_Event ThisEvent)
-{
-	// local variable ReturnEvent
-	ES_Event ReturnEvent;
-	// Initialize ReturnEvent to ThisEvent
-	ReturnEvent = ThisEvent;
-	
-	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
-	{
-		SetFlywheelDuty(0);
-		uint8_t TeamColor = getTeamColor();
-		if (TeamColor == GREEN) {
-			SetMotorController(ROTATE_CW);
-		} else {
-			SetMotorController(ROTATE_CCW);
-		}
-		// direction based on team color, opposite of AlignToGoal
-	}// EndIf
-	if (ThisEvent.EventType == ES_EXIT) {
-		SetMotorController(CONTROLLER_OFF);
-	}
-	
-	// Return ReturnEvent
-	return ReturnEvent;
-}
-
-void setGameTimeoutFlag(bool flag)
-{
-	GameTimeoutFlag = flag;
-}
-
-bool getGameTimeoutFlag(void)
-{
-	return GameTimeoutFlag;
+static uint8_t getFlywheelDuty(uint8_t TargetGoal,uint8_t LastStation) {
+	return 60;
 }

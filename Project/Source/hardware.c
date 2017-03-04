@@ -327,6 +327,7 @@ void Motor_Controller_ISR(void)
 					// post a tape detected event
 					ES_Event ThisEvent;
 					ThisEvent.EventType = ES_TAPE_DETECTED;
+					if (TAPE_TEST) printf("Tape Detected by ISR");
 					PostMasterSM(ThisEvent);
 				}
 			}
