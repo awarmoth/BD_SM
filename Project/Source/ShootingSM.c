@@ -59,6 +59,7 @@ static ES_Event DuringFiring(ES_Event ThisEvent);
 static ES_Event DuringWaitForShotResult(ES_Event ThisEvent);
 static ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent);
 static ES_Event DuringAlignToTape(ES_Event ThisEvent);
+static ES_Event DuringWarmingUp(ES_Event ThisEvent);
 
 
 void StartShootingSM(ES_Event CurrentEvent)  
@@ -112,7 +113,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					// Set MakeTransition to true
 					MakeTransition = true;
 					// Set NextState to Firing
-					NextState = Firing;
+					NextState = WarmingUp;
 				// EndIf
 				}
 			}				
@@ -128,8 +129,26 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
       break;
 		}
 	
+		case (WarmingUp):
+			printf("ShootingSM: WarmingUp\r\n");
+			// Run DuringFiring and store the output in CurrentEvent
+			CurrentEvent = DuringWarmingUp(CurrentEvent);
+			// If CurrentEvent is not ES_NO_EVENT
+      if (CurrentEvent.EventType != ES_NO_EVENT)
+			{
+				// If CurrentEvent is ES_TIMEOUT from WARM_UP_TIMER
+				if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == WARM_UP_TIMER))
+				{
+					MakeTransition = true;
+					NextState = Firing;
+				}
+			} else {
+				// Set ReturnEvent to ES_NO_EVENT
+        ReturnEvent.EventType = ES_NO_EVENT;
+			} 
+		
 		// If CurrentState is Firing
-        case (Firing):
+    case (Firing):
         {
 					printf("ShootingSM: Firing\r\n");
 					// Run DuringFiring and store the output in CurrentEvent
@@ -238,20 +257,22 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if(CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
-					// Get response bytes from LOC //MAKE SURE TO ASK ADAM IF I DID THIS RIGHT
+					// Get response bytes from LOC
 					// SetSB1_Byte(getSB1_Byte())
+					if (!NO_LOC){
 					SetSB1_Byte(getSB1_Byte());
 					// SetSB2_Byte(getSB2_Byte())
 					SetSB2_Byte(getSB2_Byte());
 					// SetSB3_Byte(getSB3_Byte())
 					SetSB3_Byte(getSB3_Byte());
-	
+					}
 					// Set MakeTransition to true
 					MakeTransition = true;
 					
 	//****************** Initialize NewScore to getScore ****************//
-					uint8_t NewScore = getScoreRed(); //how about changing getGreenScore and getRedScore to getScore(teamcolor)?
-					
+					uint8_t NewScore;
+					if (!NO_LOC) {NewScore = getScoreRed();} //how about changing getGreenScore and getRedScore to getScore(teamcolor)?
+					else {NewScore = getScore();}
 					// If NewScore = Score
 					if((NewScore == Score) && (ExitShootingFlag == false))
 					{
@@ -373,7 +394,7 @@ static ES_Event DuringWarmingUp(ES_Event ThisEvent) {
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		ES_Timer_InitTimer(SHOOTING_TIMER, WARM_UP_TIME);
+		ES_Timer_InitTimer(WARM_UP_TIMER, WARM_UP_TIME);
 	}// EndIf
 	
 	// Return ReturnEvent
@@ -444,7 +465,8 @@ static ES_Event DuringWaitForScoreUpdate(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventParam = Byte2Write;
 		Event2Post.EventType = ES_COMMAND;
-		PostLOC_SM(Event2Post);
+		if (NO_LOC) printf("Posting Command: Status to LOC\r\n");
+		else PostLOC_SM(Event2Post);
 	}
 	// EndIf
 	

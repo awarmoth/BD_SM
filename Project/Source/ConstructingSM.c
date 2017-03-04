@@ -50,7 +50,6 @@
 uint8_t MyPriority;
 ConstructingState_t CurrentState;
 uint8_t TeamColor;
-uint8_t BallCount = 3;
 uint8_t TargetStation;
 uint8_t LastStation = START;
 uint8_t TargetGoal;
@@ -243,7 +242,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					(CurrentEvent.EventParam == SHOOTING_TIMER)))
 				{
 					// If BallCount = 0
-					if (BallCount == 0)
+					if (getBallCount() == 0)
 					{
 						// Set MakeTransition to true
 						MakeTransition = true;
@@ -279,7 +278,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 
 		// If CurrentState is Reloading
 		case(Reloading):
-			if (SM_TEST) printf("Reloading: GettingTargetStation\r\n");
+			if (SM_TEST) printf("Construction: Reloading\r\n");
 			// Run DuringReloading and store the output in CurrentEvent
 			CurrentEvent = DuringReloading(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -289,7 +288,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_RELOAD_COMPLETE)
 				{
 					// If BallCount < 5
-					if (BallCount < 5)
+					if (getBallCount() < 5)
 					{
 						// Set MakeTransition to true
 						MakeTransition = true;
@@ -642,4 +641,13 @@ void HallEffectOneShotTimer_ISR( void )
 uint32_t getPeriod( void )
 {
 	return HallSensorPeriod;
+}
+
+uint8_t incrementScore(void){
+	Score++;
+	return Score;
+}
+
+uint8_t getScore(void){
+	return Score;
 }

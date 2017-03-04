@@ -24,6 +24,8 @@ void UpdateStatus( void );
 uint32_t getPeriod( void );
 uint8_t getBallCount(void);
 void SetBallCount(uint8_t count);
+uint8_t incrementScore(void);
+uint8_t getScore(void);
 
 
 #endif /*ConstructingSM_H */

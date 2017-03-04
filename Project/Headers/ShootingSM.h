@@ -9,7 +9,7 @@
 
 // typedefs for the states
 // State definitions for use with the query function
-typedef enum { AlignToGoal, Firing, WaitForShotResult, WaitForScoreUpdate, AlignToTape } ShootingState_t ;
+typedef enum { AlignToGoal, Firing, WarmingUp, WaitForShotResult, WaitForScoreUpdate, AlignToTape } ShootingState_t ;
 
 // Public Function Prototypes
 

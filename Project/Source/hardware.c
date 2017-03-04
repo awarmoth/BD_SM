@@ -530,7 +530,7 @@ void Beacon_Receiver_ISR(void)
 	//if the frequency of detection matches the expected beacon frequency
 	if ((Frequency>=LOWER_FREQ_THRESHOLD)&&(Frequency<=UPPER_FREQ_THRESHOLD)) counter++;
 	else counter /= 2;
-	printf("%i/r/n",Frequency);
+	//printf("%i\r\n",Frequency);
 	if (counter == 10) {
 		//Disable Beacon Detection
 		HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
