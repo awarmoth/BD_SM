@@ -295,8 +295,8 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		if (SM_TEST) printf("Master: Entering Waiting2Start\r\n");
-		// Set TeamColor to getTeamColor
-		TeamColor = getTeamColor();
+		// Set TeamColor
+		TeamColor = HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) & TEAM_COLOR_MASK >> TEAM_COLOR_SHIFT;
 		// Turn on respective LEDs
 		//TurnOnLEDs(TeamColor);
 		// Set Event2Post type to ES_COMMAND
