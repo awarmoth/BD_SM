@@ -58,6 +58,8 @@ static uint8_t RR_Byte;
 static uint8_t RS_Byte;
 static uint8_t BallCount;
 
+static void TurnOnLEDs(uint8_t TeamColor);
+
 bool InitMasterSM(uint8_t Priority)
 {
 	// local variable ThisEvent
@@ -202,7 +204,6 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				else if ((CurrentEvent.EventType == ES_TIMEOUT) &&
 						(CurrentEvent.EventParam == GAME_TIMER))
 				{
-					printf("here");
 					// Post ES_START_FREE_4_ALL to Master
 					ES_Event Event2Post;
 					Event2Post.EventType = ES_START_FREE_4_ALL;
@@ -298,7 +299,7 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 		// Set TeamColor
 		TeamColor = HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) & TEAM_COLOR_MASK >> TEAM_COLOR_SHIFT;
 		// Turn on respective LEDs
-		//TurnOnLEDs(TeamColor);
+		TurnOnLEDs(TeamColor);
 		// Set Event2Post type to ES_COMMAND
 		Event2Post.EventType = ES_COMMAND;
 		// Set Byte2Write to status byte
@@ -495,3 +496,14 @@ void decrementBallCount(void)
 		BallCount--;
 	}
 }
+
+void TurnOnLEDs(uint8_t TeamColor) {
+	if (TeamColor == GREEN){
+		HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) |= BIT3HI;
+		HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~BIT2HI;
+	} else { //Team color is red
+		HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) |= BIT2HI;
+		HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~BIT3HI;
+	}
+}
+		

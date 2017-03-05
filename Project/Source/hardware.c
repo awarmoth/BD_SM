@@ -40,6 +40,7 @@ static void Init_Beacon_Receiver(void);
 static void MagneticTimerInit(void);
 static void OneShotTimerInit(void);
 //static void LoadingMotorInit(void);
+static void InitLEDs(void);
 
 static uint8_t Controller = CONTROLLER_OFF;
 static uint8_t LastController = POSITION_CONTROLLER;
@@ -61,6 +62,7 @@ void InitializePins(void) {
 	SetFlywheelDuty(0);
 	MagneticTimerInit();
 	OneShotTimerInit();
+	InitLEDs();
 }
 
 static void Init_Controller(void)
@@ -540,6 +542,13 @@ void Beacon_Receiver_ISR(void)
 	}
 	//update the last time of detection
 	LastTime = Time;
+}
+
+void InitLEDs(void) {
+	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R5;
+	while((HWREG(SYSCTL_PRGPIO)& SYSCTL_PRGPIO_R5)!=SYSCTL_PRGPIO_R5){}
+	HWREG(GPIO_PORTE_BASE+GPIO_O_DEN)|=(GPIO_PIN_2 | GPIO_PIN_3);
+	HWREG(GPIO_PORTE_BASE+GPIO_O_DIR)|=(GPIO_PIN_2 | GPIO_PIN_3);
 }
 
 
