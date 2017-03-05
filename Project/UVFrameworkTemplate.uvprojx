@@ -380,9 +380,9 @@
           <GroupName>Main</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
+              <FileName>HSMTemplateMain.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\main.c</FilePath>
+              <FilePath>.\Source\HSMTemplateMain.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -390,24 +390,59 @@
           <GroupName>Source</GroupName>
           <Files>
             <File>
-              <FileName>EventCheckers.c</FileName>
+              <FileName>ADMulti.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\EventCheckers.c</FilePath>
+              <FilePath>.\Source\ADMulti.c</FilePath>
             </File>
             <File>
-              <FileName>TestHarnessService0.c</FileName>
+              <FileName>ByteTransferSM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\TestHarnessService0.c</FilePath>
+              <FilePath>.\Source\ByteTransferSM.c</FilePath>
             </File>
             <File>
-              <FileName>TemplateFSM.c</FileName>
+              <FileName>CheckInSM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\TemplateFSM.c</FilePath>
+              <FilePath>.\Source\CheckInSM.c</FilePath>
             </File>
             <File>
-              <FileName>ES_ShortTimer.c</FileName>
+              <FileName>ConstructingSM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\ES_ShortTimer.c</FilePath>
+              <FilePath>.\Source\ConstructingSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>DrivingAlongTapeSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\DrivingAlongTapeSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>EnablePA25_PB23_PD7_PF0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\EnablePA25_PB23_PD7_PF0.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>LOC_HSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\LOC_HSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>MapKeys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MapKeys.c</FilePath>
+            </File>
+            <File>
+              <FileName>MasterHSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MasterHSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM_Module.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM_Module.c</FilePath>
             </File>
             <File>
               <FileName>PWM10Tiva.c</FileName>
@@ -415,149 +450,29 @@
               <FilePath>.\Source\PWM10Tiva.c</FilePath>
             </File>
             <File>
-              <FileName>TimingMotor.c</FileName>
+              <FileName>ReloadingService.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\TimingMotor.c</FilePath>
+              <FilePath>.\Source\ReloadingService.c</FilePath>
             </File>
             <File>
-              <FileName>PWM_Module.c</FileName>
+              <FileName>ShootingSM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\PWM_Module.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Headers</GroupName>
-          <Files>
-            <File>
-              <FileName>uartstdio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\uartstdio.h</FilePath>
+              <FilePath>.\Source\ShootingSM.c</FilePath>
             </File>
             <File>
-              <FileName>Bin_Const.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\Bin_Const.h</FilePath>
+              <FileName>SPI_Module.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\SPI_Module.c</FilePath>
             </File>
             <File>
-              <FileName>BITDEFS.H</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\BITDEFS.H</FilePath>
+              <FileName>EventCheckers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\EventCheckers.c</FilePath>
             </File>
             <File>
-              <FileName>ES_CheckEvents.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_CheckEvents.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_Configure.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_Configure.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_DeferRecall.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_DeferRecall.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_Events.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_Events.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_Framework.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_Framework.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_General.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_General.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_LookupTables.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_LookupTables.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_Port.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_Port.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_PostList.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_PostList.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_PriorTables.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_PriorTables.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_Queue.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_Queue.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_ServiceHeaders.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_ServiceHeaders.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_Timers.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_Timers.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_Types.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_Types.h</FilePath>
-            </File>
-            <File>
-              <FileName>EventCheckers.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\EventCheckers.h</FilePath>
-            </File>
-            <File>
-              <FileName>termio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\termio.h</FilePath>
-            </File>
-            <File>
-              <FileName>TestHarnessService0.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\TestHarnessService0.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_ShortTimer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_ShortTimer.h</FilePath>
-            </File>
-            <File>
-              <FileName>PWM10Tiva.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\PWM10Tiva.h</FilePath>
-            </File>
-            <File>
-              <FileName>TimingMotor.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\TimingMotor.h</FilePath>
-            </File>
-            <File>
-              <FileName>PWM_Module.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\PWM_Module.h</FilePath>
-            </File>
-            <File>
-              <FileName>constants.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\constants.h</FilePath>
-            </File>
-            <File>
-              <FileName>ADMulti.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ADMulti.h</FilePath>
+              <FileName>FiringService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\FiringService.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -706,6 +621,196 @@
               <FileName>uartstdio.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\uartstdio.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Headers</GroupName>
+          <Files>
+            <File>
+              <FileName>ADMulti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ADMulti.h</FilePath>
+            </File>
+            <File>
+              <FileName>Bin_Const.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\Bin_Const.h</FilePath>
+            </File>
+            <File>
+              <FileName>BITDEFS.H</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\BITDEFS.H</FilePath>
+            </File>
+            <File>
+              <FileName>ByteTransferSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ByteTransferSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>CheckInSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\CheckInSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>constants.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\constants.h</FilePath>
+            </File>
+            <File>
+              <FileName>ConstructingSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ConstructingSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>DrivingAlongTapeSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\DrivingAlongTapeSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>EnablePA25_PB23_PD7_PF0.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\EnablePA25_PB23_PD7_PF0.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_CheckEvents.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_CheckEvents.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_Configure.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_Configure.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_DeferRecall.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_DeferRecall.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_Events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_Events.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_Framework.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_Framework.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_General.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_General.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_LookupTables.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_LookupTables.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_Port.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_Port.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_PostList.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_PostList.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_PriorTables.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_PriorTables.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_Queue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_Queue.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_ServiceHeaders.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_ServiceHeaders.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_Timers.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_Timers.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_Types.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_Types.h</FilePath>
+            </File>
+            <File>
+              <FileName>EventCheckers.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\EventCheckers.h</FilePath>
+            </File>
+            <File>
+              <FileName>FiringService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\FiringService.h</FilePath>
+            </File>
+            <File>
+              <FileName>Free4AllSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\Free4AllSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\hardware.h</FilePath>
+            </File>
+            <File>
+              <FileName>LOC_HSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\LOC_HSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>MapKeys.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\MapKeys.h</FilePath>
+            </File>
+            <File>
+              <FileName>MasterHSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\MasterHSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM_Module.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM_Module.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM10Tiva.h</FilePath>
+            </File>
+            <File>
+              <FileName>ReloadingService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ReloadingService.h</FilePath>
+            </File>
+            <File>
+              <FileName>ShootingSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ShootingSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>SPI_Module.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\SPI_Module.h</FilePath>
+            </File>
+            <File>
+              <FileName>termio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\termio.h</FilePath>
+            </File>
+            <File>
+              <FileName>uartstdio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\uartstdio.h</FilePath>
             </File>
           </Files>
         </Group>

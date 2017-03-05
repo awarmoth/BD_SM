@@ -27,7 +27,7 @@
 
 /*----------------------------- Module Defines ----------------------------*/
 #define NUM_MOTOR 1
-#define MIN_MOT_POS 1700
+#define MIN_MOT_POS 1500
 #define MAX_MOT_POS 3200
 #define MOT_FREQ 25000
 #define INCREMENT 60
