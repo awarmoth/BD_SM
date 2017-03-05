@@ -36,6 +36,28 @@
 // include our own prototypes to insure consistency between header & 
 // actual functionsdefinition
 #include "EventCheckers.h"
+// the headers to access the GPIO subsystem
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_sysctl.h"
+#include "inc/hw_timer.h"
+#include "inc/hw_nvic.h"
+
+
+// the headers to access the TivaWare Library
+#include "driverlib/sysctl.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/gpio.h"
+#include "driverlib/timer.h"
+#include "driverlib/interrupt.h"
+
+#include "BITDEFS.H"
+#include <Bin_Const.h>
+
+#ifndef ALL_BITS
+#define ALL_BITS (0xff<<2)
+#endif
 
 /****************************************************************************
  Function

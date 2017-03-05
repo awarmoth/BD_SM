@@ -474,6 +474,16 @@
               <FileType>1</FileType>
               <FilePath>.\Source\FiringService.c</FilePath>
             </File>
+            <File>
+              <FileName>BumpSwitchDebounce.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\BumpSwitchDebounce.c</FilePath>
+            </File>
+            <File>
+              <FileName>TeamSwitchDebounce.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\TeamSwitchDebounce.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -628,6 +638,21 @@
           <GroupName>Headers</GroupName>
           <Files>
             <File>
+              <FileName>ES_Configure.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_Configure.h</FilePath>
+            </File>
+            <File>
+              <FileName>constants.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\constants.h</FilePath>
+            </File>
+            <File>
+              <FileName>ES_CheckEvents.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ES_CheckEvents.h</FilePath>
+            </File>
+            <File>
               <FileName>ADMulti.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ADMulti.h</FilePath>
@@ -653,11 +678,6 @@
               <FilePath>.\Headers\CheckInSM.h</FilePath>
             </File>
             <File>
-              <FileName>constants.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\constants.h</FilePath>
-            </File>
-            <File>
               <FileName>ConstructingSM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ConstructingSM.h</FilePath>
@@ -671,16 +691,6 @@
               <FileName>EnablePA25_PB23_PD7_PF0.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\EnablePA25_PB23_PD7_PF0.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_CheckEvents.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_CheckEvents.h</FilePath>
-            </File>
-            <File>
-              <FileName>ES_Configure.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ES_Configure.h</FilePath>
             </File>
             <File>
               <FileName>ES_DeferRecall.h</FileName>
@@ -811,6 +821,16 @@
               <FileName>uartstdio.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\uartstdio.h</FilePath>
+            </File>
+            <File>
+              <FileName>BumpSwitchDebounce.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\BumpSwitchDebounce.h</FilePath>
+            </File>
+            <File>
+              <FileName>TeamSwitchDebounce.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\TeamSwitchDebounce.h</FilePath>
             </File>
           </Files>
         </Group>

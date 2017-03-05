@@ -15,6 +15,8 @@
 #define EventCheckers_H
 
 // prototypes for event checkers
+#include "BumpSwitchDebounce.h"
+#include "TeamSwitchDebounce.h"
 
 bool Check4Keystroke(void);
 

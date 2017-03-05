@@ -29,7 +29,7 @@
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 5
+#define NUM_SERVICES 7
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service.
@@ -105,11 +105,11 @@
 // These are the definitions for Service 5
 #if NUM_SERVICES > 5
 // the header file with the public function prototypes
-#define SERV_5_HEADER "TestHarnessService5.h"
+#define SERV_5_HEADER "TeamSwitchDebounce.h"
 // the name of the Init function
-#define SERV_5_INIT InitTestHarnessService5
+#define SERV_5_INIT InitializeTeamSwitchDebounce
 // the name of the run function
-#define SERV_5_RUN RunTestHarnessService5
+#define SERV_5_RUN RunTeamSwitchDebounceSM
 // How big should this services Queue be?
 #define SERV_5_QUEUE_SIZE 3
 #endif
@@ -118,11 +118,11 @@
 // These are the definitions for Service 6
 #if NUM_SERVICES > 6
 // the header file with the public function prototypes
-#define SERV_6_HEADER "TestHarnessService6.h"
+#define SERV_6_HEADER "BumpSwitchDebounce.h"
 // the name of the Init function
-#define SERV_6_INIT InitTestHarnessService6
+#define SERV_6_INIT InitializeBumpSwitchDebounce
 // the name of the run function
-#define SERV_6_RUN RunTestHarnessService6
+#define SERV_6_RUN RunBumpSwitchDebounceSM
 // How big should this services Queue be?
 #define SERV_6_QUEUE_SIZE 3
 #endif
@@ -280,7 +280,11 @@ typedef enum {  ES_NO_EVENT = 0,
 								ES_FIRE_COMPLETE,
 								ES_TAPE_DETECTED,
 								ES_FIRE,
-								ES_GOAL_BEACON_DETECTED
+								ES_GOAL_BEACON_DETECTED,
+								DBBumpSwitchUp,
+								DBBumpSwitchDown,
+								DBTeamSwitchUp,
+								DBTeamSwitchDown
 								} ES_EventTyp_t ;
 
 /****************************************************************************/
@@ -319,7 +323,7 @@ typedef enum {  ES_NO_EVENT = 0,
 
 /****************************************************************************/
 // This is the list of event checking functions 
-#define EVENT_CHECK_LIST Check4Keystroke
+#define EVENT_CHECK_LIST Check4Keystroke, CheckBumpSwitchEvents, CheckTeamSwitchEvents
 
 /****************************************************************************/
 // These are the definitions for the post functions to be executed when the
@@ -337,8 +341,8 @@ typedef enum {  ES_NO_EVENT = 0,
 #define TIMER6_RESP_FUNC PostMasterSM
 #define TIMER7_RESP_FUNC PostMasterSM
 #define TIMER8_RESP_FUNC PostReloadingService
-#define TIMER9_RESP_FUNC TIMER_UNUSED
-#define TIMER10_RESP_FUNC TIMER_UNUSED
+#define TIMER9_RESP_FUNC PostBumpSwitchDebounce
+#define TIMER10_RESP_FUNC PostTeamSwitchDebounce
 #define TIMER11_RESP_FUNC TIMER_UNUSED
 #define TIMER12_RESP_FUNC TIMER_UNUSED
 #define TIMER13_RESP_FUNC TIMER_UNUSED
@@ -361,5 +365,7 @@ typedef enum {  ES_NO_EVENT = 0,
 #define ISR_TIMER 6
 #define WARM_UP_TIMER 7
 #define IR_PULSE_TIMER 8
+#define BUMP_DEBOUNCE_TIMER 9
+#define TEAM_DEBOUNCE_TIMER 10
 
 #endif /* CONFIGURE_H */

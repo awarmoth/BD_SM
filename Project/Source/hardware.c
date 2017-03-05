@@ -39,7 +39,7 @@ static void AD_Init(void);
 static void Init_Beacon_Receiver(void);
 static void MagneticTimerInit(void);
 static void OneShotTimerInit(void);
-static void LoadingMotorInit(void);
+//static void LoadingMotorInit(void);
 
 static uint8_t Controller = CONTROLLER_OFF;
 static uint8_t LastController = POSITION_CONTROLLER;
@@ -180,14 +180,14 @@ static void MagneticTimerInit(void)
  Author
    Matthew Miller			1/19/17
 ****************************************************************************/
-static void LoadingMotorInit(void)
-{
-	// initialize PWM port
-	PWM_TIVA_Init(NUM_MOTOR);
-	
-	// initialize period of the timing motor
-	PWM_TIVA_SetPeriod(MOT_FREQ, TIME_MOT_GROUP);
-}
+//static void LoadingMotorInit(void)
+//{
+//	// initialize PWM port
+//	PWM_TIVA_Init(NUM_MOTOR);
+//	
+//	// initialize period of the timing motor
+//	PWM_TIVA_SetPeriod(MOT_FREQ, TIME_MOT_GROUP);
+//}
 
 /****************************************************************************
  Function
@@ -541,6 +541,7 @@ void Beacon_Receiver_ISR(void)
 	//update the last time of detection
 	LastTime = Time;
 }
+
 
 bool getISRFlag(void) {
 	return ISR_Flag;

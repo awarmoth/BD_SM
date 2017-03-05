@@ -70,6 +70,7 @@ bool InitMasterSM(uint8_t Priority)
 	InitSPI_Comm();
 	InitializePins();
 	BallCount = BALL_START_COUNT;
+	TeamColor = (HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) & TEAM_COLOR_MASK) >> TEAM_COLOR_SHIFT;
 	// Call StartMasterSM with ThisEvent as the passed parameter
 	StartMasterSM(ThisEvent);
 	// Return true
