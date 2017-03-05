@@ -475,57 +475,54 @@ void FindTape(void)
 
 static void Init_Beacon_Receiver(void)
 {
-	__disable_irq();
-	printf("here 2");
 	//enable clock to timer
-	HWREG(SYSCTL_RCGCWTIMER)|=SYSCTL_RCGCWTIMER_R5;
+	HWREG(SYSCTL_RCGCWTIMER)|=SYSCTL_RCGCWTIMER_R0;
 	//enable clock to port C
-	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R3;	
+	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R2;	
 	//wait for clock to connect
-	while((HWREG(SYSCTL_PRWTIMER)&SYSCTL_PRWTIMER_R5)!=SYSCTL_PRWTIMER_R5) 
+	while((HWREG(SYSCTL_PRWTIMER)&SYSCTL_PRWTIMER_R0)!=SYSCTL_PRWTIMER_R0) 
 	{
 	}
 	//disable the Timer B
-	HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
-	//ignore 32 bit mode, it is already set
-	HWREG(WTIMER5_BASE+TIMER_O_CFG)=TIMER_CFG_16_BIT;
+	HWREG(WTIMER0_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
+	//enable 32 bit mode
+	HWREG(WTIMER0_BASE+TIMER_O_CFG)=TIMER_CFG_16_BIT;
 	//load the full value for timeout
-	HWREG(WTIMER5_BASE+TIMER_O_TBILR)=0xffffffff;
+	HWREG(WTIMER0_BASE+TIMER_O_TBILR)=0xffffffff;
 	//set up timer B for capture mode, edge timer, periodic, and up counting
-	HWREG(WTIMER5_BASE+TIMER_O_TBMR)=(HWREG(WTIMER5_BASE+TIMER_O_TBMR)&~TIMER_TBMR_TBAMS)|(TIMER_TBMR_TBCMR|TIMER_TBMR_TBCDIR|TIMER_TBMR_TBMR_CAP);
+	HWREG(WTIMER0_BASE+TIMER_O_TBMR)=(HWREG(WTIMER0_BASE+TIMER_O_TBMR)&~TIMER_TBMR_TBAMS)|(TIMER_TBMR_TBCMR|TIMER_TBMR_TBCDIR|TIMER_TBMR_TBMR_CAP);
 	//set event to rising edge
-	HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEVENT_M);
+	HWREG(WTIMER0_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEVENT_M);
 	//set up the alternate function for Pin C5
-	HWREG(GPIO_PORTD_BASE+GPIO_O_AFSEL)|=GPIO_PIN_7;
+	HWREG(GPIO_PORTC_BASE+GPIO_O_AFSEL)|=GPIO_PIN_5;
 	//set up C5 alternate function as WTIMER0
-	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL)=(HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL)&0x0FFFFFFF)|(7<<(7*BITS_PER_NIBBLE));
+	HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL)=(HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL)&0xFF0FFFFF)|(7<<(5*BITS_PER_NIBBLE));
 	//digitally enable C5
-	HWREG(GPIO_PORTD_BASE+GPIO_O_DEN)|=GPIO_PIN_7;
+	HWREG(GPIO_PORTC_BASE+GPIO_O_DEN)|=GPIO_PIN_5;
 	//set C5 to input
-	HWREG(GPIO_PORTD_BASE+GPIO_O_DIR)&=(~GPIO_PIN_7);
+	HWREG(GPIO_PORTC_BASE+GPIO_O_DIR)&=(~GPIO_PIN_5);
 	//enable local capture interupt on the timer
-	HWREG(WTIMER5_BASE+TIMER_O_IMR)|=TIMER_IMR_CBEIM;
+	HWREG(WTIMER0_BASE+TIMER_O_IMR)|=TIMER_IMR_CBEIM;
 	//enable timer interupt in the NVIC
 	HWREG(NVIC_EN3)|=BIT9HI;
 	//enable interupts globally
 	__enable_irq();
 	//set priority to 6
-	HWREG(NVIC_PRI26)=(HWREG(NVIC_PRI26)&~NVIC_PRI26_INTB_M)|(0x6<<NVIC_PRI26_INTB_S);
+	HWREG(NVIC_PRI23)=(HWREG(NVIC_PRI23)&~NVIC_PRI23_INTD_M)|(0x6<<NVIC_PRI23_INTD_S);
 	//enable the timer and add debugging stalls
-	HWREG(WTIMER5_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBSTALL|TIMER_CTL_TBEN);
-	__enable_irq();
+	HWREG(WTIMER0_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBSTALL|TIMER_CTL_TBEN);
 }
 
 
 void Beacon_Receiver_ISR(void)
 {
 	//clear the source of the interrupt
-	HWREG(WTIMER5_BASE+TIMER_O_ICR)=TIMER_ICR_CBECINT;
+	HWREG(WTIMER0_BASE+TIMER_O_ICR)=TIMER_ICR_CBECINT;
 	ISR_Flag = true;
 	static uint32_t LastTime = 0;
 	static uint8_t counter = 0;
 	//capture the time at which the beacon was detected
-	uint32_t Time = HWREG(WTIMER5_BASE+TIMER_O_TBR);
+	uint32_t Time = HWREG(WTIMER0_BASE+TIMER_O_TBR);
 	//calculate the frequency
 	uint32_t Frequency = TICKS_PER_S/(Time-LastTime);
 	//if the frequency of detection matches the expected beacon frequency
@@ -534,7 +531,7 @@ void Beacon_Receiver_ISR(void)
 	//printf("%i\r\n",Frequency);
 	if (counter == 10) {
 		//Disable Beacon Detection
-		HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
+		HWREG(WTIMER0_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
 		//post a beacon detected event
 		ES_Event ThisEvent;
 		ThisEvent.EventType = ES_GOAL_BEACON_DETECTED;

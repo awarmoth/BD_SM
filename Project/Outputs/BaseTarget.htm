@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Outputs\BaseTarget.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Outputs\BaseTarget.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Sun Mar 05 05:52:17 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Sun Mar 05 13:05:52 2017
 <BR><P>
 <H3>Maximum Stack Usage =        320 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -312,7 +312,6 @@ Global Symbols
 <LI><a href="#[11]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMapKeys
 <LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitLOC_SM
 <LI><a href="#[9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Motor_Controller_ISR
-<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_Beacon_Receiver
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunShootingSM
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunDrivingAlongTapeSM
 <LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
@@ -475,7 +474,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_get_lc_ctype
 </UL>
 
-<P><STRONG><a name="[73]"></a>ADC_MultiInit</STRONG> (Thumb, 170 bytes, Stack size 8 bytes, admulti.o(i.ADC_MultiInit))
+<P><STRONG><a name="[72]"></a>ADC_MultiInit</STRONG> (Thumb, 170 bytes, Stack size 8 bytes, admulti.o(i.ADC_MultiInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = ADC_MultiInit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializePins
@@ -718,16 +717,15 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[6f]"></a>InitializePins</STRONG> (Thumb, 158 bytes, Stack size 8 bytes, hardware.o(i.InitializePins))
-<BR><BR>[Stack]<UL><LI>Max Depth = 144 + Unknown Stack Size
-<LI>Call Chain = InitializePins &rArr; Init_Beacon_Receiver &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = InitializePins &rArr; SetFlywheelDuty
 </UL>
 <BR>[Calls]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitPWM
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitFlywheelPWM
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MagneticTimerInit
-<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_Controller
-<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_Beacon_Receiver
+<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_Controller
+<LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_Beacon_Receiver
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFlywheelDuty
-<LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ADC_MultiInit
+<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ADC_MultiInit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[14]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitMasterSM
 </UL>
@@ -1415,16 +1413,11 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunCheckInSM
 </UL>
 
-<P><STRONG><a name="[71]"></a>Init_Beacon_Receiver</STRONG> (Thumb, 178 bytes, Stack size 8 bytes, hardware.o(i.Init_Beacon_Receiver))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136 + Unknown Stack Size
-<LI>Call Chain = Init_Beacon_Receiver &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
-</UL>
-<BR>[Calls]<UL><LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-</UL>
-<BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializePins
+<P><STRONG><a name="[73]"></a>Init_Beacon_Receiver</STRONG> (Thumb, 166 bytes, Stack size 0 bytes, hardware.o(i.Init_Beacon_Receiver))
+<BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializePins
 </UL>
 
-<P><STRONG><a name="[72]"></a>Init_Controller</STRONG> (Thumb, 96 bytes, Stack size 0 bytes, hardware.o(i.Init_Controller))
+<P><STRONG><a name="[71]"></a>Init_Controller</STRONG> (Thumb, 96 bytes, Stack size 0 bytes, hardware.o(i.Init_Controller))
 <BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializePins
 </UL>
 
