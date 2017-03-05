@@ -28,6 +28,10 @@ Module file for exectuing all hardware initialization
 #define BITS_PER_NIBBLE 4
 #define TICKS_PER_S 40000000
 
+#ifndef ALL_BITS
+#define ALL_BITS (0xff<<2)
+#endif
+
 // Frequency thresholds
 #define LOWER_FREQ_THRESHOLD 1400
 #define UPPER_FREQ_THRESHOLD 1500
@@ -41,6 +45,7 @@ static void MagneticTimerInit(void);
 static void OneShotTimerInit(void);
 //static void LoadingMotorInit(void);
 static void InitLEDs(void);
+void InitIR_Emitter(void);
 
 static uint8_t Controller = CONTROLLER_OFF;
 static uint8_t LastController = POSITION_CONTROLLER;
@@ -63,6 +68,7 @@ void InitializePins(void) {
 	MagneticTimerInit();
 	OneShotTimerInit();
 	InitLEDs();
+	InitIR_Emitter();
 }
 
 static void Init_Controller(void)
@@ -547,8 +553,18 @@ void Beacon_Receiver_ISR(void)
 void InitLEDs(void) {
 	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R5;
 	while((HWREG(SYSCTL_PRGPIO)& SYSCTL_PRGPIO_R5)!=SYSCTL_PRGPIO_R5){}
-	HWREG(GPIO_PORTE_BASE+GPIO_O_DEN)|=(GPIO_PIN_2 | GPIO_PIN_3);
-	HWREG(GPIO_PORTE_BASE+GPIO_O_DIR)|=(GPIO_PIN_2 | GPIO_PIN_3);
+	HWREG(GPIO_PORTF_BASE+GPIO_O_DEN)|=(GPIO_PIN_2 | GPIO_PIN_3);
+	HWREG(GPIO_PORTF_BASE+GPIO_O_DIR)|=(GPIO_PIN_2 | GPIO_PIN_3);
+	HWREG(GPIO_PORTF_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(BIT2HI | BIT3HI);
+}
+
+void InitIR_Emitter(void) {
+	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R5;
+	while((HWREG(SYSCTL_PRGPIO)& SYSCTL_PRGPIO_R5)!=SYSCTL_PRGPIO_R5){}
+	HWREG(GPIO_PORTF_BASE+GPIO_O_DEN)|=(GPIO_PIN_4);
+	HWREG(GPIO_PORTF_BASE+GPIO_O_DIR)|=(GPIO_PIN_4);
+	//	Set the IR Emitter line LOW
+	HWREG(GPIO_PORTF_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~BIT4HI;
 }
 
 
