@@ -492,6 +492,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\PWM10Tiva.c</FilePath>
             </File>
+            <File>
+              <FileName>EnablePA25_PB23_PD7_PF0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\EnablePA25_PB23_PD7_PF0.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -661,6 +666,11 @@
               <FileName>PWM_Module.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\PWM_Module.h</FilePath>
+            </File>
+            <File>
+              <FileName>EnablePA25_PB23_PD7_PF0.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\EnablePA25_PB23_PD7_PF0.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1292,6 +1302,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\PWM10Tiva.c</FilePath>
             </File>
+            <File>
+              <FileName>EnablePA25_PB23_PD7_PF0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\EnablePA25_PB23_PD7_PF0.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1461,6 +1476,11 @@
               <FileName>PWM_Module.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\PWM_Module.h</FilePath>
+            </File>
+            <File>
+              <FileName>EnablePA25_PB23_PD7_PF0.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\EnablePA25_PB23_PD7_PF0.h</FilePath>
             </File>
           </Files>
         </Group>
