@@ -2,8 +2,8 @@
 .\outputs\masterhsm.o: .\Headers\MasterHSM.h
 .\outputs\masterhsm.o: .\Headers\ES_Configure.h
 .\outputs\masterhsm.o: .\Headers\ES_Types.h
-.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdint.h
-.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdbool.h
+.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\outputs\masterhsm.o: .\Headers\ES_Events.h
 .\outputs\masterhsm.o: .\Headers\SPI_Module.h
 .\outputs\masterhsm.o: .\Headers\ByteTransferSM.h
@@ -13,10 +13,10 @@
 .\outputs\masterhsm.o: .\Headers\hardware.h
 .\outputs\masterhsm.o: .\Headers\constants.h
 .\outputs\masterhsm.o: .\Headers\termio.h
-.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdio.h
-.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdlib.h
+.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\outputs\masterhsm.o: C:\ti\TivaWare_C_Series-2.1.0.12573\utils/uartstdio.h
-.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\stdarg.h
+.\outputs\masterhsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\outputs\masterhsm.o: .\Headers\ES_Framework.h
 .\outputs\masterhsm.o: .\Headers\ES_Port.h
 .\outputs\masterhsm.o: .\Headers\bitdefs.h

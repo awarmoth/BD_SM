@@ -75,6 +75,7 @@ bool InitFiringService(uint8_t Priority)
 	
 	//Initialize the PWM mode for the servos
 	InitLoadServo();
+	SendLoadServo(LOAD_SERVO_DOWN);
 	
 	// Return true
 	return true;
@@ -127,7 +128,7 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 		{
 			printf("FiringService: SendingUp\r\n");
 			// If ThisEvent is ES_TIMEOUT
-			if(ThisEvent.EventType == ES_TIMEOUT)
+			if((ThisEvent.EventType == ES_TIMEOUT)&& (ThisEvent.EventParam == LOAD_SERVO_TIMER))
 			{
 				// Start LOAD_SERVO_TIMER for LOAD_WAIT_TIME
 				ES_Timer_InitTimer(LOAD_SERVO_TIMER, LOAD_WAIT_TIME);
@@ -142,7 +143,7 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 		{
 			printf("FiringService: Idling\r\n");
 			// If ThisEvent is ES_TIMEOUT
-			if(ThisEvent.EventType == ES_TIMEOUT)
+			if((ThisEvent.EventType == ES_TIMEOUT) && (ThisEvent.EventParam == LOAD_SERVO_TIMER))
 			{
 				// Send LOAD_SERVO to LOAD_SERVO_DOWN
 				SendLoadServo(LOAD_SERVO_DOWN);
@@ -160,7 +161,7 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 		{
 			printf("FiringService: SendingDown\r\n");
 			// If This is ES_TIMEOUT
-			if(ThisEvent.EventType == ES_TIMEOUT)
+			if(ThisEvent.EventType == ES_TIMEOUT && (ThisEvent.EventParam == LOAD_SERVO_TIMER))
 			{
 				//Post ES_FIRE_COMPLETE to MasterHSM
 				ES_Event NewEvent;

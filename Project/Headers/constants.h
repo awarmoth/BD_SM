@@ -4,8 +4,10 @@
  ****************************************************************************/
  #define CheckOff3 0
  #define SM_TEST 1
- #define TEAM_COLOR GREEN
+ #define TEAM_COLOR RED
  #define NO_LOC 1
+ #define BALL_TRACKING 0
+ #define TAPE_TEST 1
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
  
@@ -104,8 +106,8 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 50
-#define RIGHT_MAX_DUTY 50
+#define LEFT_MAX_DUTY 60
+#define RIGHT_MAX_DUTY 60
 #define RIGHT_CCW_COMMAND 50
 #define RIGHT_CW_COMMAND 50
 #define LEFT_CCW_COMMAND 50
@@ -144,8 +146,9 @@
 #define NO_BALLS 0
 #define MAX_BALLS 5
 
+#define WARM_UP_TIME 2000
 #define SHOT_CLOCK_TIME 20000
-#define BALL_AIR_TIME 1000 //will probably want to lower this
+#define BALL_AIR_TIME 5000 //will probably want to lower this
 
 //Servo motor constants
 #define NUM_MOTOR 1
@@ -155,3 +158,10 @@
 #define MOTOR_PERIOD 		250
 #define TIMING_CHANNEL 	0
 #define TIME_MOT_GROUP 	0
+
+
+#define NUM_PULSES 10
+#define DELIVERY_TIME 3000
+#define PULSE_HIGH_TIME 10
+#define PULSE_LOW_TIME 30
+

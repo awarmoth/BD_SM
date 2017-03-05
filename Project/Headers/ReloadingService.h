@@ -10,7 +10,7 @@ bool InitReloadingService(uint8_t Priority);
 bool PostReloadingService(ES_Event ThisEvent);
 ES_Event RunReloadingService(ES_Event ThisEvent);
 
-typedef enum {WaitingReload, Emitting_High, Emitting_Low, Wait4Delivery} FiringState_t ;
+typedef enum {WaitingReload, Emitting_High, Emitting_Low, Wait4Delivery} ReloadState_t ;
 
 
 #endif /*FIRING_SERVICE_H*/
