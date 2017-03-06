@@ -4,3 +4,4 @@
 void InitializePins(void);
 void SetMotorController(uint8_t control);
 bool getISRFlag(void);
+void Set_Launcher_Command(uint16_t Requested_Command);
