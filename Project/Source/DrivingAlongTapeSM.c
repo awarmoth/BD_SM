@@ -71,6 +71,7 @@
 #include "PWM_Module.h"
 #include "ADMulti.h"
 #include "DrivingAlongTapeSM.h"
+#include "hardware.h"
 
 /* include header files for this state machine as well as any machines at the
    next lower level in the hierarchy that are sub-machines to this machine
@@ -158,8 +159,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					// If TargetStation is LastStation
 					if(TargetStation == LastStation)
 					{
-						// Set MakeTransition to true			
-						MakeTransition = true;
+						printf("Here, Last = %i\r\n",LastStation);
 						// Set ReturnEvent to ES_ArrivedAtStation
 						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
 					}
@@ -245,14 +245,11 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					// If LastStation - Direction is TargetStation
 					if((LastStation - Direction) == TargetStation)
 					{
-						// Set MakeTransition to true	
-						MakeTransition = true;
-						
 						/*******Disable wire following control law********/
 						SetMotorController(STOP_DRIVING);
 						/*****************Stop driving******************/
 						SetDutyA(0);
-						SetDutyA(0);
+						SetDutyB(0);
 						
 						// Set ReturnEvent to ES_ArrivedAtStation
 						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
@@ -296,14 +293,11 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_Front_Bump_Detected
 				if(CurrentEvent.EventType == ES_FRONT_BUMP_DETECTED)
 				{
-					// Set MakeTransition to true
-					MakeTransition = true;
-					
 					/*******Disable wire following control law********/
 					SetMotorController(STOP_DRIVING);
 					/*****************Stop driving******************/
 					SetDutyA(0);
-					SetDutyA(0);
+					SetDutyB(0);
 					
 					// Set ReturnEvent to ES_ArrivedAtReload	
 					ReturnEvent.EventType = ES_ARRIVED_AT_RELOAD;
@@ -320,6 +314,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 			}
 			// Endf
 		}
+		break;
 		// End DrivingToReload block
 	}//end switch
 		
@@ -330,7 +325,6 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 		CurrentEvent.EventType = ES_EXIT;
 		// Call RunDrivingAlongTapeSM with CurrentEvent as the event parameter
 		RunDrivingAlongTapeSM(CurrentEvent);
-				
 		// Set CurrentState to NextState
 		CurrentState = NextState;
 		// Call RunDrivingAlongTapeSM with EntryEvent as the event parameter
@@ -430,6 +424,7 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	{
 		// Set LastStation to (LastStation - Direction)
 		LastStation = (LastStation - Direction); //update LastStation to be the station we just passed
+		printf("Here exit, Last = %i\r\n",LastStation);
 	}
 	// EndIf
 	
@@ -475,4 +470,10 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	// Return ReturnEvent
 	return ReturnEvent;
 }
+
+
+uint8_t getLastStation(void){
+	return LastStation;
+}
+
 

@@ -3,6 +3,9 @@
 #include "LOC_HSM.h"
 #include "DrivingAlongTapeSM.h"
 #include "PWM_Module.h"
+#include "hardware.h"
+#include "ShootingSM.h"
+#include "ReloadingService.h"
 
 #include "ConstructingSM.h"
 #include "ByteTransferSM.h"
@@ -39,24 +42,31 @@
 #define ALL_BITS (0xff<<2)
 #endif
 
+
 // readability defines
 
 #include "BITDEFS.H"
 
 // module level variables: 
-uint8_t MyPriority;
-ConstructingState_t CurrentState;
-uint8_t TeamColor;
-uint8_t BallCount = 3;
-uint8_t TargetStation;
-uint8_t LastStation = START;
-uint8_t TargetGoal;
-uint8_t Score;
-uint32_t LastCapture, HallSensorPeriod;
-uint32_t LastPeriod, DeltaAvg;
-uint8_t HasLeftStage = true;
-bool GameTimeoutFlag = false;
+static ConstructingState_t CurrentState;
+static uint8_t TeamColor;
+static uint8_t TargetStation;
+//static uint8_t LastStation = START;
+static uint8_t TargetGoal;
+static uint8_t Score;
+static uint32_t LastCapture, HallSensorPeriod;
+static uint32_t LastPeriod, DeltaAvg;
+static uint8_t HasLeftStage = true;
+static bool GameTimeoutFlag = false;
 static bool initHallEffect = true;
+
+static ES_Event DuringGettingTargetStation( ES_Event Event);
+static ES_Event DuringDrivingAlongTape( ES_Event Event);
+static ES_Event DuringCheckIn( ES_Event Event);
+static ES_Event DuringShooting( ES_Event Event);
+static ES_Event DuringShooting( ES_Event Event);
+static ES_Event DuringAlignToTape (ES_Event Event);
+static ES_Event DuringReloading(ES_Event ThisEvent);
 
 void StartConstructingSM(ES_Event CurrentEvent)
 {
@@ -131,6 +141,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					Event2Post.EventParam = TargetStation;
 					// Post Event2Post to Master
 					if (!NO_LOC) PostMasterSM(Event2Post);
+					else if (SM_TEST) printf("Target station from constructing: %i",TargetStation);
 				}
 				// End ES_LOC_COMPLETE block
 			}	
@@ -167,8 +178,6 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					MakeTransition = true;
 					// Set NextState to Reloading
 					NextState = Reloading;
-					// Post ES_RELOAD_START to ReloadService
-					// PostReload(ES_RELOAD_START);
 				}
 				// EndIf
 			}
@@ -184,7 +193,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 
 		// If CurrentState is CheckIn
 		case(CheckIn):
-			// if (SM_TEST) printf("Constructing: CheckIn\r\n");
+			if (SM_TEST) printf("Constructing: CheckIn\r\n");
 			// Run DuringCheckIn and store the output in CurrentEvent
 			CurrentEvent = DuringCheckIn(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -235,12 +244,44 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 			if (CurrentEvent.EventType != ES_NO_EVENT)
 			{
 				// If CurrentEvent is ES_SHOOTING_COMPLETE or ES_TIMEOUT from SHOOTING_TIMER
-				if ((CurrentEvent.EventType == ES_SHOOTING_COMPLETE) ||
-					((CurrentEvent.EventType == ES_TIMEOUT) &&
-					(CurrentEvent.EventParam == SHOOTING_TIMER)))
+				if ((CurrentEvent.EventType == ES_SHOOTING_COMPLETE) || 
+					((CurrentEvent.EventType == ES_TIMEOUT) && 
+				(CurrentEvent.EventParam == SHOOTING_TIMER)))
 				{
-					// If BallCount = 0
-					if (BallCount == 0)
+						// Set MakeTransition to true
+						MakeTransition = true;
+						// Set NextState to DrivingAlongTape
+						NextState = AlignToTape;
+				} else if ((CurrentEvent.EventType == ES_TIMEOUT) && 
+				(CurrentEvent.EventParam == GAME_TIMER)){
+					ReturnEvent.EventType = ES_NO_EVENT;
+					GameTimeoutFlag = true;
+				}
+				// EndIf
+			}
+			// Else
+			else
+			{
+				// Set ReturnEvent to ES_NO_EVENT
+				ReturnEvent.EventType = ES_NO_EVENT;
+			}
+			// EndIf
+		break;
+		// End Shooting block
+			
+	// If CurrentState is AlignToTape
+		case (AlignToTape):
+		{
+			printf("ShootingSM: AlignToTape\r\n");
+			// Run DuringAlignToTape and store the output in CurrentEvent
+			CurrentEvent = DuringAlignToTape(CurrentEvent);
+			// If CurrentEvent is not ES_NO_EVENT
+			if(CurrentEvent.EventType != ES_NO_EVENT)
+			{
+				// If CurrentEvent is ES_TAPE_DETECTED
+				if(CurrentEvent.EventType == ES_TAPE_DETECTED)
+				{
+					if (getBallCount() == 0)
 					{
 						// Set MakeTransition to true
 						MakeTransition = true;
@@ -261,22 +302,30 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 						// Set NextState to GettingTargetStation
 						NextState = GettingTargetStation;
 					}
-				}
+					// If GameTimeoutFlag Set
+					if(GameTimeoutFlag)
+					{
+						// Post ES_NORMAL_GAME_COMPLETE to Master
+						ES_Event NewEvent;
+						NewEvent.EventType = ES_NORMAL_GAME_COMPLETE;
+						PostMasterSM(NewEvent);
+					}// EndIf
 				// EndIf
+				}
 			}
+			
 			// Else
 			else
 			{
 				// Set ReturnEvent to ES_NO_EVENT
 				ReturnEvent.EventType = ES_NO_EVENT;
-			}
-			// EndIf
-		break;
-		// End Shooting block
+			}// EndIf
+			break;
+		}// End AlignToTape block
 
 		// If CurrentState is Reloading
 		case(Reloading):
-			if (SM_TEST) printf("Reloading: GettingTargetStation\r\n");
+			if (SM_TEST) printf("Construction: Reloading\r\n");
 			// Run DuringReloading and store the output in CurrentEvent
 			CurrentEvent = DuringReloading(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -286,7 +335,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_RELOAD_COMPLETE)
 				{
 					// If BallCount < 5
-					if (BallCount < 5)
+					if (getBallCount() < 5)
 					{
 						// Set MakeTransition to true
 						MakeTransition = true;
@@ -395,7 +444,7 @@ ES_Event DuringDrivingAlongTape(ES_Event ThisEvent)
 		RunDrivingAlongTapeSM(ThisEvent);
 		SetDutyA(0);
 		SetDutyB(0);
-		SetController(CONTROLLER_OFF);
+		SetMotorController(STOP_DRIVING);
 	// Else
 	}
 	else
@@ -462,19 +511,20 @@ ES_Event DuringShooting(ES_Event ThisEvent)
 		(ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Start ShootingSM with ThisEvent
-		//StartShootingSM(ThisEvent);
+		StartShootingSM(ThisEvent);
 	}
 	// Else If ThisEvent is ES_EXIT
 	else if (ThisEvent.EventType == ES_EXIT)
 	{
 		// Run ShootingSM with ThisEvent
-		//RunShootingSM(ThisEvent);
+		RunShootingSM(ThisEvent);
+		SetFlywheelDuty(0);
 	}
 	// Else
 	else
 	{
 		// Run ShootingSM with ThisEvent and store result in ReturnEvent
-		//ReturnEvent = RunShootingSM(ThisEvent);
+		ReturnEvent = RunShootingSM(ThisEvent);
 	}
 	// EndIf
 	
@@ -482,6 +532,38 @@ ES_Event DuringShooting(ES_Event ThisEvent)
 	return ReturnEvent;	
 }
 // End DuringShooting
+
+static ES_Event DuringAlignToTape(ES_Event ThisEvent)
+{
+	// local variable ReturnEvent
+	ES_Event ReturnEvent;
+	// Initialize ReturnEvent to ThisEvent
+	ReturnEvent = ThisEvent;
+	
+	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
+	{
+		SetFlywheelDuty(0);
+		uint8_t TeamColor = getTeamColor();
+		if (TeamColor == GREEN) {
+			SetMotorController(ROTATE_CW);
+		} else {
+			SetMotorController(ROTATE_CCW);
+		}
+		// direction based on team color, opposite of AlignToGoal
+	}// EndIf
+	if (ThisEvent.EventType == ES_EXIT) {
+		SetMotorController(CONTROLLER_OFF);
+		if (GameTimeoutFlag){
+			ES_Event Event2Post;
+			Event2Post.EventType = ES_NORMAL_GAME_COMPLETE;
+			PostMasterSM(Event2Post);
+		}
+	}
+	
+	// Return ReturnEvent
+	return ReturnEvent;
+}
 
 ES_Event DuringReloading(ES_Event ThisEvent)
 {
@@ -500,10 +582,10 @@ ES_Event DuringReloading(ES_Event ThisEvent)
 		// Set Event2Post type to ES_RELOAD_START
 		Event2Post.EventType = ES_RELOAD_START;
 		// Post Event2Post to ReloadService
-		//PostReload(Event2Post);
+		PostReloadingService(Event2Post);
 	}
 	// Else If ThisEvent is ES_EXIT
-	else
+	else if (ThisEvent.EventType == ES_EXIT)
 	{
 		// If normalgame timeout flag set
 		if (GameTimeoutFlag)
@@ -539,12 +621,17 @@ void HallEffect_ISR( void )
 	//	Static local variable LastTen array initialized to ten zeros
 	static uint32_t LastTen[RUN_AVERAGE_LENGTH];
 	static uint32_t LastDeltas[RUN_AVERAGE_LENGTH];
+	static uint16_t Throwaway = 0;
 	if (initHallEffect){
 		for (int i=0;i<RUN_AVERAGE_LENGTH;i++){
 			LastTen[i] = 0;
 			LastDeltas[i] = 0;
 		}
 		initHallEffect = false;
+	}
+	if (Throwaway< MAX_THROWAWAY){
+		Throwaway++;
+		return;
 	}
 	//	Static local variable 8 bit integer counter initialized to 0
 	static uint8_t counter = 0;
@@ -593,6 +680,8 @@ void HallEffect_ISR( void )
 		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 15) {
 		//	Post ES_StationDetected Event
 			PostEvent.EventType = ES_STATION_DETECTED;
+			Throwaway = 0;
+			
 			PostMasterSM(PostEvent);
 			//printf("Good Frequency: %i\r\n", HallSensorPeriod);
 			
@@ -634,10 +723,29 @@ uint32_t getPeriod( void )
 	return HallSensorPeriod;
 }
 
-uint8_t getBallCount(void) {
-	return BallCount;
+uint8_t incrementScore(void){
+	Score++;
+	return Score;
 }
 
-void SetBallCount(uint8_t count) {
-	BallCount = count;
+uint8_t getScore(void){
+	return Score;
+}
+
+uint8_t getTargetGoal(void) {
+	return TargetGoal;
+}
+
+void setGameTimeoutFlag(bool flag)
+{
+	GameTimeoutFlag = flag;
+}
+
+bool getGameTimeoutFlag(void)
+{
+	return GameTimeoutFlag;
+}
+
+bool getHasLeftStage(void) {
+	return HasLeftStage;
 }

@@ -9,6 +9,9 @@
 .\outputs\constructingsm.o: .\Headers\LOC_HSM.h
 .\outputs\constructingsm.o: .\Headers\DrivingAlongTapeSM.h
 .\outputs\constructingsm.o: .\Headers\PWM_Module.h
+.\outputs\constructingsm.o: .\Headers\hardware.h
+.\outputs\constructingsm.o: .\Headers\ShootingSM.h
+.\outputs\constructingsm.o: .\Headers\ReloadingService.h
 .\outputs\constructingsm.o: .\Headers\ConstructingSM.h
 .\outputs\constructingsm.o: .\Headers\ByteTransferSM.h
 .\outputs\constructingsm.o: .\Headers\constants.h

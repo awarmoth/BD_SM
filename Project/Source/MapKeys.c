@@ -26,6 +26,7 @@
 #include "MasterHSM.h"
 #include "constants.h"
 #include "ByteTransferSM.h"
+#include "ConstructingSM.h"
 
 
 /*----------------------------- Module Defines ----------------------------*/
@@ -112,38 +113,23 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
         switch ( toupper(ThisEvent.EventParam))
         {
           // This posts an ES_COMMAND to the LOC_SM with a parameter value of 12 (0b1100)
-            case '1' : 
-							ThisEvent.EventType = ES_COMMAND; 
-							ThisEvent.EventParam = STATUS_COMMAND;
-							printf("Status Command\r\n");
-							if (NO_LOC) printf("Posting Command: Status to LOC\r\n");
-							else PostLOC_SM(ThisEvent);
-							
-              break;
-						
-						case '2' :
-							ThisEvent.EventType = ES_COMMAND;
-							ThisEvent.EventParam = REPORT_COMMAND;
-							printf("Report Command\r\n");
-							if (NO_LOC) printf("Posting Command: Report to LOC\r\n");
-							else PostLOC_SM(ThisEvent);PostLOC_SM(ThisEvent);						
-							break;
-						
-						case '3' :
-							
-							ThisEvent.EventType = ES_COMMAND;
-							ThisEvent.EventParam = QUERY_RESPONSE_COMMAND;
-							printf("Query Command\r\n");						
-							if (NO_LOC) printf("Posting Command: Query to LOC\r\n");
-							else PostLOC_SM(ThisEvent);PostLOC_SM(ThisEvent);						
-							break;
-						
-						case '4' :
+
+						case '1' :
 							ThisEvent.EventType = ES_LOC_COMPLETE;
-							printf("ES_LOC_COMPLETE\r\n");						
+							printf("ES_LOC_COMPLETE: Score = Score\r\n");						
 							PostMasterSM(ThisEvent);
 							break;
-						
+						case '2' :
+							ThisEvent.EventType = ES_LOC_COMPLETE;
+							printf("ES_LOC_COMPLETE: Score = Score + 1\r\n");						
+							PostMasterSM(ThisEvent);
+							incrementScore();
+							break;
+						case '4' :
+							ThisEvent.EventType = ES_LOC_COMPLETE;
+							printf("ES_LOC_COMPLETE\r\n");					
+							PostMasterSM(ThisEvent);
+							break;
 						case '5' :
 							
 							ThisEvent.EventType = ES_LOC_COMPLETE;
@@ -191,10 +177,43 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							break;
 						
 													
+						case 'Q':
+							ThisEvent.EventType = ES_FIRE_COMPLETE;
+							printf("ES_FIRE_COMPLETE");
+							PostMasterSM(ThisEvent);
+							break;
+						case 'W':
+							ThisEvent.EventType = ES_FIRE;
+							printf("ES_FIRE");
+							PostMasterSM(ThisEvent);
+							break;
+						case 'E' : 
+							ThisEvent.EventType = ES_COMMAND; 
+							ThisEvent.EventParam = STATUS_COMMAND;
+							printf("Status Command\r\n");
+							if (NO_LOC) printf("Posting Command: Status to LOC\r\n");
+							else PostLOC_SM(ThisEvent);
+              break;
+						case 'R' :
+							ThisEvent.EventType = ES_COMMAND;
+							ThisEvent.EventParam = REPORT_COMMAND;
+							printf("Report Command\r\n");
+							if (NO_LOC) printf("Posting Command: Report to LOC\r\n");
+							else PostLOC_SM(ThisEvent);PostLOC_SM(ThisEvent);						
+							break;
+						case 'T' :
+							ThisEvent.EventType = ES_COMMAND;
+							ThisEvent.EventParam = QUERY_RESPONSE_COMMAND;
+							printf("Query Command\r\n");						
+							if (NO_LOC) printf("Posting Command: Query to LOC\r\n");
+							else PostLOC_SM(ThisEvent);PostLOC_SM(ThisEvent);						
+							break;
+						
+						
 						
 						case 'A':
-							ThisEvent.EventType = ES_ARRIVED_AT_STATION;
-							printf("ES_ARRIVED_AT_STATION\r\n");						
+							ThisEvent.EventType = ES_FRONT_BUMP_DETECTED;
+							printf("ES_FRONT_BUMP_DETECTED\r\n");						
 							PostMasterSM(ThisEvent);
 							break;
 						case 'S':
@@ -223,6 +242,22 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_DRIVE_ALONG_TAPE: Target = %i", ThisEvent.EventParam);
 							PostMasterSM(ThisEvent);
 							break;
+						case 'J':
+							ThisEvent.EventType = ES_DRIVE_ALONG_TAPE;
+							ThisEvent.EventParam = 0;
+							printf("ES_DRIVE_ALONG_TAPE: Target = %i", ThisEvent.EventParam);
+							PostMasterSM(ThisEvent);
+							break;
+						case 'K':
+							ThisEvent.EventType = ES_GOAL_BEACON_DETECTED;
+							printf("ES_GOAL_BEACON_DETECTED");
+							PostMasterSM(ThisEvent);
+							break;
+						case 'L':
+							ThisEvent.EventType = ES_TAPE_DETECTED;
+							printf("ES_TAPE_DETECTED");
+							PostMasterSM(ThisEvent);
+							break;
 						
 						
 						
@@ -245,27 +280,21 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_TIMEOUT: FREE_4_ALL_TIMER\r\n");
 							PostMasterSM(ThisEvent);
 							break;
+						case 'V':
+							ThisEvent.EventType = ES_TIMEOUT;
+							ThisEvent.EventParam = SHOT_RESULT_TIMER;
+							printf("ES_TIMEOUT: SHOT_RESULT_TIMER\r\n");
+							PostMasterSM(ThisEvent);
+							break;
+						case 'B':
+							ThisEvent.EventType = ES_TIMEOUT;
+							ThisEvent.EventParam = LOAD_SERVO_TIMER;
+							printf("ES_TIMEOUT: LOAD_SERVO_TIMER\r\n");
+							PostMasterSM(ThisEvent);
+							break;
         }
 
     }
     
   return ReturnEvent;
 }
-
-//								ES_START,
-//								ES_TEAM_SWITCH,
-//								ES_DRIVE_ALONG_TAPE,
-//								ES_ARRIVED_AT_STATION,
-//								ES_ARRIVED_AT_RELOAD,
-//								ES_REORIENT,
-//								ES_GOAL_READY,
-//								ES_SHOOTING_COMPLETE,
-//								ES_RELOAD_COMPLETE,
-//								ES_RELOAD_START,
-//								ES_NORM_GAME_COMPLETE,
-//								ES_STATION_DETECTED,
-//								ES_FRONT_BUMP_DETECTED,
-//								ES_FREE_4_ALL_COMPLETE,
-//								ES_START_FREE_4_ALL,
-//								ES_NORMAL_GAME_COMPLETE
-

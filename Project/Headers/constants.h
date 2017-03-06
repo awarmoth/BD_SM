@@ -6,6 +6,8 @@
  #define SM_TEST 1
  #define TEAM_COLOR RED
  #define NO_LOC 1
+ #define BALL_TRACKING 0
+ #define TAPE_TEST 1
  
  #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
  
@@ -86,8 +88,8 @@
  #define ONE_SHOT_TIMEOUT 20000000
  
  // Magnetic sensors
- #define RUN_AVERAGE_LENGTH 20
- #define THROWAWAY 0
+ #define RUN_AVERAGE_LENGTH 200
+ #define MAX_THROWAWAY 200
  #define TICKS_PER_USEC 40
  #define MAX_ALLOWABLE_PER (TICKS_PER_USEC*1361)
  #define MIN_ALLOWABLE_PER (TICKS_PER_USEC*472)
@@ -104,12 +106,12 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 50
-#define RIGHT_MAX_DUTY 50
-#define RIGHT_CCW_COMMAND 100
-#define RIGHT_CW_COMMAND 100
-#define LEFT_CCW_COMMAND 100
-#define LEFT_CW_COMMAND 100
+#define LEFT_MAX_DUTY 60
+#define RIGHT_MAX_DUTY 60
+#define RIGHT_CCW_COMMAND 50
+#define RIGHT_CW_COMMAND 50
+#define LEFT_CCW_COMMAND 50
+#define LEFT_CW_COMMAND 50
 #define COMMAND_DIFF 0
 
 #define RIGHT_CCW_DIR 1
@@ -138,3 +140,28 @@
 #define TAPE_THRESHOLD 20
 #define MOTOR_CONTROLLER_TIME_US 2000
 #define TICKS_PER_US 40
+
+//define ball counters
+#define BALL_START_COUNT 3
+#define NO_BALLS 0
+#define MAX_BALLS 5
+
+#define WARM_UP_TIME 2000
+#define SHOT_CLOCK_TIME 20000
+#define BALL_AIR_TIME 5000 //will probably want to lower this
+
+//Servo motor constants
+#define NUM_MOTOR 1
+#define MIN_MOT_POS 1700
+#define MAX_MOT_POS 3200
+#define MOT_FREQ 25000
+#define MOTOR_PERIOD 		250
+#define TIMING_CHANNEL 	0
+#define TIME_MOT_GROUP 	0
+
+
+#define NUM_PULSES 10
+#define DELIVERY_TIME 3000
+#define PULSE_HIGH_TIME 10
+#define PULSE_LOW_TIME 30
+

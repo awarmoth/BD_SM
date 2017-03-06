@@ -467,16 +467,36 @@
               <FileType>1</FileType>
               <FilePath>.\Source\DrivingAlongTapeSM.c</FilePath>
             </File>
+            <File>
+              <FileName>ADMulti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ADMulti.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM_Module.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM_Module.c</FilePath>
+            </File>
+            <File>
+              <FileName>ShootingSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ShootingSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>FiringService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\FiringService.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM10Tiva.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Headers</GroupName>
           <Files>
-            <File>
-              <FileName>uartstdio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\uartstdio.h</FilePath>
-            </File>
             <File>
               <FileName>Bin_Const.h</FileName>
               <FileType>5</FileType>
@@ -491,6 +511,11 @@
               <FileName>ES_CheckEvents.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ES_CheckEvents.h</FilePath>
+            </File>
+            <File>
+              <FileName>uartstdio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\uartstdio.h</FilePath>
             </File>
             <File>
               <FileName>ES_Configure.h</FileName>
@@ -611,6 +636,31 @@
               <FileName>CheckInSM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\CheckInSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>DrivingAlongTapeSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\DrivingAlongTapeSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>ShootingSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ShootingSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>FiringService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\FiringService.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM10Tiva.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM_Module.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM_Module.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1181,49 +1231,6 @@
               <FileName>MasterHSM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\MasterHSM.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
             </File>
             <File>
               <FileName>LOC_HSM.c</FileName>
@@ -1260,16 +1267,36 @@
               <FileType>1</FileType>
               <FilePath>.\Source\DrivingAlongTapeSM.c</FilePath>
             </File>
+            <File>
+              <FileName>ADMulti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ADMulti.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM_Module.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM_Module.c</FilePath>
+            </File>
+            <File>
+              <FileName>ShootingSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ShootingSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>FiringService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\FiringService.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWM10Tiva.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Headers</GroupName>
           <Files>
-            <File>
-              <FileName>uartstdio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\uartstdio.h</FilePath>
-            </File>
             <File>
               <FileName>Bin_Const.h</FileName>
               <FileType>5</FileType>
@@ -1284,6 +1311,11 @@
               <FileName>ES_CheckEvents.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ES_CheckEvents.h</FilePath>
+            </File>
+            <File>
+              <FileName>uartstdio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\uartstdio.h</FilePath>
             </File>
             <File>
               <FileName>ES_Configure.h</FileName>
@@ -1404,6 +1436,31 @@
               <FileName>CheckInSM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\CheckInSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>DrivingAlongTapeSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\DrivingAlongTapeSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>ShootingSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ShootingSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>FiringService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\FiringService.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM10Tiva.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM10Tiva.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM_Module.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWM_Module.h</FilePath>
             </File>
           </Files>
         </Group>

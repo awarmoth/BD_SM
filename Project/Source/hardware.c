@@ -19,33 +19,46 @@ Module file for exectuing all hardware initialization
 #include "driverlib/gpio.h"
 #include "driverlib/timer.h"
 #include "constants.h"
+#include "PWM10Tiva.h"
 
 #include "ADMulti.h"
 #include "PWM_Module.h"
 #include "MasterHSM.h"
 
- 
+#define BITS_PER_NIBBLE 4
+#define TICKS_PER_S 40000000
+
+// Frequency thresholds
+#define LOWER_FREQ_THRESHOLD 1400
+#define UPPER_FREQ_THRESHOLD 1500
+
+#define ISR_TIMEOUT 100
+
 static void Init_Controller(void);
 static void AD_Init(void);
+static void Init_Beacon_Receiver(void);
 static void MagneticTimerInit(void);
 static void OneShotTimerInit(void);
+static void LoadingMotorInit(void);
 
-static void Controller = CONTROLLER_OFF;
-static void LastController = POSITION_CONTROLLER;
-static void LeftCommand = 0;
-static void RightCommand = 0;
-static void RightResonanceSensor = FORWARD_RIGHT_RESONANCE_AD;
-static void LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
-static void TapeWatchFlag = 0;
-static void LastRightResonanceVal;
-static void LastLeftResonanceVal;
+static uint8_t Controller = CONTROLLER_OFF;
+static uint8_t LastController = POSITION_CONTROLLER;
+static uint8_t LeftCommand = 0;
+static uint8_t RightCommand = 0;
+static uint8_t RightResonanceSensor = FORWARD_RIGHT_RESONANCE_AD;
+static uint8_t LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
+static uint8_t TapeWatchFlag = 0;
 static uint32_t RightResonanceHistory[TAPE_WATCH_WINDOW] = {0};
 static uint32_t LeftResonanceHistory[TAPE_WATCH_WINDOW] = {0};
+static bool ISR_Flag = false;
 
 void InitializePins(void) {
 	Init_Controller();
 	AD_Init();
+	Init_Beacon_Receiver();
 	InitPWM();
+	InitFlywheelPWM();
+	SetFlywheelDuty(0);
 	MagneticTimerInit();
 	OneShotTimerInit();
 }
@@ -130,7 +143,7 @@ static void MagneticTimerInit(void)
 	// Set up the alternate function for Port D0
 	HWREG(GPIO_PORTD_BASE+GPIO_O_AFSEL) |= BIT0HI;
 	
-	// Map bit 0’s alternate function
+	// Map bit 0â€™s alternate function
 	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) & 0xfffffff0) + 7;
 	
 	// Enable pin on port D for digital I/O
@@ -150,6 +163,30 @@ static void MagneticTimerInit(void)
 	
 	// Enable timer and enable to stall when stopped by debugger
 	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+}
+
+/****************************************************************************
+ Function
+    LoadingMotorInit
+
+ Parameters
+   None
+
+ Returns
+   None
+
+ Description
+   Function that sets up the encoder timer system
+ Author
+   Matthew Miller			1/19/17
+****************************************************************************/
+static void LoadingMotorInit(void)
+{
+	// initialize PWM port
+	PWM_TIVA_Init(NUM_MOTOR);
+	
+	// initialize period of the timing motor
+	PWM_TIVA_SetPeriod(MOT_FREQ, TIME_MOT_GROUP);
 }
 
 /****************************************************************************
@@ -202,11 +239,11 @@ static void OneShotTimerInit(void)
 }
 
 
-void Controller_ISR(void)
+void Motor_Controller_ISR(void)
 {
 	// printf("Averaged Period: %i\r\n", getPeriod());
 	//clear interrupt
-	HWREG(WTIMER1_BASE+TIMER_O_ICR)=TIMER_ICR_TATOCINT;
+	HWREG(WTIMER2_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	static float LastError_POS = 0;
 	static float LastControl_POS = 0;
 	static float Kp_POS = 0.1;
@@ -230,7 +267,7 @@ void Controller_ISR(void)
 	//else if desired control is velocity 
 	else if (Controller == VELOCITY_CONTROLLER)
 	{
-		static unit8_t counter = 0;
+		static uint8_t TapeCounter = 0;
 		// if the last controller was not velocity
 		if (LastController != VELOCITY_CONTROLLER)
 		{
@@ -244,7 +281,7 @@ void Controller_ISR(void)
 		if (TapeWatchFlag == 1)
 		{
 			// shift the resonance sensor history
-			for (uint8_t i = (TAPE_WATCH_WINDOW - 1); i--; i > 0)
+			for (uint8_t i = (TAPE_WATCH_WINDOW - 1); i > 0 ; i--)
 			{
 				RightResonanceHistory[i] = RightResonanceHistory[i-1];
 				LeftResonanceHistory[i] = LeftResonanceHistory[i-1];
@@ -268,7 +305,7 @@ void Controller_ISR(void)
 				uint32_t NewLeftAverage = 0;
 				uint32_t OldLeftAverage = 0;
 				// calculate the average of the latest and oldest periods
-				for (uint8_t i = 0; i++; i < (uint8_t)(TAPE_WATCH_WINDOW/2))
+				for (uint8_t i = 0; i < (uint8_t)(TAPE_WATCH_WINDOW/2);i++)
 				{
 					NewRightAverage += RightResonanceHistory[i];
 					OldRightAverage += RightResonanceHistory[i+(uint8_t)(TAPE_WATCH_WINDOW/2)];
@@ -290,7 +327,8 @@ void Controller_ISR(void)
 					// post a tape detected event
 					ES_Event ThisEvent;
 					ThisEvent.EventType = ES_TAPE_DETECTED;
-					PostMasterHSM(ThisEvent);
+					if (TAPE_TEST) printf("Tape Detected by ISR");
+					PostMasterSM(ThisEvent);
 				}
 			}
 		}
@@ -401,7 +439,7 @@ void SetMotorController(uint8_t control){
 		SetDirectionA(FORWARD_DIR);
 		SetDirectionB(FORWARD_DIR);
 		RightResonanceSensor = FORWARD_RIGHT_RESONANCE_AD;
-		LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD
+		LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
 		Controller = POSITION_CONTROLLER;
 	}
 	else if (control == DRIVE_ON_TAPE_REVERSE)
@@ -409,7 +447,7 @@ void SetMotorController(uint8_t control){
 		SetDirectionA(REVERSE_DIR);
 		SetDirectionB(REVERSE_DIR);
 		RightResonanceSensor = REVERSE_RIGHT_RESONANCE_AD;
-		LeftResonanceSensor = REVERSE_LEFT_RESONANCE_AD
+		LeftResonanceSensor = REVERSE_LEFT_RESONANCE_AD;
 		Controller = POSITION_CONTROLLER;
 	}
 	else if (control == STOP_DRIVING)
@@ -427,9 +465,86 @@ void FindTape(void)
 	ADC_MultiRead(TapeVals);
 	uint32_t RightResonanceVal = TapeVals[RightResonanceSensor];
 	uint32_t LeftResonanceVal = TapeVals[LeftResonanceSensor];
-	for (uint8_t i = 0; i++; i <= TAPE_WATCH_WINDOW)
+	for (uint8_t i = 0; i <= TAPE_WATCH_WINDOW;i++)
 	{
 		RightResonanceHistory[i] = RightResonanceVal;
 		LeftResonanceHistory[i] = LeftResonanceVal;
 	}
+}
+
+
+static void Init_Beacon_Receiver(void)
+{
+	__disable_irq();
+	printf("here 2");
+	//enable clock to timer
+	HWREG(SYSCTL_RCGCWTIMER)|=SYSCTL_RCGCWTIMER_R5;
+	//enable clock to port C
+	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R3;	
+	//wait for clock to connect
+	while((HWREG(SYSCTL_PRWTIMER)&SYSCTL_PRWTIMER_R5)!=SYSCTL_PRWTIMER_R5) 
+	{
+	}
+	//disable the Timer B
+	HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
+	//ignore 32 bit mode, it is already set
+	HWREG(WTIMER5_BASE+TIMER_O_CFG)=TIMER_CFG_16_BIT;
+	//load the full value for timeout
+	HWREG(WTIMER5_BASE+TIMER_O_TBILR)=0xffffffff;
+	//set up timer B for capture mode, edge timer, periodic, and up counting
+	HWREG(WTIMER5_BASE+TIMER_O_TBMR)=(HWREG(WTIMER5_BASE+TIMER_O_TBMR)&~TIMER_TBMR_TBAMS)|(TIMER_TBMR_TBCMR|TIMER_TBMR_TBCDIR|TIMER_TBMR_TBMR_CAP);
+	//set event to rising edge
+	HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEVENT_M);
+	//set up the alternate function for Pin C5
+	HWREG(GPIO_PORTD_BASE+GPIO_O_AFSEL)|=GPIO_PIN_7;
+	//set up C5 alternate function as WTIMER0
+	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL)=(HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL)&0x0FFFFFFF)|(7<<(7*BITS_PER_NIBBLE));
+	//digitally enable C5
+	HWREG(GPIO_PORTD_BASE+GPIO_O_DEN)|=GPIO_PIN_7;
+	//set C5 to input
+	HWREG(GPIO_PORTD_BASE+GPIO_O_DIR)&=(~GPIO_PIN_7);
+	//enable local capture interupt on the timer
+	HWREG(WTIMER5_BASE+TIMER_O_IMR)|=TIMER_IMR_CBEIM;
+	//enable timer interupt in the NVIC
+	HWREG(NVIC_EN3)|=BIT9HI;
+	//enable interupts globally
+	__enable_irq();
+	//set priority to 6
+	HWREG(NVIC_PRI26)=(HWREG(NVIC_PRI26)&~NVIC_PRI26_INTB_M)|(0x6<<NVIC_PRI26_INTB_S);
+	//enable the timer and add debugging stalls
+	HWREG(WTIMER5_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBSTALL|TIMER_CTL_TBEN);
+	__enable_irq();
+}
+
+
+void Beacon_Receiver_ISR(void)
+{
+	//clear the source of the interrupt
+	HWREG(WTIMER5_BASE+TIMER_O_ICR)=TIMER_ICR_CBECINT;
+	ISR_Flag = true;
+	static uint32_t LastTime = 0;
+	static uint8_t counter = 0;
+	//capture the time at which the beacon was detected
+	uint32_t Time = HWREG(WTIMER5_BASE+TIMER_O_TBR);
+	//calculate the frequency
+	uint32_t Frequency = TICKS_PER_S/(Time-LastTime);
+	//if the frequency of detection matches the expected beacon frequency
+	if ((Frequency>=LOWER_FREQ_THRESHOLD)&&(Frequency<=UPPER_FREQ_THRESHOLD)) counter++;
+	else counter /= 2;
+	//printf("%i\r\n",Frequency);
+	if (counter == 10) {
+		//Disable Beacon Detection
+		HWREG(WTIMER5_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
+		//post a beacon detected event
+		ES_Event ThisEvent;
+		ThisEvent.EventType = ES_GOAL_BEACON_DETECTED;
+		PostMasterSM(ThisEvent);
+		counter = 0;
+	}
+	//update the last time of detection
+	LastTime = Time;
+}
+
+bool getISRFlag(void) {
+	return ISR_Flag;
 }

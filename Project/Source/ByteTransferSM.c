@@ -427,6 +427,6 @@ uint8_t getRS_Byte(void)
 
 void SetBytesArray(uint8_t data, int i) {
 	BytesArray[i] = data;
-	// if (command != QUERY_RESPONSE_COMMAND) printf("Byte %i = %i\r\n", i,BytesArray[i]);
+	if (command != QUERY_RESPONSE_COMMAND) printf("Byte %i = %i\r\n", i,BytesArray[i]);
 
 }

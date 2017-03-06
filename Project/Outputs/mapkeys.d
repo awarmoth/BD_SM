@@ -23,3 +23,4 @@
 .\outputs\mapkeys.o: .\Headers\MasterHSM.h
 .\outputs\mapkeys.o: .\Headers\constants.h
 .\outputs\mapkeys.o: .\Headers\ByteTransferSM.h
+.\outputs\mapkeys.o: .\Headers\ConstructingSM.h

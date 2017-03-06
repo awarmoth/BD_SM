@@ -84,6 +84,7 @@ __heap_limit
 		EXTERN	Motor_Controller_ISR
 		EXTERN	HallEffect_ISR
 		EXTERN	HallEffectOneShotTimer_ISR
+		EXTERN  Beacon_Receiver_ISR
 
 ;******************************************************************************
 ;
@@ -213,7 +214,7 @@ __Vectors
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 5 subtimer A
-        DCD     IntDefaultHandler           ; Wide Timer 5 subtimer B
+        DCD     Beacon_Receiver_ISR           ; Wide Timer 5 subtimer B
         DCD     IntDefaultHandler           ; FPU
         DCD     0                           ; Reserved
         DCD     0                           ; Reserved

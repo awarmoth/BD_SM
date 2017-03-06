@@ -11,6 +11,6 @@ typedef enum { Waiting, Driving2Station, Driving2Reload} DrivingState_t ;
 
 ES_Event RunDrivingAlongTapeSM( ES_Event CurrentEvent );
 void StartDrivingAlongTapeSM ( ES_Event CurrentEvent );
-void SetController(uint8_t control);
+uint8_t getLastStation(void);
 
 #endif /*DRIVING_ALONG_TAPE_SM_H */

@@ -35,6 +35,8 @@
 #include "BITDEFS.H"
 #include <Bin_Const.h>
 
+#define ISR_TIMEOUT 100
+
 #ifndef ALL_BITS
 #define ALL_BITS (0xff<<2)
 #endif
@@ -54,6 +56,7 @@ static uint8_t SB2_Byte;
 static uint8_t SB3_Byte;
 static uint8_t RR_Byte;
 static uint8_t RS_Byte;
+static uint8_t BallCount;
 
 bool InitMasterSM(uint8_t Priority)
 {
@@ -66,6 +69,7 @@ bool InitMasterSM(uint8_t Priority)
 	// Initialize the SPI module
 	InitSPI_Comm();
 	InitializePins();
+	BallCount = BALL_START_COUNT;
 	// Call StartMasterSM with ThisEvent as the passed parameter
 	StartMasterSM(ThisEvent);
 	// Return true
@@ -117,7 +121,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	{
 		// If CurrentState is Waiting2Start
 		case(Waiting2Start):
-		if (SM_TEST) printf("Master: Waiting2Start\r\n");
+		//if (SM_TEST) printf("Master: Waiting2Start\r\n");
 		// Run DuringWaiting2Start and store the output in CurrentEvent
 			CurrentEvent = DuringWaiting2Start(CurrentEvent);
 //			printf("curr event: %i",CurrentEvent.EventType);
@@ -135,6 +139,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 					}
 					// Set GameState to getGameState
 					GameState = getGameState();
+					printf("GameState: %i",GameState);
 					// If GameState is WAITING_FOR_START
 					if (GameState == WAITING_FOR_START)
 					{	
@@ -156,6 +161,9 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				{
 					// Set MakeTransition to true
 					MakeTransition = true;
+				} else if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == ISR_TIMER)){
+					//printf("flag %i", getISRFlag());
+					ES_Timer_InitTimer(ISR_TIMER,ISR_TIMEOUT);
 				}
 				// EndIf
 			}
@@ -450,7 +458,7 @@ uint8_t getScoreGreen(void) {
 }
 
 uint8_t getScoreRed(void) {
-	return SB2_Byte & RED_SCORE_MASK;
+	return SB3_Byte & RED_SCORE_MASK;
 
 }
 uint8_t getGameState(void) {
@@ -469,3 +477,20 @@ uint8_t getLocation(void) {
 	return RS_Byte & LOCATION_MASK;
 }
 
+uint8_t getBallCount(void)
+{
+	return BallCount;
+}
+
+void incrementBallCount(void)
+{
+	BallCount++;
+}
+
+void decrementBallCount(void)
+{
+	if(BallCount > 0)
+	{
+		BallCount--;
+	}
+}

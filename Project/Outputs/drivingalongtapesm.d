@@ -36,3 +36,4 @@
 .\outputs\drivingalongtapesm.o: .\Headers\constants.h
 .\outputs\drivingalongtapesm.o: .\Headers\PWM_Module.h
 .\outputs\drivingalongtapesm.o: .\Headers\ADMulti.h
+.\outputs\drivingalongtapesm.o: .\Headers\hardware.h

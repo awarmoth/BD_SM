@@ -29,7 +29,7 @@
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 3
+#define NUM_SERVICES 5
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service.
@@ -79,11 +79,11 @@
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public function prototypes
-#define SERV_3_HEADER "TestHarnessService3.h"
+#define SERV_3_HEADER "FiringService.h"
 // the name of the Init function
-#define SERV_3_INIT InitTestHarnessService3
+#define SERV_3_INIT InitFiringService
 // the name of the run function
-#define SERV_3_RUN RunTestHarnessService3
+#define SERV_3_RUN RunFiringService
 // How big should this services Queue be?
 #define SERV_3_QUEUE_SIZE 3
 #endif
@@ -92,11 +92,11 @@
 // These are the definitions for Service 4
 #if NUM_SERVICES > 4
 // the header file with the public function prototypes
-#define SERV_4_HEADER "TestHarnessService4.h"
+#define SERV_4_HEADER "ReloadingService.h"
 // the name of the Init function
-#define SERV_4_INIT InitTestHarnessService4
+#define SERV_4_INIT InitReloadingService
 // the name of the run function
-#define SERV_4_RUN RunTestHarnessService4
+#define SERV_4_RUN RunReloadingService
 // How big should this services Queue be?
 #define SERV_4_QUEUE_SIZE 3
 #endif
@@ -276,7 +276,11 @@ typedef enum {  ES_NO_EVENT = 0,
 								ES_FRONT_BUMP_DETECTED,
 								ES_FREE_4_ALL_COMPLETE,
 								ES_START_FREE_4_ALL,
-								ES_NORMAL_GAME_COMPLETE
+								ES_NORMAL_GAME_COMPLETE,
+								ES_FIRE_COMPLETE,
+								ES_TAPE_DETECTED,
+								ES_FIRE,
+								ES_GOAL_BEACON_DETECTED
 								} ES_EventTyp_t ;
 
 /****************************************************************************/
@@ -325,14 +329,14 @@ typedef enum {  ES_NO_EVENT = 0,
 // priority in servicing them
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC PostLOC_SM
-#define TIMER1_RESP_FUNC TIMER_UNUSED
-#define TIMER2_RESP_FUNC TIMER_UNUSED
-#define TIMER3_RESP_FUNC TIMER_UNUSED
-#define TIMER4_RESP_FUNC TIMER_UNUSED
-#define TIMER5_RESP_FUNC TIMER_UNUSED
-#define TIMER6_RESP_FUNC TIMER_UNUSED
-#define TIMER7_RESP_FUNC TIMER_UNUSED
-#define TIMER8_RESP_FUNC TIMER_UNUSED
+#define TIMER1_RESP_FUNC PostMasterSM
+#define TIMER2_RESP_FUNC PostMasterSM
+#define TIMER3_RESP_FUNC PostMasterSM
+#define TIMER4_RESP_FUNC PostMasterSM
+#define TIMER5_RESP_FUNC PostFiringService
+#define TIMER6_RESP_FUNC PostMasterSM
+#define TIMER7_RESP_FUNC PostMasterSM
+#define TIMER8_RESP_FUNC PostReloadingService
 #define TIMER9_RESP_FUNC TIMER_UNUSED
 #define TIMER10_RESP_FUNC TIMER_UNUSED
 #define TIMER11_RESP_FUNC TIMER_UNUSED
@@ -352,5 +356,10 @@ typedef enum {  ES_NO_EVENT = 0,
 #define SHOOTING_TIMER 1
 #define GAME_TIMER 2
 #define FREE_4_ALL_TIMER 3
+#define SHOT_RESULT_TIMER 4
+#define LOAD_SERVO_TIMER 5
+#define ISR_TIMER 6
+#define WARM_UP_TIMER 7
+#define IR_PULSE_TIMER 8
 
 #endif /* CONFIGURE_H */

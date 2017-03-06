@@ -3,3 +3,4 @@
 
 void InitializePins(void);
 void SetMotorController(uint8_t control);
+bool getISRFlag(void);
