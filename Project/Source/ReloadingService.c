@@ -188,12 +188,13 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 static void Enable_IR_Emitter(void)
 {
 //	Set the IR Emitter line HIGH
-
+	HWREG(GPIO_PORTF_BASE+(GPIO_O_DATA+ALL_BITS)) |= BIT4HI;
 }
 
 
 static void Disable_IR_Emitter(void)
 {
 //	Set the IR Emitter line LOW
+	HWREG(GPIO_PORTF_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~BIT4HI;
 
 }
