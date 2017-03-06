@@ -85,6 +85,8 @@ __heap_limit
 		EXTERN	HallEffect_ISR
 		EXTERN	HallEffectOneShotTimer_ISR
 		EXTERN  Beacon_Receiver_ISR
+		EXTERN	Launcher_Encoder_ISR
+		EXTERN	Launcher_Controller_ISR
 
 ;******************************************************************************
 ;
@@ -206,11 +208,11 @@ __Vectors
         DCD     IntDefaultHandler           ; Wide Timer 0 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 0 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 1 subtimer A
-        DCD     IntDefaultHandler           ; Wide Timer 1 subtimer B
+        DCD     Launcher_Encoder_ISR        ; Wide Timer 1 subtimer B
         DCD     HallEffect_ISR				; Wide Timer 2 subtimer A
         DCD     Motor_Controller_ISR        ; Wide Timer 2 subtimer B
         DCD     HallEffectOneShotTimer_ISR  ; Wide Timer 3 subtimer A
-        DCD     IntDefaultHandler           ; Wide Timer 3 subtimer B
+        DCD     Launcher_Controller_ISR     ; Wide Timer 3 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 5 subtimer A
