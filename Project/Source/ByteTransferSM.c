@@ -74,7 +74,7 @@
 /*----------------------------- Module Defines ----------------------------*/
 // define constants for the states for this machine
 // and any other local defines
-#define LOC_COOLDOWN_TIME 2
+#define LOC_COOLDOWN_TIME 250
 
 
 /*---------------------------- Module Functions ---------------------------*/
@@ -428,5 +428,5 @@ uint8_t getRS_Byte(void)
 void SetBytesArray(uint8_t data, int i) {
 	BytesArray[i] = data;
 	//if ((command != QUERY_RESPONSE_COMMAND) && (SM_TEST)) printf("Byte %i = %i\r\n", i,BytesArray[i]);
-	printf("Byte %i = %i\r\n", i,BytesArray[i]);
+	//printf("Byte %i = %i\r\n", i,BytesArray[i]);
 }

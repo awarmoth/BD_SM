@@ -124,7 +124,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	{
 		// If CurrentState is Waiting2Start
 		case(Waiting2Start):
-		if (SM_TEST) printf("Master: Waiting2Start\r\n");
+		//if (SM_TEST) printf("Master: Waiting2Start\r\n");
 		// Run DuringWaiting2Start and store the output in CurrentEvent
 			CurrentEvent = DuringWaiting2Start(CurrentEvent);
 //			printf("curr event: %i",CurrentEvent.EventType);
@@ -227,7 +227,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	
 		// If CurrentState is Free4All
 		case (Free4All):
-			if (SM_TEST) printf("Master: Free4All\r\n");
+			//if (SM_TEST) printf("Master: Free4All\r\n");
 			// Run DuringConstructing and store the output in CurrentEvent
 			CurrentEvent = DuringConstructing(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
@@ -295,7 +295,7 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		if (SM_TEST) printf("Master: Entering Waiting2Start\r\n");
+		//if (SM_TEST) printf("Master: Entering Waiting2Start\r\n");
 		// Set TeamColor
 		TeamColor = HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) & TEAM_COLOR_MASK >> TEAM_COLOR_SHIFT;
 		// Turn on respective LEDs

@@ -59,6 +59,7 @@ static uint32_t LastPeriod, DeltaAvg;
 static uint8_t HasLeftStage = true;
 static bool GameTimeoutFlag = false;
 static bool initHallEffect = true;
+uint32_t TempHallSensorPeriod = 0;
 
 static ES_Event DuringGettingTargetStation( ES_Event Event);
 static ES_Event DuringDrivingAlongTape( ES_Event Event);
@@ -619,7 +620,7 @@ void UpdateStatus( void )
 
 void HallEffect_ISR( void )
 {
-		// Clear source of interrupt
+	// Clear source of interrupt
 	HWREG(WTIMER2_BASE+TIMER_O_ICR) = TIMER_ICR_CAECINT;
 	
 	//	Static local variable LastTen array initialized to ten zeros
@@ -660,39 +661,45 @@ void HallEffect_ISR( void )
 	} else {
 		deltacounter++;
 	}
+	//printf("c%i\r\n",CurrentPeriod/40);
 
 	//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
-	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) || (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
+	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) && (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
 		//	Update counter position in LastTen to CurrentPeriod
 		LastTen[counter] = CurrentPeriod;
 		//	If counter equals 9
-		if(counter == RUN_AVERAGE_LENGTH-1){
+		if(counter == RUN_AVERAGE_LENGTH){
 			counter = 0;
 		} else {
 			counter++;
 		}
+			
 		
-		static uint32_t TempHallSensorPeriod = 0;
+		TempHallSensorPeriod = 0;
 		//	Set HallSensorPeriod to average of LastTen
 		for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
 			TempHallSensorPeriod += LastTen[i];
 		}
 		HallSensorPeriod = TempHallSensorPeriod/RUN_AVERAGE_LENGTH;
-		
+		//printf("%i\r\n",HallSensorPeriod/40);
+
 		//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
 		//	and HasLeftStage is true
+		//((DeltaAvg < 10*TICKS_PER_US) && (DeltaAvg >-10*TICKS_PER_US))
 		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && 
 			(HallSensorPeriod >= MIN_ALLOWABLE_PER) && 
-		HasLeftStage && 
-		((DeltaAvg < 10*TICKS_PER_US) && (DeltaAvg >-10*TICKS_PER_US))) 
+		HasLeftStage) 
 		{
 			// Restart the one shot timer
 			HWREG(WTIMER3_BASE+TIMER_O_CTL) |= TIMER_CTL_TAEN;
 			HWREG(WTIMER3_BASE+TIMER_O_TAV) = ONE_SHOT_TIMEOUT;
+					//printf("%i",HallSensorPeriod);
 			//	Post ES_StationDetected Event
 			PostEvent.EventType = ES_STATION_DETECTED;
+			printf("Station Detected");
 			Throwaway = 0;
-			PostMasterSM(PostEvent);			
+			PostMasterSM(PostEvent);
+			
 		//	HasLeftStage is false
 			HasLeftStage = false;
 		}

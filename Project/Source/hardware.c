@@ -178,7 +178,7 @@ static void MagneticTimerInit(void)
 	__enable_irq();
 	
 	// Enable timer and enable to stall when stopped by debugger
-	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TASTALL);
+	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
 }
 
 /****************************************************************************
@@ -261,7 +261,7 @@ void Motor_Controller_ISR(void)
 	HWREG(WTIMER2_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	static float LastError_POS = 0;
 	static float LastControl_POS = 0;
-	static float Kp_POS = 0.05;
+	static float Kp_POS = 0.065;
 	static float Kd_POS = 0.005;
 	int8_t LeftControl = 0;
 	int8_t RightControl = 0;

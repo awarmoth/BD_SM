@@ -5,7 +5,7 @@
  #define CheckOff3 0
  #define SM_TEST 1
  #define TEAM_COLOR RED
- #define NO_LOC 0 
+ #define NO_LOC 1
  #define BALL_TRACKING 0
  #define TAPE_TEST 0
  
@@ -52,7 +52,7 @@
  #define ALL_GOALS_ACTIVE 0x07
  #define ALL_STAGES_ACTIVE 0x07
  
- #define MAX_BAD_RESPONSES 1000000 
+ #define MAX_BAD_RESPONSES 100
  #define RESPONSE_NOT_READY 0
  #define RESPONSE_READY 0xAA
  

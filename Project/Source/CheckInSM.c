@@ -53,7 +53,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 	switch (CurrentState) {
 		// If CurrentState is Reporting_1
 		case(Reporting_1):{
-			//if(SM_TEST) printf("CheckIn: Reporting_1\r\n");
+			if(SM_TEST) printf("CheckIn: Reporting_1\r\n");
 			// 	Run DuringReporting_1 and store the output in CurrentEvent
 			CurrentEvent = DuringReporting_1(CurrentEvent);
 				
@@ -84,7 +84,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 		
 		// If CurrentState is WaitForResponse_1
 		case(WaitForResponse_1):{
-			// if(SM_TEST) printf("CheckIn: WaitingForResponse_1\r\n");
+			
 			// Run DuringWaitForResponse_1 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_1(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -93,6 +93,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
+					if(SM_TEST) printf("CheckIn: WaitingForResponse_1\r\n");
 					//printf("Got response\r\n");
 					if (~NO_LOC){
 					// Get response bytes from LOC
@@ -102,7 +103,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					ReportStatus = getReportStatus();
-					//printf("%i\r\n",ResponseReady);
+					//printf("rr:%i\r\n",ResponseReady);
+					//printf("rs:%i\r\n",ReportStatus);
 					// If ResponseReady = not ready
 					if (ResponseReady == RESPONSE_NOT_READY)
 					{
@@ -139,6 +141,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 						{ 
 							// Increment BadResponseCounter
 							BadResponseCounter++;
+							//printf("br: %i\r\n",BadResponseCounter);
 							// Set MakeTransition to true
 							MakeTransition = true;
 							// Set NextState to Reporting_1
@@ -164,7 +167,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 
 		// If CurrentState is Reporting_2
 		case ( Reporting_2): {
-			// if(SM_TEST) printf("CheckIn: Reporting_2\r\n");
+			if(SM_TEST) printf("CheckIn: Reporting_2\r\n");
 			// Run DuringReporting_2 and store the output in CurrentEvent
 			CurrentEvent = DuringReporting_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -193,7 +196,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 		
 		// If CurrentState is WaitForResponse_2
 		case (WaitForResponse_2):{
-			//if(SM_TEST) printf("CheckIn: WaitForResponse_2\r\n");
+			if(SM_TEST) printf("CheckIn: WaitForResponse_2\r\n");
 			// Run DuringWaitForResponse_2 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -311,7 +314,9 @@ static ES_Event DuringReporting_1(ES_Event ThisEvent)
 		Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
+		//printf("B2r:%x  ",Byte2Write);
 		Byte2Write += getPeriodCode(Period);
+		//printf("B2r:%x\r\n",getPeriodCode(Period));
 		// if (SM_TEST) printf("Period:%i\r\n",getPeriodCode(Period));
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
@@ -487,8 +492,8 @@ uint8_t getPeriodCode(uint32_t Period) {
 		return 0x0F;
 //	Endif
 	} else {
-		printf("Wrong frequency: only should get here in SM testing");
-		return 0xFF;
+		if (SM_TEST) printf("Wrong frequency: only should get here in SM testing");
+		return 0x0F;
 	}
 }
 

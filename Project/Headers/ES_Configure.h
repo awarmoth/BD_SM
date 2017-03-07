@@ -343,7 +343,7 @@ typedef enum {  ES_NO_EVENT = 0,
 #define TIMER8_RESP_FUNC PostReloadingService
 #define TIMER9_RESP_FUNC PostBumpSwitchDebounce
 #define TIMER10_RESP_FUNC PostTeamSwitchDebounce
-#define TIMER11_RESP_FUNC TIMER_UNUSED
+#define TIMER11_RESP_FUNC PostMasterSM
 #define TIMER12_RESP_FUNC TIMER_UNUSED
 #define TIMER13_RESP_FUNC TIMER_UNUSED
 #define TIMER14_RESP_FUNC TIMER_UNUSED
@@ -367,5 +367,6 @@ typedef enum {  ES_NO_EVENT = 0,
 #define IR_PULSE_TIMER 8
 #define BUMP_DEBOUNCE_TIMER 9
 #define TEAM_DEBOUNCE_TIMER 10
+#define REPORT_TIMER 11
 
 #endif /* CONFIGURE_H */
