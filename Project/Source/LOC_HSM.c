@@ -152,6 +152,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 		ES_Event EntryEvent;
 	//local variable Event2Post
 	ES_Event Event2Post;
+	printf("%i",CurrentEvent.EventType);
 
 	//Initialize MakeTransition to false
 		MakeTransition = false;
