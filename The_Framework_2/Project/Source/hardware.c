@@ -76,7 +76,7 @@ void InitializePins(void) {
 	//Launcher_Encoder_Init();
 	//Init_Launcher_Controller();
 	//InitLEDs();
-	//InitIR_Emitter();
+	InitIR_Emitter();
 }
 
 static void Init_Controller(void)
