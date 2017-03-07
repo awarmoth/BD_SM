@@ -159,7 +159,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					// If TargetStation is LastStation
 					if(TargetStation == LastStation)
 					{
-						printf("Here, Last = %i\r\n",LastStation);
+						if (SM_TEST) printf("Here, Last = %i\r\n",LastStation);
 						// Set ReturnEvent to ES_ArrivedAtStation
 						ReturnEvent.EventType = ES_ARRIVED_AT_STATION;
 					}
@@ -212,7 +212,7 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					
 					else //something unexpected happened
 					{
-						printf("Unexpected Station: Station Number = %d\r\n", TargetStation);
+						if (SM_TEST) printf("Unexpected Station: Station Number = %d\r\n", TargetStation);
 					}
 				}
 				// End ES_DriveAlongTape block
@@ -415,6 +415,7 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Turn on Controller
+		
 		SetMotorController(DRIVE_ON_TAPE_FORWARD);
 	}
 	// EndIf
@@ -424,7 +425,7 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	{
 		// Set LastStation to (LastStation - Direction)
 		LastStation = (LastStation - Direction); //update LastStation to be the station we just passed
-		printf("Here exit, Last = %i\r\n",LastStation);
+		if (SM_TEST) printf("Here exit, Last = %i\r\n",LastStation);
 	}
 	// EndIf
 	

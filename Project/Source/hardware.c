@@ -69,14 +69,14 @@ void InitializePins(void) {
 	AD_Init();
 	Init_Beacon_Receiver();
 	InitPWM();
-	InitFlywheelPWM();
-	SetFlywheelDuty(0);
+	//InitFlywheelPWM();
+	//SetFlywheelDuty(0);
 	MagneticTimerInit();
 	OneShotTimerInit();
-	Launcher_Encoder_Init();
-	Init_Launcher_Controller();
-	InitLEDs();
-	InitIR_Emitter();
+	//Launcher_Encoder_Init();
+	//Init_Launcher_Controller();
+	//InitLEDs();
+	//InitIR_Emitter();
 }
 
 static void Init_Controller(void)
@@ -257,12 +257,11 @@ static void OneShotTimerInit(void)
 
 void Motor_Controller_ISR(void)
 {
-	// printf("Averaged Period: %i\r\n", getPeriod());
 	//clear interrupt
 	HWREG(WTIMER2_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	static float LastError_POS = 0;
 	static float LastControl_POS = 0;
-	static float Kp_POS = 0.1;
+	static float Kp_POS = 0.05;
 	static float Kd_POS = 0.005;
 	int8_t LeftControl = 0;
 	int8_t RightControl = 0;
@@ -271,6 +270,7 @@ void Motor_Controller_ISR(void)
 	//if desired control is no controller
 	if (Controller == CONTROLLER_OFF)
 	{
+		HWREG(WTIMER2_BASE+TIMER_O_CTL)&=~(TIMER_CTL_TBEN);
 		//if the last controller was not off
 		if (LastController != CONTROLLER_OFF)
 		{
@@ -426,12 +426,15 @@ void Motor_Controller_ISR(void)
 }
 
 void SetMotorController(uint8_t control){
+	//Enable interrupts
+	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= TIMER_CTL_TBEN;
 	// if rotation is set
 	// adjust motor commands
 	// adjust motor directions
 	// controller is velocity
 	if (control == ROTATE_CCW)
 	{
+		if (SM_TEST) printf("set motor CCW");
 		SetDirectionA(RIGHT_CCW_DIR);
 		SetDirectionB(LEFT_CCW_DIR);
 		RightCommand = RIGHT_CCW_COMMAND;
@@ -520,13 +523,14 @@ static void Init_Beacon_Receiver(void)
 	//enable local capture interupt on the timer
 	HWREG(WTIMER0_BASE+TIMER_O_IMR)|=TIMER_IMR_CBEIM;
 	//enable timer interupt in the NVIC
-	HWREG(NVIC_EN3)|=BIT9HI;
+	HWREG(NVIC_EN2)|=BIT31HI;
 	//enable interupts globally
 	__enable_irq();
 	//set priority to 6
 	HWREG(NVIC_PRI23)=(HWREG(NVIC_PRI23)&~NVIC_PRI23_INTD_M)|(0x6<<NVIC_PRI23_INTD_S);
-	//enable the timer and add debugging stalls
-	HWREG(WTIMER0_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBSTALL|TIMER_CTL_TBEN);
+	// add debugging stalls
+	HWREG(WTIMER0_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBSTALL);
+	// NOTE: not enabling interrupts yet
 }
 
 
@@ -542,10 +546,12 @@ void Beacon_Receiver_ISR(void)
 	//calculate the frequency
 	uint32_t Frequency = TICKS_PER_S/(Time-LastTime);
 	//if the frequency of detection matches the expected beacon frequency
-	if ((Frequency>=LOWER_FREQ_THRESHOLD)&&(Frequency<=UPPER_FREQ_THRESHOLD)) counter++;
+	if ((Frequency>=LOWER_FREQ_THRESHOLD)&&(Frequency<=UPPER_FREQ_THRESHOLD)){
+		counter++;
+	}
 	else counter /= 2;
 	//printf("%i\r\n",Frequency);
-	if (counter == 10) {
+	if (counter == 4) {
 		//Disable Beacon Detection
 		HWREG(WTIMER0_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
 		//post a beacon detected event
@@ -583,7 +589,7 @@ bool getISRFlag(void) {
 static void Launcher_Encoder_Init(void)
 {
 	//enable clock to timer
-	HWREG(SYSCTL_RCGCWTIMER)|=SYSCTL_RCGCWTIMER_RB;
+	HWREG(SYSCTL_RCGCWTIMER)|=SYSCTL_RCGCWTIMER_R1;
 	//enable clock to port C
 	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R2;
 	//wait for clock to connect
@@ -603,7 +609,7 @@ static void Launcher_Encoder_Init(void)
 	//set up the alternate function for Pin C7
 	HWREG(GPIO_PORTC_BASE+GPIO_O_AFSEL)|=GPIO_PIN_7;
 	//set up C4 alternate function as WTIMER0
-	HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL)=(HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL)&0x0FFFFFFF)|(7<<(7*BITS_PER_NIBBLE);
+	HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL)=(HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL)&0x0FFFFFFF)|(7<<(7*BITS_PER_NIBBLE));
 	//digitally enable C7
 	HWREG(GPIO_PORTC_BASE+GPIO_O_DEN)|=GPIO_PIN_7;
 	//set C7 to input
@@ -627,7 +633,7 @@ void Launcher_Encoder_ISR(void)
 	//get interupt timer
 	uint32_t Launcher_Time = HWREG(WTIMER1_BASE+TIMER_O_TBR);
 	//calculate new RPM
-	Launcher_RPM = TICKS_PER_MINUTE/LAUNCHER_PULSE_PER_REV/(Launcher_Time-Last_Launcher_Time);
+	Launcher_RPM = TICKS_PER_S/LAUNCHER_PULSE_PER_REV*S_PER_MIN/(Launcher_Time-Last_Launcher_Time);
 	//update time of last interupt
 	Last_Launcher_Time=Launcher_Time;
 	//Ignore RPM = 0 case

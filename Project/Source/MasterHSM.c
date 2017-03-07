@@ -124,7 +124,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	{
 		// If CurrentState is Waiting2Start
 		case(Waiting2Start):
-		//if (SM_TEST) printf("Master: Waiting2Start\r\n");
+		// if (SM_TEST) printf("Master: Waiting2Start\r\n");
 		// Run DuringWaiting2Start and store the output in CurrentEvent
 			CurrentEvent = DuringWaiting2Start(CurrentEvent);
 //			printf("curr event: %i",CurrentEvent.EventType);
@@ -134,7 +134,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_LOC_COMPLETE
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
-					if (!NO_LOC){
+					if (~NO_LOC){
 					// Get response bytes from LOC
 					SB1_Byte = getSB1_Byte();
 					SB2_Byte = getSB2_Byte();
@@ -142,7 +142,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 					}
 					// Set GameState to getGameState
 					GameState = getGameState();
-					printf("GameState: %i",GameState);
+					// if (SM_TEST) printf("%i",GameState);
 					// If GameState is WAITING_FOR_START
 					if (GameState == WAITING_FOR_START)
 					{	
@@ -182,7 +182,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	
 		// If CurrentState is Constructing
 		case(Constructing):
-			if (SM_TEST) printf("Master: Constructing\r\n");
+			//if (SM_TEST) printf("Master: Constructing\r\n");
 			// Run DuringConstructing and store the output in CurrentEvent
 			CurrentEvent = DuringConstructing(CurrentEvent);
 			// If CurrentEvent is not an ES_NO_EVENT
@@ -295,7 +295,7 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		if (SM_TEST) printf("Master: Entering Waiting2Start\r\n");
+		//if (SM_TEST) printf("Master: Entering Waiting2Start\r\n");
 		// Set TeamColor
 		TeamColor = HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) & TEAM_COLOR_MASK >> TEAM_COLOR_SHIFT;
 		// Turn on respective LEDs
@@ -342,7 +342,7 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 	else
 	{
 		// Run ConstructingSM and store output in ReturnEvent
-		if (SM_TEST) printf("Master: Constructing: Running Constructing SM\r\n");
+		//if (SM_TEST) printf("Master: Constructing: Running Constructing SM\r\n");
 
 		ReturnEvent = RunConstructingSM(ThisEvent);
 	}

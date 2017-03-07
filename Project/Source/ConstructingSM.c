@@ -116,7 +116,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					// Get response bytes from LOC
-					if (!NO_LOC){
+					if (~NO_LOC){
 					// Set SB1_byte to getSB1_Byte
 					SetSB1_Byte(getSB1_Byte());
 					// Set SB2_byte to getSB2_Byte
@@ -140,7 +140,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 					// Set Event2Post Param to TargetStation
 					Event2Post.EventParam = TargetStation;
 					// Post Event2Post to Master
-					if (!NO_LOC) PostMasterSM(Event2Post);
+					if (~NO_LOC) PostMasterSM(Event2Post);
 					else if (SM_TEST) printf("Target station from constructing: %i",TargetStation);
 				}
 				// End ES_LOC_COMPLETE block
@@ -193,7 +193,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 
 		// If CurrentState is CheckIn
 		case(CheckIn):
-			if (SM_TEST) printf("Constructing: CheckIn\r\n");
+			//if (SM_TEST) printf("Constructing: CheckIn\r\n");
 			// Run DuringCheckIn and store the output in CurrentEvent
 			CurrentEvent = DuringCheckIn(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -272,7 +272,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 	// If CurrentState is AlignToTape
 		case (AlignToTape):
 		{
-			printf("ShootingSM: AlignToTape\r\n");
+			if (SM_TEST) printf("ConstructingSM: AlignToTape\r\n");
 			// Run DuringAlignToTape and store the output in CurrentEvent
 			CurrentEvent = DuringAlignToTape(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -292,7 +292,7 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 						// Set Event2Post param to RELOAD
 						Event2Post.EventParam = RELOAD;
 						// Post Event2Post to Master
-						if (!NO_LOC) PostMasterSM(Event2Post);
+						if (~NO_LOC) PostMasterSM(Event2Post);
 					}
 					// Else
 					else
@@ -546,10 +546,11 @@ static ES_Event DuringAlignToTape(ES_Event ThisEvent)
 		SetFlywheelDuty(0);
 		uint8_t TeamColor = getTeamColor();
 		if (TeamColor == GREEN) {
-			SetMotorController(ROTATE_CW);
-		} else {
 			SetMotorController(ROTATE_CCW);
+		} else {
+			SetMotorController(ROTATE_CW);
 		}
+		FindTape();
 		// direction based on team color, opposite of AlignToGoal
 	}// EndIf
 	if (ThisEvent.EventType == ES_EXIT) {

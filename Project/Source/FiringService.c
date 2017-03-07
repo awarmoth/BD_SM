@@ -109,7 +109,7 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 		// If CurrentState is WaitingFire
 		case WaitingFire:
 		{
-			printf("FiringService: WaitingFire\r\n");
+			if (SM_TEST) printf("FiringService: WaitingFire\r\n");
 			// If ThisEvent is ES_FIRE
 			if(ThisEvent.EventType == ES_FIRE)
 			{
@@ -126,7 +126,7 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 		// If CurrentState is SendingUp
 		case SendingUp:
 		{
-			printf("FiringService: SendingUp\r\n");
+			if (SM_TEST) printf("FiringService: SendingUp\r\n");
 			// If ThisEvent is ES_TIMEOUT
 			if((ThisEvent.EventType == ES_TIMEOUT)&& (ThisEvent.EventParam == LOAD_SERVO_TIMER))
 			{
@@ -141,7 +141,7 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 		// If CurrentState is Idling
 		case Idling:
 		{
-			printf("FiringService: Idling\r\n");
+			if (SM_TEST) printf("FiringService: Idling\r\n");
 			// If ThisEvent is ES_TIMEOUT
 			if((ThisEvent.EventType == ES_TIMEOUT) && (ThisEvent.EventParam == LOAD_SERVO_TIMER))
 			{
@@ -159,7 +159,7 @@ ES_Event RunFiringService(ES_Event ThisEvent)
 		// If CurrentState is SendingDown
 		case SendingDown:
 		{
-			printf("FiringService: SendingDown\r\n");
+			if (SM_TEST) printf("FiringService: SendingDown\r\n");
 			// If This is ES_TIMEOUT
 			if(ThisEvent.EventType == ES_TIMEOUT && (ThisEvent.EventParam == LOAD_SERVO_TIMER))
 			{

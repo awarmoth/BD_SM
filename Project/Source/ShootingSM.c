@@ -100,7 +100,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		// If CurrentState is AlignToGoal
     case (AlignToGoal):
 		{
-			printf("ShootingSM: AlignToGoal\r\n");
+			if (SM_TEST) printf("ShootingSM: AlignToGoal\r\n");
 			// Run DuringAlignToGoal and store the output in CurrentEvent
 			CurrentEvent = DuringAlignToGoal(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -131,7 +131,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		}
 	
 		case (WarmingUp):
-			printf("ShootingSM: WarmingUp\r\n");
+			if (SM_TEST) printf("ShootingSM: WarmingUp\r\n");
 			// Run DuringFiring and store the output in CurrentEvent
 			CurrentEvent = DuringWarmingUp(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -151,7 +151,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		// If CurrentState is Firing
     case (Firing):
         {
-					printf("ShootingSM: Firing\r\n");
+					if (SM_TEST) printf("ShootingSM: Firing\r\n");
 					// Run DuringFiring and store the output in CurrentEvent
 					CurrentEvent = DuringFiring(CurrentEvent);
 					// If CurrentEvent is not ES_NO_EVENT
@@ -197,7 +197,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					{
 						// Set ExitFlag
 						ExitShootingFlag = true;
-						printf("exitflag");
+						if (SM_TEST) printf("exitflag");
 					}
 					// EndIf
 				}// EndIf
@@ -216,7 +216,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		// If CurrentState is WaitForShotResult
 		case WaitForShotResult:
 		{
-			printf("ShootingSM: WaitForShotResult\r\n");
+			if (SM_TEST) printf("ShootingSM: WaitForShotResult\r\n");
 			// Run DuringWaitForShotResult and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForShotResult(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -255,7 +255,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 		// If CurrentState is WaitForScoreUpdate
 		case WaitForScoreUpdate:
 		{
-			printf("ShootingSM: WaitForScoreUpdate\r\n");
+			if (SM_TEST) printf("ShootingSM: WaitForScoreUpdate\r\n");
 			// Run DuringWaitForScoreUpdate and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForScoreUpdate(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -266,7 +266,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 				{
 					// Get response bytes from LOC
 					// SetSB1_Byte(getSB1_Byte())
-					if (!NO_LOC){
+					if (~NO_LOC){
 					SetSB1_Byte(getSB1_Byte());
 					// SetSB2_Byte(getSB2_Byte())
 					SetSB2_Byte(getSB2_Byte());
@@ -278,7 +278,7 @@ ES_Event RunShootingSM(ES_Event CurrentEvent)
 					
 	//****************** Initialize NewScore to getScore ****************//
 					uint8_t NewScore;
-					if (!NO_LOC){
+					if (~NO_LOC){
 						uint8_t Team = getTeamColor();
 						if (Team == GREEN){
 							NewScore = getScoreGreen();
@@ -353,13 +353,14 @@ static ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		HWREG(WTIMER5_BASE+TIMER_O_CTL) |= TIMER_CTL_TBEN;
+		printf("align to goal entry");
+		HWREG(WTIMER0_BASE+TIMER_O_CTL) |= TIMER_CTL_TBEN;
 		// Start rotating // direction based on team color
 		uint8_t TeamColor = getTeamColor();
 		if (TeamColor == GREEN) {
-			SetMotorController(ROTATE_CCW);
-		} else {
 			SetMotorController(ROTATE_CW);
+		} else {
+			SetMotorController(ROTATE_CCW);
 		}
 		Score = getScore();
 		//reset exit flag

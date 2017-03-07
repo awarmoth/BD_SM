@@ -206,7 +206,7 @@ __Vectors
         DCD     IntDefaultHandler           ; Timer 5 subtimer A
         DCD     IntDefaultHandler           ; Timer 5 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 0 subtimer A
-        DCD     IntDefaultHandler           ; Wide Timer 0 subtimer B
+        DCD     Beacon_Receiver_ISR           ; Wide Timer 0 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 1 subtimer A
         DCD     Launcher_Encoder_ISR        ; Wide Timer 1 subtimer B
         DCD     HallEffect_ISR				; Wide Timer 2 subtimer A
@@ -216,7 +216,7 @@ __Vectors
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 5 subtimer A
-        DCD     Beacon_Receiver_ISR           ; Wide Timer 5 subtimer B
+        DCD     IntDefaultHandler           ; Wide Timer 5 subtimer B
         DCD     IntDefaultHandler           ; FPU
         DCD     0                           ; Reserved
         DCD     0                           ; Reserved

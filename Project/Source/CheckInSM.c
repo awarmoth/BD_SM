@@ -53,7 +53,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 	switch (CurrentState) {
 		// If CurrentState is Reporting_1
 		case(Reporting_1):{
-			if(SM_TEST) printf("CheckIn: Reporting_1\r\n");
+			//if(SM_TEST) printf("CheckIn: Reporting_1\r\n");
 			// 	Run DuringReporting_1 and store the output in CurrentEvent
 			CurrentEvent = DuringReporting_1(CurrentEvent);
 				
@@ -84,7 +84,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 		
 		// If CurrentState is WaitForResponse_1
 		case(WaitForResponse_1):{
-			if(SM_TEST) printf("CheckIn: WaitingForResponse_1\r\n");
+			// if(SM_TEST) printf("CheckIn: WaitingForResponse_1\r\n");
 			// Run DuringWaitForResponse_1 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_1(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -94,7 +94,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					//printf("Got response\r\n");
-					if (!NO_LOC){
+					if (~NO_LOC){
 					// Get response bytes from LOC
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
@@ -102,6 +102,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Set ResponseReady to getResponseReady
 					ResponseReady = getResponseReady();
 					ReportStatus = getReportStatus();
+					//printf("%i\r\n",ResponseReady);
 					// If ResponseReady = not ready
 					if (ResponseReady == RESPONSE_NOT_READY)
 					{
@@ -121,7 +122,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					}
 					else
 					{
-						if (SM_TEST) printf("ReportStatus1 = %i\r\n",ReportStatus);
+						if (SM_TEST) printf("RS1 = %i\r\n",ReportStatus);
 						
 						// If ReportStatus = ACK
 						if ( ReportStatus == ACK )
@@ -163,7 +164,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 
 		// If CurrentState is Reporting_2
 		case ( Reporting_2): {
-			if(SM_TEST) printf("CheckIn: Reporting_2\r\n");
+			// if(SM_TEST) printf("CheckIn: Reporting_2\r\n");
 			// Run DuringReporting_2 and store the output in CurrentEvent
 			CurrentEvent = DuringReporting_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -192,7 +193,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 		
 		// If CurrentState is WaitForResponse_2
 		case (WaitForResponse_2):{
-			if(SM_TEST) printf("CheckIn: WaitForResponse_2\r\n");
+			//if(SM_TEST) printf("CheckIn: WaitForResponse_2\r\n");
 			// Run DuringWaitForResponse_2 and store the output in CurrentEvent
 			CurrentEvent = DuringWaitForResponse_2(CurrentEvent);
 			// If CurrentEvent is not ES_NO_EVENT
@@ -202,7 +203,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 				if (CurrentEvent.EventType == ES_LOC_COMPLETE)
 				{
 					// Get response bytes from LOC
-					if (!NO_LOC){
+					if (~NO_LOC){
 					SetRR_Byte(getRR_Byte());
 					SetRS_Byte(getRS_Byte());
 					}
@@ -229,7 +230,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Else
 					else
 					{
-						if (SM_TEST) printf("ReportStatus2 = %i\r\n",ReportStatus);
+						if (SM_TEST) printf("RS2 = %i\r\n",ReportStatus);
 						// If ReportStatus = ACK
 						if (ReportStatus == ACK)
 						{
@@ -315,8 +316,8 @@ static ES_Event DuringReporting_1(ES_Event ThisEvent)
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (NO_LOC) printf("Posting Command: Report to LOC\r\n");
-		else PostLOC_SM(Event2Post);		// Reinitialize variables
+		if (SM_TEST) printf("Report\r\n");
+		if (~NO_LOC) PostLOC_SM(Event2Post);		// Reinitialize variables
 		ResponseReady = RESPONSE_NOT_READY;
 	}
 	// EndIf
@@ -345,8 +346,9 @@ static ES_Event DuringWaitForResponse_1(ES_Event ThisEvent)
 		// Post ES_Command to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
-		if (NO_LOC) printf("Posting Command: Query to LOC\r\n");
-		else PostLOC_SM(Event2Post);	}
+		//if (SM_TEST) printf("Posting Command: Query to LOC\r\n");
+		if (~NO_LOC) PostLOC_SM(Event2Post);	
+	}
 	// EndIf
 
 	// Return ReturnEvent
@@ -374,7 +376,9 @@ static ES_Event DuringReporting_2(ES_Event ThisEvent)
 		Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
-		Byte2Write += getPeriodCode(Period);
+		uint8_t code = getPeriodCode(Period);
+		Byte2Write += code;
+		printf("c:%i\r\n",code);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
 		Event2Post.EventParam = Byte2Write;
@@ -479,7 +483,7 @@ uint8_t getPeriodCode(uint32_t Period) {
 //	Else Period is less than or equal to 528 and greater than 472
 	}else if(Period <= 528*TICKS_PER_USEC && Period > 472*TICKS_PER_USEC) {
 //		Return 0x0F
-		printf("yay I think we found the frequency\r\n");
+		if (SM_TEST) printf("yay I think we found the frequency\r\n");
 		return 0x0F;
 //	Endif
 	} else {

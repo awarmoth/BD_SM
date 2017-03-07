@@ -43,7 +43,7 @@
 // the name of the run function
 #define SERV_0_RUN RunMapKeys
 // How big should this services Queue be?
-#define SERV_0_QUEUE_SIZE 2
+#define SERV_0_QUEUE_SIZE 10
 
 /****************************************************************************/
 // The following sections are used to define the parameters for each of the
@@ -59,7 +59,7 @@
 // the name of the run function
 #define SERV_1_RUN RunLOC_SM
 // How big should this services Queue be?
-#define SERV_1_QUEUE_SIZE 3
+#define SERV_1_QUEUE_SIZE 10
 #endif
 
 /****************************************************************************/
@@ -72,7 +72,7 @@
 // the name of the run function
 #define SERV_2_RUN RunMasterSM
 // How big should this services Queue be?
-#define SERV_2_QUEUE_SIZE 3
+#define SERV_2_QUEUE_SIZE 10
 #endif
 
 /****************************************************************************/
@@ -85,7 +85,7 @@
 // the name of the run function
 #define SERV_3_RUN RunFiringService
 // How big should this services Queue be?
-#define SERV_3_QUEUE_SIZE 3
+#define SERV_3_QUEUE_SIZE 10
 #endif
 
 /****************************************************************************/
@@ -98,7 +98,7 @@
 // the name of the run function
 #define SERV_4_RUN RunReloadingService
 // How big should this services Queue be?
-#define SERV_4_QUEUE_SIZE 3
+#define SERV_4_QUEUE_SIZE 10
 #endif
 
 /****************************************************************************/
@@ -111,7 +111,7 @@
 // the name of the run function
 #define SERV_5_RUN RunTeamSwitchDebounceSM
 // How big should this services Queue be?
-#define SERV_5_QUEUE_SIZE 3
+#define SERV_5_QUEUE_SIZE 10
 #endif
 
 /****************************************************************************/
@@ -124,7 +124,7 @@
 // the name of the run function
 #define SERV_6_RUN RunBumpSwitchDebounceSM
 // How big should this services Queue be?
-#define SERV_6_QUEUE_SIZE 3
+#define SERV_6_QUEUE_SIZE 10
 #endif
 
 /****************************************************************************/
@@ -137,7 +137,7 @@
 // the name of the run function
 #define SERV_7_RUN RunTestHarnessService7
 // How big should this services Queue be?
-#define SERV_7_QUEUE_SIZE 3
+#define SERV_7_QUEUE_SIZE 10
 #endif
 
 /****************************************************************************/

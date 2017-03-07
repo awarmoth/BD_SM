@@ -28,7 +28,6 @@
 #include "ByteTransferSM.h"
 #include "ConstructingSM.h"
 
-
 /*----------------------------- Module Defines ----------------------------*/
 
 /*---------------------------- Module Functions ---------------------------*/
@@ -292,6 +291,7 @@ ES_Event RunMapKeys( ES_Event ThisEvent )
 							printf("ES_TIMEOUT: LOAD_SERVO_TIMER\r\n");
 							PostMasterSM(ThisEvent);
 							break;
+						
         }
 
     }

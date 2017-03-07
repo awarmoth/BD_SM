@@ -94,7 +94,7 @@ void InitSPI_Comm(void)
 
 	//Wait for GPIO Port A to be ready
 	while((HWREG(SYSCTL_RCGCGPIO) & SYSCTL_RCGCGPIO_R0) != SYSCTL_RCGCGPIO_R0){};
-	printf("\r\nIs anything happening");
+	//printf("\r\nIs anything happening");
 	//Program PA2, PA3, PA4, PA5 to use the alternate function
 	HWREG(GPIO_PORTA_BASE+GPIO_O_AFSEL) |= (BIT2HI | BIT3HI | BIT4HI | BIT5HI);
 
@@ -117,10 +117,10 @@ void InitSPI_Comm(void)
 
 	//Program the pull-up on the clock line (Set GPIOPUR HI for PA2))
 	HWREG(GPIO_PORTA_BASE+GPIO_O_PUR) |= BIT2HI;
-	printf("\r\nSSI0 is starting");
+	//printf("\r\nSSI0 is starting");
 	//Wait for the SSI0 to be ready
 	while((HWREG(SYSCTL_PRSSI) & SYSCTL_PRSSI_R0) != SYSCTL_PRSSI_R0);
-	printf("\r\nSSI0 is ready");
+	//printf("\r\nSSI0 is ready");
 	
 	//Make sure that the SSI is disabled before programming mode bits
 	HWREG(SSI0_BASE+SSI_O_CR1) &= ~(SSI_CR1_SSE);
