@@ -81,6 +81,8 @@ __heap_limit
         EXTERN  SysTickIntHandler
         EXTERN  ShortTimerAHandler
         EXTERN  ShortTimerBHandler
+		EXTERN	Launcher_Controller_ISR
+		EXTERN  Launcher_Encoder_ISR
 ;        EXTERN  UARTStdioIntHandler
 
 ;******************************************************************************
@@ -203,11 +205,11 @@ __Vectors
         DCD     IntDefaultHandler           ; Wide Timer 0 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 0 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 1 subtimer A
-        DCD     IntDefaultHandler           ; Wide Timer 1 subtimer B
+        DCD     Launcher_Encoder_ISR        ; Wide Timer 1 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 2 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 2 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 3 subtimer A
-        DCD     IntDefaultHandler           ; Wide Timer 3 subtimer B
+        DCD     Launcher_Controller_ISR     ; Wide Timer 3 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 5 subtimer A
