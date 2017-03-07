@@ -87,6 +87,7 @@ __heap_limit
 		EXTERN  Beacon_Receiver_ISR
 		EXTERN	Launcher_Encoder_ISR
 		EXTERN	Launcher_Controller_ISR
+		EXTERN  LED_Blink_ISR
 
 ;******************************************************************************
 ;
@@ -213,7 +214,7 @@ __Vectors
         DCD     Motor_Controller_ISR        ; Wide Timer 2 subtimer B
         DCD     HallEffectOneShotTimer_ISR  ; Wide Timer 3 subtimer A
         DCD     Launcher_Controller_ISR     ; Wide Timer 3 subtimer B
-        DCD     IntDefaultHandler           ; Wide Timer 4 subtimer A
+        DCD     LED_Blink_ISR	            ; Wide Timer 4 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 4 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 5 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 5 subtimer B
