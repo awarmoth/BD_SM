@@ -1,0 +1,91 @@
+module level variables: MyPriority, CurrentState, PulseCounter
+ReloadState_t: Waiting, Emitting_High, Emitting_Low, Wait4Delivery
+Module level functions: Enable_IR_Emitter, Disable_IR_Emitter
+Module defines: PULSE_HIGH_TIME, PULSE_LOW_TIME, NUM_PULSES, DELIVERY_TIME
+
+bool InitReloadingService(uint8_t Priority)
+{
+	local variable ThisEvent
+	Initialize MyPriority to Priority
+	Initialize CurrentState to Waiting
+	Disable the IR Emitter
+	
+	Return true
+}
+End InitReloadingService
+
+
+
+bool PostReloadingService(ES_Event ThisEvent)
+{
+	Return ThisEvent posted successfully to the service associated with MyPriority
+}
+End PostReloadingService
+
+
+
+
+ES_Event RunReloadingService(ES_Event ThisEvent)
+{
+	local variable NextState
+	local variable ReturnEvent
+	Initialize ReturnEvent to ES_NO_EVENT
+	
+	Initialize NextState to CurrentState
+	
+	If CurrentState is Waiting
+		If ThisEvent is ES_RELOAD_START
+			Enable the IR Emitter
+			Set NextState to Emitting_High
+			Set PulseCounter to zero
+			Start IR_PULSE_TIMER for PULSE_HIGH_TIME
+		EndIf
+	End Waiting block
+	
+	If CurrentState is Emitting_High
+		If ThisEvent is ES_TIMEOUT
+			Disable the IR Emitter
+			Set NextState to Emitting_Low
+			Increment PulseCounter
+			Start IR_PULSE_TIMER for PULSE_LOW_TIME
+		EndIf
+	End Emitting_High block
+	
+	If CurrentState is Emitting_Low
+		If ThisEvent is ES_TIMEOUT and PulseCounter is less than NUM_PULSES
+			Enable the IR Emitter
+			Set NextState to Emitting_High
+			Start IR_PULSE_TIMER for PULSE_HIGH_TIME
+		Else If ThisEvent is ES_TIMEOUT and PulseCounter is equal to NUM_PULSES
+			Set NextState to Wait4Delivery
+			Clear PulseCounter
+			Start IR_PULSE_TIMER for DELIVERY_TIME
+		EndIf
+	End Emitting_Low block
+	
+	If CurrentState is Wait4Delivery
+		If ThisEvent is ES_TIMEOUT
+			Post ES_RELOAD_COMPLETE to MasterHSM
+			Set NextState to Waiting
+		EndIf
+	End Wait4Delivery block
+	
+	
+	Set CurrentState to NextState
+	Return ReturnEvent
+}
+End RunReloadingService
+
+
+
+static void Enable_IR_Emitter(void)
+{
+	Set the IR Emitter line HIGH
+}
+
+
+
+static void Disable_IR_Emitter(void)
+{
+	Set the IR Emitter line LOW
+}

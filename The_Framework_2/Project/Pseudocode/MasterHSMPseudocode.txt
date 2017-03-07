@@ -1,0 +1,189 @@
+module level variables: MyPriority, CurrentState, TeamColor, GameState, SB1_byte, SB2_byte, SB3_byte, RR_byte, RS_byte
+MasterState_t: Waiting2Start, Constructing, Free4All, GameComplete
+Module level functions: DuringWaiting2Start, DuringConstructing, DuringFree4All, DuringGameComplete
+
+bool InitMasterSM(uint8_t Priority)
+{
+	local variable ThisEvent
+	Initialize MyPriority to Priority
+	Initialize ThisEvent to ES_NO_EVENT
+	Initialize the SPI module
+	
+	Call StartMasterSM with ThisEvent as the passed parameter
+	
+	Return true
+}
+End InitMasterSM
+
+
+bool PostMasterSM(ES_Event ThisEvent)
+{
+	Return ThisEvent posted successfully to the service associated with MyPriority
+}
+End PostMasterSM
+
+
+void StartMasterSM(ES_Event CurrentEvent)
+{
+	Set CurrentState to Waiting2Start
+	Call RunMasterSM with CurrentEvent as the passed parameter to initialize lower level SMs
+}
+End StartMasterSM
+
+
+ES_Event RunMasterSM(ES_Event CurrentEvent)
+{
+	local variable MakeTransition
+	local variable NextState
+	local variable ReturnEvent
+	local variable EntryEvent
+	
+	Initialize MakeTransition to false
+	Initialize NextState to CurrentState
+	Initialize EntryEvent to ES_ENTRY
+	Initialize ReturnEvent to ES_NO_EVENT
+	
+	If CurrentState is Waiting2Start
+		
+		Run DuringWaiting2Start and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_LOC_COMPLETE
+				Get response bytes from LOC
+				SetSB1_Byte(getSB1_Byte())
+				SetSB2_Byte(getSB2_Byte())
+				SetSB3_Byte(getSB3_Byte())
+				Set GameState to getGameState
+				If GameState is WAITING_FOR_START
+					Set MakeTransition to true
+				Else
+					Set MakeTransition to true
+					Set NextState to Constructing
+				EndIf
+			Else If Event is ES_TEAM_SWITCH // from event checker
+				Set MakeTransition to true
+			EndIf
+		EndIf
+	
+	End Waiting2Start block
+	
+	If CurrentState is Constructing
+	
+		Run DuringConstructing and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_NORMAL_GAME_COMPLETE
+				Post ES_START_FREE_4_ALL to Master
+				Set MakeTransition to true
+				Set NextState to Free4All
+			Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
+				Post ES_START_FREE_4_ALL to Master
+				Set MakeTransition to true
+				Set NextState to Free4All
+			EndIf
+		EndIf
+		
+	End Free4All block
+	
+		If CurrentState is Free4All
+	
+		Run DuringConstructing and store the output in CurrentEvent
+		
+		If CurrentEvent is not an ES_NO_EVENT
+			If CurrentEvent is ES_FREE_4_ALL_COMPLETE
+				Set MakeTransition to true
+				Set NextState to GameComplete
+			Else If CurrentEvent is ES_TIMEOUT from FREE_4_ALL_TIMER
+				Set MakeTransition to true
+				Set NextState to GameComplete
+			EndIf
+		EndIf
+		
+	End Free4All block
+	
+	If MakeTransition is true
+	
+		Set CurrentEvent to ES_EXIT
+		Run MasterSM with CurrentEvent to allow lower level SMs to exit
+		
+		Set CurrentState to NextState
+		RunMasterSM with EntryEvent to allow lower level SMs to enter
+		
+	EndIf
+	
+	Return ReturnEvent
+}
+End RunMasterSM
+
+
+static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	local event Event2Post
+	local uint8_t Byte2Write
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Set TeamColor to getTeamColor
+		Turn on respective LEDs
+		Set Event2Post type to ES_COMMAND
+		Set Byte2Write to status byte
+		Post Event2Post to LOC_HSM
+	
+	Return ReturnEvent
+}
+End DuringWaiting2Start
+
+
+
+static ES_Event DuringConstructing(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Start ConstructingSM
+		Start GAME_TIMER
+	EndIf
+	
+	Else
+		Run ConstructingSM and store output in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
+}
+
+static ES_Event DuringFree4All(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Start ConstructingSM
+		Start FREE_4_ALL_TIMER
+	EndIf
+	
+	Else
+		Run Free4AllSM and store output in ReturnEvent
+	EndIf
+	
+	Return ReturnEvent
+}
+
+static ES_Event DuringGameComplete(ES_Event ThisEvent)
+{
+	local event ReturnEvent
+	
+	Initialize ReturnEvent to ThisEvent
+	
+	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
+		Turn off hardware/peripherals
+		Stop functions/idle
+	EndIf
+	
+	Return ReturnEvent
+}
+

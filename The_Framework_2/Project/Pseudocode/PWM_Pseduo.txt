@@ -1,0 +1,127 @@
+// Readability Defines
+	// Standard Configuration for timers
+	// Inverted Configurations for timers
+	// System clock frequency
+	// Clock scaled to avoid overflow
+	// constant for mapping PWM to pins
+	// Frequency for PWM signal (1/Frequency)
+	// Max number of ticks for PWM
+	// Forward/backward directions for motors
+// Module Level Variables
+	// flags for tracking whether returning to normal PWM from 0 or 100 duty cycle
+	// ints for tracking motor direction
+
+
+///////////////////////////////////////
+// PWM Initialization Function
+// Initializes the PWM module variables and hardware
+// Takes:
+// 			void
+// Returns:
+// 			void
+///////////////////////////////////////
+
+
+void InitPWM(void) {
+	// Enable the clock to the PWM Module
+	// Enable the clock to Port B
+	// Select the system clock/32
+	// Make sure that the PWM module clock has gotten going
+	// Disable the PWM generator while initializing
+	// Set generator to go up to 1 at rising A, 0 on falling A
+	// Set generator to go to 1 at rising B, 0 on falling B
+	// Set the load to ½ the desired period of 5 ms since going up and down
+	// Set the initial duty cycle on A to 50%
+	// Set the initial duty cycle on B to 50%
+	// Enable the PWM outputs
+	// Select the alternate function for PB6 and PB7
+	// Choose to map PWM to those pins
+	// Enable pins 6 and 7 on Port B for digital outputs
+	// Set the up/down count mode
+	// Enable the PWM generator
+	// Make generator updates locally synchronized to zero count
+	// Initialize Motor Directions
+}
+
+///////////////////////////////////////
+// Duty Setting Function for Motor A
+// Initializes the PWM module variables and hardware
+// Takes:
+// 			uint8_t duty: desired duty cycle
+// Returns:
+// 			void
+///////////////////////////////////////
+
+
+void SetDutyA(uint8_t duty) {
+	// New Value for comparator to set duty cycle
+	// Invert duty based on direction for motor A
+	// Set new comparator value based on duty cycle
+	// If duty is 0 or 100
+		// set restore flag to true
+		// To program 100% DC, simply set the action on Zero to set the output to one
+		// To program 0% DC, simply set the action on Zero to set the output to zero
+	// Else (not 0 or 100)
+		// if returning from 0 or 100
+			// restore normal operation
+		// write new comparator value to register
+
+///////////////////////////////////////
+// Duty Setting Function for Motor B
+// Initializes the PWM module variables and hardware
+// Takes:
+// 			uint8_t duty: desired duty cycle
+// Returns:
+// 			void
+///////////////////////////////////////
+
+void SetDutyB(uint8_t duty) {
+	// New Value for comparator to set duty cycle
+	// Invert duty based on direction for motor B
+	// Set new comparator value based on duty cycle
+	// If duty is 0 or 100
+		// set restore flag to true
+		// To program 100% DC, simply set the action on Zero to set the output to one
+		// To program 0% DC, simply set the action on Zero to set the output to zero
+	// Else (not 0 or 100)
+		// if returning from 0 or 100
+			// restore normal operation
+		// write new comparator value to register
+}
+
+///////////////////////////////////////
+// Direction Setting Function for Motor A
+// Initializes the PWM module variables and hardware
+// Takes:
+// 			uint8_t dir: desired direction
+// Returns:
+// 			void
+///////////////////////////////////////
+
+void SetDirectionA(uint8_t dir) {
+	// if direction is reverse
+		// set PWM A to inverted
+		// set hi/lo pin
+	// else
+		// set PWM A to normal
+		// clear hi/lo pin
+}
+
+///////////////////////////////////////
+// Direction Setting Function for Motor B
+// Initializes the PWM module variables and hardware
+// Takes:
+// 			uint8_t dir: desired direction
+// Returns:
+// 			void
+///////////////////////////////////////
+
+void SetDirectionB(uint8_t dir) {
+	// if direction is reverse
+		// set PWM B to inverted
+		// set hi/lo pin
+	// else
+		// set PWM B to normal
+		// clear hi/lo pin
+}
+
