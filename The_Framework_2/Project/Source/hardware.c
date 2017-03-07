@@ -49,6 +49,7 @@ static void Init_Launcher_Controller(void);
 //static void LoadingMotorInit(void);
 static void InitLEDs(void);
 static void InitIR_Emitter(void);
+static void Init_LED(void);
 
 static uint8_t Controller = CONTROLLER_OFF;
 static uint8_t LastController = POSITION_CONTROLLER;
@@ -75,8 +76,8 @@ void InitializePins(void) {
 	OneShotTimerInit();
 	//Launcher_Encoder_Init();
 	//Init_Launcher_Controller();
-	//InitLEDs();
 	//InitIR_Emitter();
+	Init_LED();
 }
 
 static void Init_Controller(void)
@@ -567,14 +568,6 @@ void Beacon_Receiver_ISR(void)
 	LastTime = Time;
 }
 
-void InitLEDs(void) {
-	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R5;
-	while((HWREG(SYSCTL_PRGPIO)& SYSCTL_PRGPIO_R5)!=SYSCTL_PRGPIO_R5){}
-	HWREG(GPIO_PORTF_BASE+GPIO_O_DEN)|=(GPIO_PIN_2 | GPIO_PIN_3);
-	HWREG(GPIO_PORTF_BASE+GPIO_O_DIR)|=(GPIO_PIN_2 | GPIO_PIN_3);
-	HWREG(GPIO_PORTF_BASE+(GPIO_O_DATA+ALL_BITS)) &= ~(BIT2HI | BIT3HI);
-}
-
 void InitIR_Emitter(void) {
 	HWREG(SYSCTL_RCGCGPIO)|=SYSCTL_RCGCGPIO_R5;
 	while((HWREG(SYSCTL_PRGPIO)& SYSCTL_PRGPIO_R5)!=SYSCTL_PRGPIO_R5){}
@@ -687,4 +680,80 @@ void Launcher_Controller_ISR (void)
 void Set_Launcher_Command(uint16_t Requested_Command)
 {
 	Launcher_Command = Requested_Command;
+}
+
+static void Init_LED(void)
+{
+	//enable clock to the timer (WTIMER3B)
+	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R4;
+	//enable clock to port f
+	HWREG(SYSCTL_RCGCGPIO) |= SYSCTL_RCGCGPIO_R5;
+	while ((HWREG(SYSCTL_PRWTIMER)&SYSCTL_PRWTIMER_R4)!=SYSCTL_PRWTIMER_R4) {}
+	//disable the timer
+	HWREG(WTIMER4_BASE+TIMER_O_CTL)&=~(TIMER_CTL_TAEN);
+	//set 32 bit wide mode
+	HWREG(WTIMER4_BASE+TIMER_O_CFG)=TIMER_CFG_16_BIT;
+	//set up periodic mode
+	HWREG(WTIMER4_BASE+TIMER_O_TAMR)=(HWREG(WTIMER34_BASE+TIMER_O_TAMR)&~TIMER_TAMR_TAMR_M)|TIMER_TAMR_TAMR_PERIOD;
+	//set timeout to 500 ms
+	HWREG(WTIMER4_BASE+TIMER_O_TAILR)=(uint32_t)LED_BLINK_TIME_US*TICKS_PER_US;
+	//enable local interupt
+	HWREG(WTIMER4_BASE+TIMER_O_IMR)|=(TIMER_IMR_TATOIM);
+	//digitally enable the LED lines
+	HWREG(GPIO_PORTF_BASE+GPIO_O_DEN) |= (GPIO_PIN_2|GPIO_PIN_3);
+	//set up the LED Pins as output
+	HWREG(GPIO_PORTF_BASE+GPIO_O_DIR) |= (GPIO_PIN_2|GPIO_PIN_3);
+	//set the LED pins low
+	HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) &= ~(GPIO_PIN_2|GPIO_PIN_3);
+	//enable NVIC interupt
+	HWREG(NVIC_EN4)|=(BIT6HI);
+	//globally enable interrupts
+	__enable_irq();
+	
+}
+
+void SetLED(uint8_t Mode, uint8_t LED)
+{
+	//set active led to LED
+	ActiveLED = LED;
+	//if Mode is solid
+	if (Mode == LED_SOLID_MODE)
+	{
+		//turn off timer
+		HWREG(WTIMER4_BASE+TIMER_O_CTL) &= ~(TIMER_CTL_TAEN);
+		//clear LEDs
+		HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) &= ~(LED_MASK);
+		//write active LED
+		HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) |= ActiveLED;
+	}
+	//else if mode is blink
+	else if (Mode == LED_BLINK_MODE)
+	{
+		//clear LEDS
+		HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) &= ~(LED_MASK);
+		//clear blink state
+		BlinkState = false;
+		//activate timer
+		HWREG(WTIMER4_BASE+TIMER_O_CTL)|=(TIMER_CTL_TAEN|TIMER_CTL_TASTALL);
+	}
+}
+
+void LED_Blink_ISR(void)
+{
+	//clear the source of the interrupt
+	HWREG(WTIMER4_BASE+TIMER_O_ICR)=TIMER_ICR_CAECINT;
+	//if last blink state was hi
+	if (BlinkState == true)
+	{
+		//write lo
+		HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) &= ~ActiveLED;
+	}
+	//else if last blink state was low
+	else if (BlinkState == false)
+	{
+		//write hi
+		HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) |= ActiveLED;
+	}
+	//toggle blink state
+	BlinkState = ~BlinkState;
 }

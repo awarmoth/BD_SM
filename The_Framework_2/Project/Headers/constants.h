@@ -176,3 +176,11 @@
 #define TEAM_COLOR_MASK (BIT5HI)
 #define TEAM_COLOR_SHIFT 5
 
+#define LED_BLINK_TIME_US 5000000
+#define LED_OFF 0x00
+#define RED_LED 0x02
+#define GREEN_LED 0x04
+#define ORANGE_LED 0x06
+#define LED_MASK 0x06
+#define LED_SOLID_MODE 0
+#define LED_BLINK_MODE 1
