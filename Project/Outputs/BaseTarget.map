@@ -371,18 +371,18 @@ Section Cross References
     es_framework_1.o(i.ES_Run) refers to es_lookuptables_1.o(.constdata) for BitNum2SetMask
     es_framework_1.o(.constdata) refers to mapkeys.o(i.InitMapKeys) for InitMapKeys
     es_framework_1.o(.constdata) refers to mapkeys.o(i.RunMapKeys) for RunMapKeys
-    es_framework_1.o(.constdata) refers to loc_hsm.o(i.InitLOC_SM) for InitLOC_SM
-    es_framework_1.o(.constdata) refers to loc_hsm.o(i.RunLOC_SM) for RunLOC_SM
-    es_framework_1.o(.constdata) refers to masterhsm.o(i.InitMasterSM) for InitMasterSM
-    es_framework_1.o(.constdata) refers to masterhsm.o(i.RunMasterSM) for RunMasterSM
-    es_framework_1.o(.constdata) refers to firingservice.o(i.InitFiringService) for InitFiringService
-    es_framework_1.o(.constdata) refers to firingservice.o(i.RunFiringService) for RunFiringService
-    es_framework_1.o(.constdata) refers to reloadingservice.o(i.InitReloadingService) for InitReloadingService
-    es_framework_1.o(.constdata) refers to reloadingservice.o(i.RunReloadingService) for RunReloadingService
     es_framework_1.o(.constdata) refers to teamswitchdebounce.o(i.InitializeTeamSwitchDebounce) for InitializeTeamSwitchDebounce
     es_framework_1.o(.constdata) refers to teamswitchdebounce.o(i.RunTeamSwitchDebounceSM) for RunTeamSwitchDebounceSM
     es_framework_1.o(.constdata) refers to bumpswitchdebounce.o(i.InitializeBumpSwitchDebounce) for InitializeBumpSwitchDebounce
     es_framework_1.o(.constdata) refers to bumpswitchdebounce.o(i.RunBumpSwitchDebounceSM) for RunBumpSwitchDebounceSM
+    es_framework_1.o(.constdata) refers to reloadingservice.o(i.InitReloadingService) for InitReloadingService
+    es_framework_1.o(.constdata) refers to reloadingservice.o(i.RunReloadingService) for RunReloadingService
+    es_framework_1.o(.constdata) refers to firingservice.o(i.InitFiringService) for InitFiringService
+    es_framework_1.o(.constdata) refers to firingservice.o(i.RunFiringService) for RunFiringService
+    es_framework_1.o(.constdata) refers to masterhsm.o(i.InitMasterSM) for InitMasterSM
+    es_framework_1.o(.constdata) refers to masterhsm.o(i.RunMasterSM) for RunMasterSM
+    es_framework_1.o(.constdata) refers to loc_hsm.o(i.InitLOC_SM) for InitLOC_SM
+    es_framework_1.o(.constdata) refers to loc_hsm.o(i.RunLOC_SM) for RunLOC_SM
     es_framework_1.o(.constdata) refers to es_framework_1.o(.bss) for Queue0
     es_framework_1.o(.constdata) refers to es_framework_1.o(.bss) for Queue1
     es_framework_1.o(.constdata) refers to es_framework_1.o(.bss) for Queue2
