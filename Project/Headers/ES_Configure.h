@@ -53,23 +53,24 @@
 // These are the definitions for Service 1
 #if NUM_SERVICES > 1
 // the header file with the public function prototypes
-#define SERV_1_HEADER "TeamSwitchDebounce.h"
+#define SERV_1_HEADER "LOC_HSM.h"
 // the name of the Init function
-#define SERV_1_INIT InitializeTeamSwitchDebounce
+#define SERV_1_INIT InitLOC_SM
 // the name of the run function
-#define SERV_1_RUN RunTeamSwitchDebounceSM
+#define SERV_1_RUN RunLOC_SM
 // How big should this services Queue be?
 #define SERV_1_QUEUE_SIZE 10
 #endif
 
+/****************************************************************************/
 // These are the definitions for Service 2
 #if NUM_SERVICES > 2
 // the header file with the public function prototypes
-#define SERV_2_HEADER "BumpSwitchDebounce.h"
+#define SERV_2_HEADER "MasterHSM.h"
 // the name of the Init function
-#define SERV_2_INIT InitializeBumpSwitchDebounce
+#define SERV_2_INIT InitMasterSM
 // the name of the run function
-#define SERV_2_RUN RunBumpSwitchDebounceSM
+#define SERV_2_RUN RunMasterSM
 // How big should this services Queue be?
 #define SERV_2_QUEUE_SIZE 10
 #endif
@@ -78,35 +79,37 @@
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public function prototypes
-#define SERV_3_HEADER "ReloadingService.h"
+#define SERV_3_HEADER "FiringService.h"
 // the name of the Init function
-#define SERV_3_INIT InitReloadingService
+#define SERV_3_INIT InitFiringService
 // the name of the run function
-#define SERV_3_RUN RunReloadingService
+#define SERV_3_RUN RunFiringService
 // How big should this services Queue be?
 #define SERV_3_QUEUE_SIZE 10
 #endif
 
+/****************************************************************************/
 // These are the definitions for Service 4
 #if NUM_SERVICES > 4
 // the header file with the public function prototypes
-#define SERV_4_HEADER "FiringService.h"
+#define SERV_4_HEADER "ReloadingService.h"
 // the name of the Init function
-#define SERV_4_INIT InitFiringService
+#define SERV_4_INIT InitReloadingService
 // the name of the run function
-#define SERV_4_RUN RunFiringService
+#define SERV_4_RUN RunReloadingService
 // How big should this services Queue be?
 #define SERV_4_QUEUE_SIZE 10
 #endif
 
+/****************************************************************************/
 // These are the definitions for Service 5
 #if NUM_SERVICES > 5
 // the header file with the public function prototypes
-#define SERV_5_HEADER "MasterHSM.h"
+#define SERV_5_HEADER "TeamSwitchDebounce.h"
 // the name of the Init function
-#define SERV_5_INIT InitMasterSM
+#define SERV_5_INIT InitializeTeamSwitchDebounce
 // the name of the run function
-#define SERV_5_RUN RunMasterSM
+#define SERV_5_RUN RunTeamSwitchDebounceSM
 // How big should this services Queue be?
 #define SERV_5_QUEUE_SIZE 10
 #endif
@@ -115,11 +118,11 @@
 // These are the definitions for Service 6
 #if NUM_SERVICES > 6
 // the header file with the public function prototypes
-#define SERV_6_HEADER "LOC_HSM.h"
+#define SERV_6_HEADER "BumpSwitchDebounce.h"
 // the name of the Init function
-#define SERV_6_INIT InitLOC_SM
+#define SERV_6_INIT InitializeBumpSwitchDebounce
 // the name of the run function
-#define SERV_6_RUN RunLOC_SM
+#define SERV_6_RUN RunBumpSwitchDebounceSM
 // How big should this services Queue be?
 #define SERV_6_QUEUE_SIZE 10
 #endif

@@ -7,12 +7,12 @@
 .\outputs\eventcheckers.o: .\Headers\ES_PostList.h
 .\outputs\eventcheckers.o: .\Headers\ES_ServiceHeaders.h
 .\outputs\eventcheckers.o: .\Headers\MapKeys.h
+.\outputs\eventcheckers.o: .\Headers\LOC_HSM.h
+.\outputs\eventcheckers.o: .\Headers\MasterHSM.h
+.\outputs\eventcheckers.o: .\Headers\FiringService.h
+.\outputs\eventcheckers.o: .\Headers\ReloadingService.h
 .\outputs\eventcheckers.o: .\Headers\TeamSwitchDebounce.h
 .\outputs\eventcheckers.o: .\Headers\BumpSwitchDebounce.h
-.\outputs\eventcheckers.o: .\Headers\ReloadingService.h
-.\outputs\eventcheckers.o: .\Headers\FiringService.h
-.\outputs\eventcheckers.o: .\Headers\MasterHSM.h
-.\outputs\eventcheckers.o: .\Headers\LOC_HSM.h
 .\outputs\eventcheckers.o: .\Headers\ES_Port.h
 .\outputs\eventcheckers.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\outputs\eventcheckers.o: .\Headers\termio.h

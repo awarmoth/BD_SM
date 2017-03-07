@@ -3,7 +3,11 @@
 <title>Static Call Graph - [.\Outputs\BaseTarget.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Outputs\BaseTarget.axf</H1><HR>
+<<<<<<< HEAD
 <BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Tue Mar 07 03:53:58 2017
+=======
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Tue Mar 07 01:44:59 2017
+>>>>>>> parent of 1b9048f... reorder service priority in ES_Configure.h
 <BR><P>
 <H3>Maximum Stack Usage =        296 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -22,9 +26,9 @@ Functions with no stack information
 <P>
 <H3>
 Mutually Recursive functions
-</H3> <LI><a href="#[21]">RunLOC_SM</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[21]">RunLOC_SM</a><BR>
+</H3> <LI><a href="#[17]">RunLOC_SM</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[17]">RunLOC_SM</a><BR>
  <LI><a href="#[88]">RunByteTransferSM</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[88]">RunByteTransferSM</a><BR>
- <LI><a href="#[1f]">RunMasterSM</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[1f]">RunMasterSM</a><BR>
+ <LI><a href="#[19]">RunMasterSM</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[19]">RunMasterSM</a><BR>
  <LI><a href="#[a2]">RunShootingSM</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[a2]">RunShootingSM</a><BR>
  <LI><a href="#[9d]">RunDrivingAlongTapeSM</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[9d]">RunDrivingAlongTapeSM</a><BR>
  <LI><a href="#[5c]">RunConstructingSM</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[5c]">RunConstructingSM</a><BR>
@@ -48,13 +52,13 @@ Function Pointers
  <LI><a href="#[4]">FaultISR</a> from startup_rvmdk.o(RESET) referenced from startup_rvmdk.o(RESET)
  <LI><a href="#[c]">HallEffectOneShotTimer_ISR</a> from constructingsm.o(i.HallEffectOneShotTimer_ISR) referenced from startup_rvmdk.o(RESET)
  <LI><a href="#[a]">HallEffect_ISR</a> from constructingsm.o(i.HallEffect_ISR) referenced from startup_rvmdk.o(RESET)
- <LI><a href="#[1c]">InitFiringService</a> from firingservice.o(i.InitFiringService) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[20]">InitLOC_SM</a> from loc_hsm.o(i.InitLOC_SM) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[1a]">InitFiringService</a> from firingservice.o(i.InitFiringService) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[16]">InitLOC_SM</a> from loc_hsm.o(i.InitLOC_SM) referenced from es_framework_1.o(.constdata)
  <LI><a href="#[14]">InitMapKeys</a> from mapkeys.o(i.InitMapKeys) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[1e]">InitMasterSM</a> from masterhsm.o(i.InitMasterSM) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[1a]">InitReloadingService</a> from reloadingservice.o(i.InitReloadingService) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[18]">InitializeBumpSwitchDebounce</a> from bumpswitchdebounce.o(i.InitializeBumpSwitchDebounce) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[16]">InitializeTeamSwitchDebounce</a> from teamswitchdebounce.o(i.InitializeTeamSwitchDebounce) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[18]">InitMasterSM</a> from masterhsm.o(i.InitMasterSM) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[1c]">InitReloadingService</a> from reloadingservice.o(i.InitReloadingService) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[20]">InitializeBumpSwitchDebounce</a> from bumpswitchdebounce.o(i.InitializeBumpSwitchDebounce) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[1e]">InitializeTeamSwitchDebounce</a> from teamswitchdebounce.o(i.InitializeTeamSwitchDebounce) referenced from es_framework_1.o(.constdata)
  <LI><a href="#[5]">IntDefaultHandler</a> from startup_rvmdk.o(RESET) referenced 106 times from startup_rvmdk.o(RESET)
  <LI><a href="#[d]">Launcher_Controller_ISR</a> from hardware.o(i.Launcher_Controller_ISR) referenced from startup_rvmdk.o(RESET)
  <LI><a href="#[9]">Launcher_Encoder_ISR</a> from hardware.o(i.Launcher_Encoder_ISR) referenced from startup_rvmdk.o(RESET)
@@ -67,13 +71,13 @@ Function Pointers
  <LI><a href="#[25]">PostReloadingService</a> from reloadingservice.o(i.PostReloadingService) referenced from es_timers_1.o(.constdata)
  <LI><a href="#[27]">PostTeamSwitchDebounce</a> from teamswitchdebounce.o(i.PostTeamSwitchDebounce) referenced from es_timers_1.o(.constdata)
  <LI><a href="#[28]">Reset_Handler</a> from startup_rvmdk.o(RESET) referenced from startup_rvmdk.o(RESET)
- <LI><a href="#[19]">RunBumpSwitchDebounceSM</a> from bumpswitchdebounce.o(i.RunBumpSwitchDebounceSM) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[1d]">RunFiringService</a> from firingservice.o(i.RunFiringService) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[21]">RunLOC_SM</a> from loc_hsm.o(i.RunLOC_SM) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[21]">RunBumpSwitchDebounceSM</a> from bumpswitchdebounce.o(i.RunBumpSwitchDebounceSM) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[1b]">RunFiringService</a> from firingservice.o(i.RunFiringService) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[17]">RunLOC_SM</a> from loc_hsm.o(i.RunLOC_SM) referenced from es_framework_1.o(.constdata)
  <LI><a href="#[15]">RunMapKeys</a> from mapkeys.o(i.RunMapKeys) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[1f]">RunMasterSM</a> from masterhsm.o(i.RunMasterSM) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[1b]">RunReloadingService</a> from reloadingservice.o(i.RunReloadingService) referenced from es_framework_1.o(.constdata)
- <LI><a href="#[17]">RunTeamSwitchDebounceSM</a> from teamswitchdebounce.o(i.RunTeamSwitchDebounceSM) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[19]">RunMasterSM</a> from masterhsm.o(i.RunMasterSM) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[1d]">RunReloadingService</a> from reloadingservice.o(i.RunReloadingService) referenced from es_framework_1.o(.constdata)
+ <LI><a href="#[1f]">RunTeamSwitchDebounceSM</a> from teamswitchdebounce.o(i.RunTeamSwitchDebounceSM) referenced from es_framework_1.o(.constdata)
  <LI><a href="#[6]">SysTickIntHandler</a> from es_port_1.o(i.SysTickIntHandler) referenced from startup_rvmdk.o(RESET)
  <LI><a href="#[e]">_get_lc_ctype</a> from lc_ctype_c.o(locale$$code) referenced from rt_ctype_table.o(.text)
  <LI><a href="#[10]">_printf_input_char</a> from _printf_char_common.o(.text) referenced from _printf_char_common.o(.text)
@@ -316,8 +320,12 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char_file
 </UL>
+<<<<<<< HEAD
 <BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DuringWaiting2Start
+=======
+<BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+>>>>>>> parent of 1b9048f... reorder service priority in ES_Configure.h
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DuringConstructing
 <LI><a href="#[15]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMapKeys
 <LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
@@ -329,8 +337,8 @@ Global Symbols
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunCheckInSM
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetBytesArray
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
-<LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
+<LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
+<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
 </UL>
 
 <P><STRONG><a name="[4a]"></a>__printf</STRONG> (Thumb, 104 bytes, Stack size 24 bytes, __printf.o(.text))
@@ -627,16 +635,16 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[7c]"></a>ES_Timer_InitTimer</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, es_timers_1.o(i.ES_Timer_InitTimer))
-<BR><BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR><BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunShootingSM
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunCheckInSM
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunByteTransferSM
-<LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunTeamSwitchDebounceSM
-<LI><a href="#[16]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializeTeamSwitchDebounce
-<LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunBumpSwitchDebounceSM
-<LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializeBumpSwitchDebounce
-<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
-<LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
+<LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunTeamSwitchDebounceSM
+<LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializeTeamSwitchDebounce
+<LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunBumpSwitchDebounceSM
+<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializeBumpSwitchDebounce
+<LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
+<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
 </UL>
 
 <P><STRONG><a name="[6d]"></a>ES_Timer_Tick_Resp</STRONG> (Thumb, 90 bytes, Stack size 16 bytes, es_timers_1.o(i.ES_Timer_Tick_Resp))
@@ -697,7 +705,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_rvmdk.o(RESET)
 </UL>
-<P><STRONG><a name="[1c]"></a>InitFiringService</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, firingservice.o(i.InitFiringService))
+<P><STRONG><a name="[1a]"></a>InitFiringService</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, firingservice.o(i.InitFiringService))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = InitFiringService
 </UL>
 <BR>[Calls]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetServoPosition
@@ -705,9 +713,14 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> es_framework_1.o(.constdata)
 </UL>
+<<<<<<< HEAD
 <P><STRONG><a name="[20]"></a>InitLOC_SM</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, loc_hsm.o(i.InitLOC_SM))
 <BR><BR>[Stack]<UL><LI>Max Depth = 160 + Unknown Stack Size
 <LI>Call Chain = InitLOC_SM &rArr; StartLOC_SM &rArr; RunLOC_SM &rArr;  RunLOC_SM (Cycle)
+=======
+<P><STRONG><a name="[16]"></a>InitLOC_SM</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, loc_hsm.o(i.InitLOC_SM))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = InitLOC_SM &rArr; StartLOC_SM &rArr; RunLOC_SM &rArr;  RunLOC_SM (Cycle)
+>>>>>>> parent of 1b9048f... reorder service priority in ES_Configure.h
 </UL>
 <BR>[Calls]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartLOC_SM
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TERMIO_Init
@@ -717,7 +730,7 @@ Global Symbols
 <P><STRONG><a name="[14]"></a>InitMapKeys</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, mapkeys.o(i.InitMapKeys))
 <BR>[Address Reference Count : 1]<UL><LI> es_framework_1.o(.constdata)
 </UL>
-<P><STRONG><a name="[1e]"></a>InitMasterSM</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, masterhsm.o(i.InitMasterSM))
+<P><STRONG><a name="[18]"></a>InitMasterSM</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, masterhsm.o(i.InitMasterSM))
 <BR><BR>[Stack]<UL><LI>Max Depth = 288 + Unknown Stack Size
 <LI>Call Chain = InitMasterSM &rArr; StartMasterSM &rArr; RunMasterSM &rArr;  RunMasterSM (Cycle)
 </UL>
@@ -731,7 +744,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitializePins
 </UL>
 
-<P><STRONG><a name="[1a]"></a>InitReloadingService</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, reloadingservice.o(i.InitReloadingService))
+<P><STRONG><a name="[1c]"></a>InitReloadingService</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, reloadingservice.o(i.InitReloadingService))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = InitReloadingService
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Disable_IR_Emitter
@@ -739,14 +752,14 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> es_framework_1.o(.constdata)
 </UL>
 <P><STRONG><a name="[78]"></a>InitSPI_Comm</STRONG> (Thumb, 208 bytes, Stack size 0 bytes, spi_module.o(i.InitSPI_Comm))
-<BR><BR>[Called By]<UL><LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitMasterSM
+<BR><BR>[Called By]<UL><LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitMasterSM
 </UL>
 
 <P><STRONG><a name="[74]"></a>InitServoPWM</STRONG> (Thumb, 122 bytes, Stack size 0 bytes, pwm_module.o(i.InitServoPWM))
-<BR><BR>[Called By]<UL><LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitFiringService
+<BR><BR>[Called By]<UL><LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitFiringService
 </UL>
 
-<P><STRONG><a name="[18]"></a>InitializeBumpSwitchDebounce</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, bumpswitchdebounce.o(i.InitializeBumpSwitchDebounce))
+<P><STRONG><a name="[20]"></a>InitializeBumpSwitchDebounce</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, bumpswitchdebounce.o(i.InitializeBumpSwitchDebounce))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = InitializeBumpSwitchDebounce
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_Timer_InitTimer
@@ -762,10 +775,10 @@ Global Symbols
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_Beacon_Receiver
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ADC_MultiInit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitMasterSM
+<BR>[Called By]<UL><LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitMasterSM
 </UL>
 
-<P><STRONG><a name="[16]"></a>InitializeTeamSwitchDebounce</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, teamswitchdebounce.o(i.InitializeTeamSwitchDebounce))
+<P><STRONG><a name="[1e]"></a>InitializeTeamSwitchDebounce</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, teamswitchdebounce.o(i.InitializeTeamSwitchDebounce))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = InitializeTeamSwitchDebounce
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_Timer_InitTimer
@@ -830,7 +843,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DuringWaiting2Start
 <LI><a href="#[15]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMapKeys
-<LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
+<LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunShootingSM
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunCheckInSM
@@ -851,16 +864,24 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_PostToService
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 <LI><a href="#[15]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMapKeys
-<LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
+<LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
 <LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Motor_Controller_ISR
 <LI><a href="#[8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Beacon_Receiver_ISR
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
+<<<<<<< HEAD
 <LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunTeamSwitchDebounceSM
 <LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunBumpSwitchDebounceSM
 <LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
 <LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
+=======
+<LI><a href="#[a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HallEffect_ISR
+<LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunTeamSwitchDebounceSM
+<LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunBumpSwitchDebounceSM
+<LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
+<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
+>>>>>>> parent of 1b9048f... reorder service priority in ES_Configure.h
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> es_timers_1.o(.constdata)
 </UL>
@@ -886,7 +907,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunByteTransferSM
 </UL>
 
-<P><STRONG><a name="[19]"></a>RunBumpSwitchDebounceSM</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, bumpswitchdebounce.o(i.RunBumpSwitchDebounceSM))
+<P><STRONG><a name="[21]"></a>RunBumpSwitchDebounceSM</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, bumpswitchdebounce.o(i.RunBumpSwitchDebounceSM))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = RunBumpSwitchDebounceSM &rArr; PostMasterSM &rArr; ES_PostToService &rArr; ES_EnQueueFIFO
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PostMasterSM
@@ -902,7 +923,7 @@ Global Symbols
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ES_Timer_InitTimer
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunByteTransferSM
 </UL>
-<BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
+<BR>[Called By]<UL><LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
 <LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartByteTransferSM
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunByteTransferSM
 </UL>
@@ -986,7 +1007,7 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
 </UL>
 
-<P><STRONG><a name="[1d]"></a>RunFiringService</STRONG> (Thumb, 166 bytes, Stack size 32 bytes, firingservice.o(i.RunFiringService))
+<P><STRONG><a name="[1b]"></a>RunFiringService</STRONG> (Thumb, 166 bytes, Stack size 32 bytes, firingservice.o(i.RunFiringService))
 <BR><BR>[Stack]<UL><LI>Max Depth = 160 + Unknown Stack Size
 <LI>Call Chain = RunFiringService &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -997,12 +1018,17 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> es_framework_1.o(.constdata)
 </UL>
+<<<<<<< HEAD
 <P><STRONG><a name="[21]"></a>RunLOC_SM</STRONG> (Thumb, 134 bytes, Stack size 24 bytes, loc_hsm.o(i.RunLOC_SM))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
  + In Cycle
+=======
+<P><STRONG><a name="[17]"></a>RunLOC_SM</STRONG> (Thumb, 130 bytes, Stack size 24 bytes, loc_hsm.o(i.RunLOC_SM))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80 + In Cycle
+>>>>>>> parent of 1b9048f... reorder service priority in ES_Configure.h
 <LI>Call Chain = RunLOC_SM &rArr;  RunLOC_SM (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
+<BR>[Calls]<UL><LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
 <LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PostMasterSM
 <LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PostLOC_SM
 <LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartByteTransferSM
@@ -1010,7 +1036,7 @@ Global Symbols
 <LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartLOC_SM
-<LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
+<LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> es_framework_1.o(.constdata)
 </UL>
@@ -1032,13 +1058,17 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> es_framework_1.o(.constdata)
 </UL>
+<<<<<<< HEAD
 <P><STRONG><a name="[1f]"></a>RunMasterSM</STRONG> (Thumb, 236 bytes, Stack size 24 bytes, masterhsm.o(i.RunMasterSM))
+=======
+<P><STRONG><a name="[19]"></a>RunMasterSM</STRONG> (Thumb, 228 bytes, Stack size 24 bytes, masterhsm.o(i.RunMasterSM))
+>>>>>>> parent of 1b9048f... reorder service priority in ES_Configure.h
 <BR><BR>[Stack]<UL><LI>Max Depth = 296 + Unknown Stack Size
  + In Cycle
 <LI>Call Chain = RunMasterSM &rArr;  RunMasterSM (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getGameState
-<LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DuringWaiting2Start
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DuringConstructing
 <LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PostMasterSM
@@ -1049,11 +1079,11 @@ Global Symbols
 <LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartMasterSM
-<LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> es_framework_1.o(.constdata)
 </UL>
-<P><STRONG><a name="[1b]"></a>RunReloadingService</STRONG> (Thumb, 196 bytes, Stack size 32 bytes, reloadingservice.o(i.RunReloadingService))
+<P><STRONG><a name="[1d]"></a>RunReloadingService</STRONG> (Thumb, 196 bytes, Stack size 32 bytes, reloadingservice.o(i.RunReloadingService))
 <BR><BR>[Stack]<UL><LI>Max Depth = 160 + Unknown Stack Size
 <LI>Call Chain = RunReloadingService &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -1101,7 +1131,7 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
 </UL>
 
-<P><STRONG><a name="[17]"></a>RunTeamSwitchDebounceSM</STRONG> (Thumb, 78 bytes, Stack size 24 bytes, teamswitchdebounce.o(i.RunTeamSwitchDebounceSM))
+<P><STRONG><a name="[1f]"></a>RunTeamSwitchDebounceSM</STRONG> (Thumb, 78 bytes, Stack size 24 bytes, teamswitchdebounce.o(i.RunTeamSwitchDebounceSM))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = RunTeamSwitchDebounceSM &rArr; PostMasterSM &rArr; ES_PostToService &rArr; ES_EnQueueFIFO
 </UL>
 <BR>[Calls]<UL><LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PostMasterSM
@@ -1189,8 +1219,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[75]"></a>SetServoPosition</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, pwm_module.o(i.SetServoPosition))
-<BR><BR>[Called By]<UL><LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
-<LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitFiringService
+<BR><BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
+<LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitFiringService
 </UL>
 
 <P><STRONG><a name="[a7]"></a>StartByteTransferSM</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, bytetransfersm.o(i.StartByteTransferSM))
@@ -1198,7 +1228,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunByteTransferSM
 </UL>
-<BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
+<BR>[Called By]<UL><LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
 </UL>
 
 <P><STRONG><a name="[a0]"></a>StartCheckInSM</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, checkinsm.o(i.StartCheckInSM))
@@ -1233,18 +1263,18 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 152 + Unknown Stack Size
 <LI>Call Chain = StartLOC_SM &rArr; RunLOC_SM &rArr;  RunLOC_SM (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
+<BR>[Calls]<UL><LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunLOC_SM
 </UL>
-<BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitLOC_SM
+<BR>[Called By]<UL><LI><a href="#[16]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitLOC_SM
 </UL>
 
 <P><STRONG><a name="[7a]"></a>StartMasterSM</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, masterhsm.o(i.StartMasterSM))
 <BR><BR>[Stack]<UL><LI>Max Depth = 272 + Unknown Stack Size
 <LI>Call Chain = StartMasterSM &rArr; RunMasterSM &rArr;  RunMasterSM (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR>[Calls]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitMasterSM
+<BR>[Called By]<UL><LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitMasterSM
 </UL>
 
 <P><STRONG><a name="[a3]"></a>StartShootingSM</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, shootingsm.o(i.StartShootingSM))
@@ -1301,7 +1331,7 @@ Global Symbols
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinTypeUART
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinConfigure
 </UL>
-<BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitLOC_SM
+<BR>[Called By]<UL><LI><a href="#[16]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitLOC_SM
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
@@ -1409,11 +1439,11 @@ Global Symbols
 <P><STRONG><a name="[a6]"></a>getBallCount</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, masterhsm.o(i.getBallCount))
 <BR><BR>[Called By]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunShootingSM
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
-<LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
+<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
 </UL>
 
 <P><STRONG><a name="[aa]"></a>getGameState</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, masterhsm.o(i.getGameState))
-<BR><BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR><BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 </UL>
 
 <P><STRONG><a name="[b0]"></a>getGameTimeoutFlag</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, constructingsm.o(i.getGameTimeoutFlag))
@@ -1459,19 +1489,19 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[94]"></a>getSB1_Byte</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, bytetransfersm.o(i.getSB1_Byte))
-<BR><BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR><BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunShootingSM
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
 </UL>
 
 <P><STRONG><a name="[96]"></a>getSB2_Byte</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, bytetransfersm.o(i.getSB2_Byte))
-<BR><BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR><BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunShootingSM
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
 </UL>
 
 <P><STRONG><a name="[98]"></a>getSB3_Byte</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, bytetransfersm.o(i.getSB3_Byte))
-<BR><BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR><BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 <LI><a href="#[15]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMapKeys
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunShootingSM
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
@@ -1502,7 +1532,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[ac]"></a>incrementBallCount</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, masterhsm.o(i.incrementBallCount))
-<BR><BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
+<BR><BR>[Called By]<UL><LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
 </UL>
 
 <P><STRONG><a name="[a8]"></a>incrementScore</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, constructingsm.o(i.incrementScore))
@@ -1572,7 +1602,7 @@ Local Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
 <LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 </UL>
 
 <P><STRONG><a name="[5e]"></a>DuringWaiting2Start</STRONG> (Thumb, 102 bytes, Stack size 8 bytes, masterhsm.o(i.DuringWaiting2Start))
@@ -1582,16 +1612,16 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PostLOC_SM
 <LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
+<BR>[Called By]<UL><LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunMasterSM
 </UL>
 
 <P><STRONG><a name="[7b]"></a>Disable_IR_Emitter</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, reloadingservice.o(i.Disable_IR_Emitter))
-<BR><BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
-<LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitReloadingService
+<BR><BR>[Called By]<UL><LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
+<LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitReloadingService
 </UL>
 
 <P><STRONG><a name="[ab]"></a>Enable_IR_Emitter</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, reloadingservice.o(i.Enable_IR_Emitter))
-<BR><BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
+<BR><BR>[Called By]<UL><LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunReloadingService
 </UL>
 
 <P><STRONG><a name="[3]"></a>NmiSR</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_rvmdk.o(RESET))
