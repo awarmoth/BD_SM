@@ -64,7 +64,7 @@
 #define VIB_MOT_ON			1
 #define VIB_MOT_OFF			0
 #define S_PER_MIN 60
-#define LAUNCHER_CONTROLLER_TIME_US 10000
+#define LAUNCHER_CONTROLLER_TIME_US 2000
 
 #ifndef ALL_BITS
 #define ALL_BITS (0xff<<2)
@@ -406,7 +406,7 @@ void Launcher_Controller_ISR (void)
 	SetFlywheelDuty(Launcher_Command);
 		//error is command minus RPM
 	static float Kp = 20; //100
-	static float Ki = 0.05;	//5
+	static float Ki = .05;	//5
 	static float Last_Launcher_Error = 0;
 	static float Last_Launcher_Control = 0;
 	float Launcher_Error = Launcher_Command - Launcher_RPS;
