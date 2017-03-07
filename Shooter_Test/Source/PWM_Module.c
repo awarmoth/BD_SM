@@ -334,7 +334,7 @@ void SetServoPosition(uint16_t position) {
 	}
 	*/
 
-		newCmp = HWREG(PWM0_BASE+PWM_O_1_LOAD)*(11875-position)/12500;
+		newCmp = HWREG(PWM0_BASE+PWM_O_1_LOAD)*(12500-position)/12500;
 		// write new comparator value to register
 		HWREG(PWM0_BASE+PWM_O_1_CMPA) = newCmp;
 

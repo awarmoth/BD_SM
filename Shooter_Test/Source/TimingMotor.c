@@ -93,7 +93,7 @@ static uint16_t PulseWidth;
 static uint8_t forward = 1;
 static uint16_t Launcher_RPS = 0;
 static uint32_t Last_Launcher_Time = 0;
-static uint8_t Launcher_Command = 80;
+static uint8_t Launcher_Command = 0;
 static uint8_t CommandVal = 30;
 static uint16_t ServoUpPosition = 300;
 static uint16_t ServoDownPosition = 2000;
@@ -126,8 +126,11 @@ bool InitTimingMotor ( uint8_t Priority )
   MyPriority = Priority;
 	
 	// initialize PWM port
-	//InitServoPWM();
-	Init_Launcher_Controller();
+	InitServoPWM();
+  InitFlywheelPWM();
+ 	Init_Launcher_Controller();
+ 	Launcher_Encoder_Init();
+	printf("started");
 	
 	
   // put us into the Initial PseudoState
@@ -140,11 +143,12 @@ bool InitTimingMotor ( uint8_t Priority )
 	// Make sure the peripheral clock has been set up
 	//while((HWREG(SYSCTL_PRGPIO) & BIT5HI) != BIT5HI)
 	
-		;
+
 	// Make PF4 digital and output
 	//HWREG(GPIO_PORTF_BASE+GPIO_O_DEN) |= (GPIO_PIN_4);
 	//HWREG(GPIO_PORTF_BASE+GPIO_O_DIR) |= (GPIO_PIN_4);
-	printf("\rHardware Initialized\r\n");
+	printf("\rHardware Init\r\n");
+	printf("started2");
   
 	// post the initial transition event
   ThisEvent.EventType = ES_INIT;
@@ -391,6 +395,7 @@ static void Init_Launcher_Controller(void)
 	HWREG(NVIC_PRI25)=(HWREG(NVIC_PRI25)&~NVIC_PRI25_INTB_M)|(0x6<<NVIC_PRI25_INTB_S);
 	//enable the timer
 	HWREG(WTIMER3_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBEN|TIMER_CTL_TBSTALL);
+	SetLauncherCommand(0);
 	
 }
 
@@ -430,7 +435,7 @@ void Launcher_Controller_ISR (void)
 	SetFlywheelDuty((uint8_t)Launcher_Control);
 }
 
-int main(void)
+/*int main(void)
 {
  	SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN
  			| SYSCTL_XTAL_16MHZ);
@@ -444,6 +449,7 @@ int main(void)
  	{
  	}
 }
+*/
 
 void SetLauncherCommand(uint8_t InputCommand)
 {
@@ -454,6 +460,7 @@ void SetLauncherCommand(uint8_t InputCommand)
 	}
 	else
 	{
+		SetFlywheelDuty(0);
 		HWREG(WTIMER3_BASE+TIMER_O_CTL)&=~(TIMER_CTL_TBEN);
 	}
 }
