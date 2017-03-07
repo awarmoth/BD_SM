@@ -89,18 +89,14 @@ static void Launcher_Encoder_Init(void);
 
 // with the introduction of Gen2, we need a module level Priority var as well
 static uint8_t MyPriority;
-<<<<<<< HEAD
 static uint16_t PulseWidth;
 static uint8_t forward = 1;
 static uint16_t Launcher_RPS = 0;
 static uint32_t Last_Launcher_Time = 0;
 static uint8_t Launcher_Command = 30;
-=======
-
 static uint16_t ServoUpPosition = 300;
 static uint16_t ServoDownPosition = 2000;
 
->>>>>>> 1b9048ff6a0676ced824df6cfec88682c80f5089
 
 
 /*------------------------------ Module Code ------------------------------*/
@@ -272,8 +268,7 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
 			}//end case block
 	}//end switch
 	return ReturnEvent;
-<<<<<<< HEAD
-		 }
+}
 
 static void Launcher_Encoder_Init(void)
 {
@@ -390,25 +385,9 @@ void Launcher_Controller_ISR (void)
 	SetFlywheelDuty((uint8_t)Launcher_Control);
 	printf("\r\nRPS: %d\t Command: %d\r\n", Launcher_RPS, Launcher_Command);
 }
-		 
-int main(void)
-{
-	SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN
-			| SYSCTL_XTAL_16MHZ);
-	TERMIO_Init();
-	clrScrn();
-	printf("\r\nInitPWM\r\n");
-  InitFlywheelPWM();
-	Init_Launcher_Controller();
-	Launcher_Encoder_Init();
-	while(1)
-	{
-	}
-}
 
 void SetLauncherCommand(uint8_t InputCommand)
 {
 	Launcher_Command = InputCommand;
 =======
->>>>>>> 1b9048ff6a0676ced824df6cfec88682c80f5089
 }
