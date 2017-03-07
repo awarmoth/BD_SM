@@ -178,7 +178,7 @@ static void MagneticTimerInit(void)
 	__enable_irq();
 	
 	// Enable timer and enable to stall when stopped by debugger
-	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+	HWREG(WTIMER2_BASE+TIMER_O_CTL) |= (TIMER_CTL_TASTALL);
 }
 
 /****************************************************************************
@@ -251,7 +251,7 @@ static void OneShotTimerInit(void)
 	__enable_irq();
 	
 	// Enable timer and enable to stall when stopped by debugger
-	HWREG(WTIMER3_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+	HWREG(WTIMER3_BASE+TIMER_O_CTL) |= TIMER_CTL_TASTALL;
 }
 
 

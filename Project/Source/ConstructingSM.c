@@ -619,17 +619,21 @@ void UpdateStatus( void )
 
 void HallEffect_ISR( void )
 {
+		// Clear source of interrupt
+	HWREG(WTIMER2_BASE+TIMER_O_ICR) = TIMER_ICR_CAECINT;
+	
 	//	Static local variable LastTen array initialized to ten zeros
 	static uint32_t LastTen[RUN_AVERAGE_LENGTH];
-	static uint32_t LastDeltas[RUN_AVERAGE_LENGTH];
+	static int32_t LastDeltas[RUN_AVERAGE_LENGTH];
 	static uint16_t Throwaway = 0;
 	if (initHallEffect){
 		for (int i=0;i<RUN_AVERAGE_LENGTH;i++){
 			LastTen[i] = 0;
-			LastDeltas[i] = 0;
+			LastDeltas[i] = 40000000;
 		}
 		initHallEffect = false;
 	}
+	
 	if (Throwaway< MAX_THROWAWAY){
 		Throwaway++;
 		return;
@@ -639,63 +643,58 @@ void HallEffect_ISR( void )
 	static uint8_t deltacounter = 0;
 	ES_Event PostEvent;
 	uint32_t ThisCapture, CurrentPeriod;
-		
-	// Clear source of interrupt
-	HWREG(WTIMER2_BASE+TIMER_O_ICR) = TIMER_ICR_CAECINT;
-	
-	// Restart the one shot timer
-	HWREG(WTIMER3_BASE+TIMER_O_TAV) = ONE_SHOT_TIMEOUT;
-	
-	// Clear last HallSensorPeriod
-	HallSensorPeriod = 0;
 	
 	//	Get captured value
 	//	Set CurrentPeriod to subtract LastCapture from ThisCapture
 	ThisCapture = HWREG(WTIMER2_BASE+TIMER_O_TAR);
 	CurrentPeriod = ThisCapture - LastCapture;
 	
-	LastTen[deltacounter] = CurrentPeriod;
+	LastDeltas[deltacounter] = CurrentPeriod-LastPeriod;
 	for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
 		DeltaAvg += LastDeltas[i];
 	}
+	DeltaAvg /= RUN_AVERAGE_LENGTH;
 	
 	if(deltacounter == RUN_AVERAGE_LENGTH-1){
 		deltacounter = 0;
 	} else {
 		deltacounter++;
 	}
-	DeltaAvg /= RUN_AVERAGE_LENGTH;
+
 	//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
 	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) || (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
 		//	Update counter position in LastTen to CurrentPeriod
 		LastTen[counter] = CurrentPeriod;
-		
-		//	Set HallSensorPeriod to average of LastTen
-		for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
-			HallSensorPeriod += LastTen[i];
-		}
-		HallSensorPeriod = HallSensorPeriod/RUN_AVERAGE_LENGTH;
-		
-		//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
-		//	and HasLeftStage is true
-		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 15) {
-		//	Post ES_StationDetected Event
-			PostEvent.EventType = ES_STATION_DETECTED;
-			Throwaway = 0;
-			
-			PostMasterSM(PostEvent);
-			//printf("Good Frequency: %i\r\n", HallSensorPeriod);
-			
-		//	HasLeftStage is false
-			HasLeftStage = false;
-		} else if(HasLeftStage){
-			//printf("Bad Period: %i\r\n", HallSensorPeriod);
-		}
 		//	If counter equals 9
 		if(counter == RUN_AVERAGE_LENGTH-1){
 			counter = 0;
 		} else {
 			counter++;
+		}
+		
+		static uint32_t TempHallSensorPeriod = 0;
+		//	Set HallSensorPeriod to average of LastTen
+		for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
+			TempHallSensorPeriod += LastTen[i];
+		}
+		HallSensorPeriod = TempHallSensorPeriod/RUN_AVERAGE_LENGTH;
+		
+		//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
+		//	and HasLeftStage is true
+		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && 
+			(HallSensorPeriod >= MIN_ALLOWABLE_PER) && 
+		HasLeftStage && 
+		((DeltaAvg < 10*TICKS_PER_US) && (DeltaAvg >-10*TICKS_PER_US))) 
+		{
+			// Restart the one shot timer
+			HWREG(WTIMER3_BASE+TIMER_O_CTL) |= TIMER_CTL_TAEN;
+			HWREG(WTIMER3_BASE+TIMER_O_TAV) = ONE_SHOT_TIMEOUT;
+			//	Post ES_StationDetected Event
+			PostEvent.EventType = ES_STATION_DETECTED;
+			Throwaway = 0;
+			PostMasterSM(PostEvent);			
+		//	HasLeftStage is false
+			HasLeftStage = false;
 		}
 	}
 	LastCapture = ThisCapture;
@@ -707,12 +706,11 @@ void HallEffectOneShotTimer_ISR( void )
 {	
 	// Clear source of interrupt
 	HWREG(WTIMER3_BASE+TIMER_O_ICR) = TIMER_ICR_TATOCINT;
-	
-	// Restart the one shot timer
-	HWREG(WTIMER3_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
-	
+
 	// Set HasLeftStage to true
 	HasLeftStage = true;
+	
+	initHallEffect = true;
 	
 	HallSensorPeriod = 0;
 	

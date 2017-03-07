@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Outputs\BaseTarget.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Outputs\BaseTarget.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Mon Mar 06 21:24:47 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Tue Mar 07 00:28:33 2017
 <BR><P>
 <H3>Maximum Stack Usage =        296 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -685,13 +685,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TERMIO_Init
 </UL>
 
-<P><STRONG><a name="[c]"></a>HallEffectOneShotTimer_ISR</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, constructingsm.o(i.HallEffectOneShotTimer_ISR))
+<P><STRONG><a name="[c]"></a>HallEffectOneShotTimer_ISR</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, constructingsm.o(i.HallEffectOneShotTimer_ISR))
 <BR>[Address Reference Count : 1]<UL><LI> startup_rvmdk.o(RESET)
 </UL>
-<P><STRONG><a name="[a]"></a>HallEffect_ISR</STRONG> (Thumb, 226 bytes, Stack size 32 bytes, constructingsm.o(i.HallEffect_ISR))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = HallEffect_ISR &rArr; PostMasterSM &rArr; ES_PostToService &rArr; ES_EnQueueFIFO
-</UL>
-<BR>[Calls]<UL><LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PostMasterSM
+<P><STRONG><a name="[a]"></a>HallEffect_ISR</STRONG> (Thumb, 176 bytes, Stack size 20 bytes, constructingsm.o(i.HallEffect_ISR))
+<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = HallEffect_ISR
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_rvmdk.o(RESET)
 </UL>
@@ -854,7 +852,6 @@ Global Symbols
 <LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Motor_Controller_ISR
 <LI><a href="#[8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Beacon_Receiver_ISR
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunConstructingSM
-<LI><a href="#[a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HallEffect_ISR
 <LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunTeamSwitchDebounceSM
 <LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunBumpSwitchDebounceSM
 <LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunFiringService
