@@ -327,38 +327,16 @@ void InitServoPWM(void)
 void SetServoPosition(uint16_t position) {
 		// New Value for comparator to set duty cycle
 	static uint32_t newCmp;	
-	
+	/*
 	if((position > 2000) || (position < 0))
 	{
 		printf("Invalid servo position. No new comparator value set.\r\n");
 	}
-	else
-	{
+	*/
+
 		newCmp = HWREG(PWM0_BASE+PWM_O_1_LOAD)*(11875-position)/12500;
 		// write new comparator value to register
 		HWREG(PWM0_BASE+PWM_O_1_CMPA) = newCmp;
-	}
-	
-	/*
-	if (duty == 100 | duty == 0) {
-		restoreFW = true;
-		if (duty == 100) {
-			// To program 100% DC, simply set the action on Zero to set the output to one
-			HWREG( PWM0_BASE+PWM_O_3_GENB) = PWM_3_GENB_ACTZERO_ONE;
-		} else {
-			// To program 0% DC, simply set the action on Zero to set the output to zero
-			HWREG( PWM0_BASE+PWM_O_3_GENB) = PWM_3_GENB_ACTZERO_ZERO;
-		}
-	} else {
-		// if returning from 0 or 100
-		if (restoreFW) {
-			restoreFW = false;
-			// restore normal operation
-			HWREG( PWM0_BASE+PWM_O_3_GENB) = (PWM_3_GENB_ACTCMPBU_ONE | PWM_3_GENB_ACTCMPBD_ZERO );
-		}
-		// write new comparator value to register
-		HWREG( PWM0_BASE+PWM_O_3_CMPB) = newCmp;
-	}
-	*/
+
 }
 

@@ -54,8 +54,10 @@ static TimingMotorState_t CurrentState;
 
 // with the introduction of Gen2, we need a module level Priority var as well
 static uint8_t MyPriority;
-static uint16_t PulseWidth;
-static uint8_t forward = 1;
+
+static uint16_t ServoUpPosition = 300;
+static uint16_t ServoDownPosition = 2000;
+
 
 
 /*------------------------------ Module Code ------------------------------*/
@@ -85,10 +87,7 @@ bool InitTimingMotor ( uint8_t Priority )
 	
 	// initialize PWM port
 	InitServoPWM();
-	//PWM_TIVA_Init(NUM_MOTOR);
 	
-	// initialize period of the timing motor
-	//PWM_TIVA_SetPeriod(MOT_FREQ, TIME_MOT_GROUP);
 	
   // put us into the Initial PseudoState
   CurrentState = MotorTest;
@@ -164,22 +163,73 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
   switch ( CurrentState )
   {
     case MotorTest :       // If current state is initial Psedudo State
+		{
         if ( ThisEvent.EventType == ES_NEW_KEY )// only respond to ES_Init
         {
-					if(forward){
+					if(ThisEvent.EventParam == '1')
+					{
 					// Put motor into initial position
-					SetServoPosition(300);
-						printf("Max\r\n");
-						forward = 0;
-					} else {
-					SetServoPosition(2000);
-						forward = 1;
-						printf("min\r\n");
+						SetServoPosition(ServoUpPosition);
+						printf("MOVED TO SERVO UP POSITION\r\n");
+					} 
+					else if(ThisEvent.EventParam == '2')
+					{
+						SetServoPosition(ServoDownPosition);
+						printf("MOVED TO SERVO DOWN POSITION\r\n");
 					}
-         }
-         break;
-			 }
+					else if(ThisEvent.EventParam == '3')
+					{
+						ServoUpPosition = ServoUpPosition + 10;
+						if(ServoUpPosition > 3000)
+						{
+							ServoUpPosition = 3000;
+							printf("SERVO IS AT 3000 LIMIT");
+						}
+						SetServoPosition(ServoUpPosition);
+						printf("NEW SERVO UP POSITION = %d\r\n", ServoUpPosition);
+					}
+					else if(ThisEvent.EventParam == '4')
+					{
+						ServoUpPosition = ServoUpPosition - 10;
+						if(ServoUpPosition < 0)
+						{
+							ServoUpPosition = 0;
+							printf("SERVO IS AT 0 LIMIT");
+						}
+						SetServoPosition(ServoUpPosition);
+						printf("NEW SERVO UP POSITION = %d\r\n", ServoUpPosition);
+					}
+					
+					else if (ThisEvent.EventParam == '5')
+					{
+						ServoDownPosition = ServoDownPosition + 10;
+						if(ServoDownPosition > 3000)
+						{
+							ServoDownPosition = 3000;
+							printf("SERVO IS AT 3000 LIMIT");
+						}
+						SetServoPosition(ServoDownPosition);
+						printf("NEW SERVO DOWN POSITION = %d\r\n", ServoDownPosition);
+					}
+					else if (ThisEvent.EventParam == '6')
+					{
+						ServoDownPosition = ServoDownPosition - 10;
+						if(ServoDownPosition < 0)
+						{
+							ServoDownPosition = 0;
+							printf("SERVO IS AT 0 LIMIT");
+						}
+						SetServoPosition(ServoDownPosition);
+						printf("NEW SERVO DOWN POSITION = %d\r\n", ServoDownPosition);
+					}
+			 
+				}//end ES_NEW_KEY block
+				break;
+			}//end case block
+	}//end switch
 	return ReturnEvent;
-		 }
+}
+
+
 
    
