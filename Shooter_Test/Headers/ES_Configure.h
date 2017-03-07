@@ -30,7 +30,7 @@
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 2
+#define NUM_SERVICES 1
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service.
@@ -38,13 +38,13 @@
 // services are added in numeric sequence (1,2,3,...) with increasing 
 // priorities
 // the header file with the public function prototypes
-#define SERV_0_HEADER "TestHarnessService0.h"
+#define SERV_0_HEADER "TimingMotor.h"
 // the name of the Init function
-#define SERV_0_INIT InitTestHarnessService0
+#define SERV_0_INIT InitTimingMotor
 // the name of the run function
-#define SERV_0_RUN RunTestHarnessService0
+#define SERV_0_RUN RunTimingMotorSM
 // How big should this services Queue be?
-#define SERV_0_QUEUE_SIZE 5
+#define SERV_0_QUEUE_SIZE 3
 
 /****************************************************************************/
 // The following sections are used to define the parameters for each of the
@@ -54,13 +54,13 @@
 // These are the definitions for Service 1
 #if NUM_SERVICES > 1
 // the header file with the public function prototypes
-#define SERV_1_HEADER "TimingMotor.h"
+#define SERV_1_HEADER "TestHarnessService0.h"
 // the name of the Init function
-#define SERV_1_INIT InitTimingMotor
+#define SERV_1_INIT InitTestHarnessService0
 // the name of the run function
-#define SERV_1_RUN RunTimingMotorSM
+#define SERV_1_RUN RunTestHarnessService0
 // How big should this services Queue be?
-#define SERV_1_QUEUE_SIZE 3
+#define SERV_1_QUEUE_SIZE 5
 #endif
 
 /****************************************************************************/
@@ -263,7 +263,7 @@ typedef enum {  ES_NO_EVENT = 0,
 // These are the definitions for the Distribution lists. Each definition
 // should be a comma separated list of post functions to indicate which
 // services are on that distribution list.
-#define NUM_DIST_LISTS 1
+#define NUM_DIST_LISTS 0
 #if NUM_DIST_LISTS > 0 
 #define DIST_LIST0 PostTestHarnessService0, PostTestHarnessService0
 #endif
@@ -319,7 +319,7 @@ typedef enum {  ES_NO_EVENT = 0,
 #define TIMER12_RESP_FUNC TIMER_UNUSED
 #define TIMER13_RESP_FUNC TIMER_UNUSED
 #define TIMER14_RESP_FUNC TIMER_UNUSED
-#define TIMER15_RESP_FUNC PostTestHarnessService0
+#define TIMER15_RESP_FUNC TIMER_UNUSED
 
 /****************************************************************************/
 // Give the timer numbers symbolc names to make it easier to move them
@@ -328,6 +328,5 @@ typedef enum {  ES_NO_EVENT = 0,
 // the timer number matches where the timer event will be routed
 // These symbolic names should be changed to be relevant to your application 
 
-#define SERVICE0_TIMER 15
 
 #endif /* CONFIGURE_H */

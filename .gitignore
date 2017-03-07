@@ -36,3 +36,7 @@ Thumbs.db
 *.dep
 *.bak
 *.TMP
+Shooter_Test/Source/TimingMotor_BACKUP_7408.c
+Shooter_Test/Source/TimingMotor_BASE_7408.c
+Shooter_Test/Source/TimingMotor_LOCAL_7408.c
+Shooter_Test/Source/TimingMotor_REMOTE_7408.c
