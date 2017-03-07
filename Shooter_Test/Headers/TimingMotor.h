@@ -42,5 +42,6 @@ typedef enum { MotorTest} TimingMotorState_t ;
 bool InitTimingMotor ( uint8_t Priority );
 bool PostTimingMotor( ES_Event ThisEvent );
 ES_Event RunTimingMotorSM( ES_Event ThisEvent );
+void SetLauncherCommand(uint8_t);
 
 #endif //TimingMotor_H

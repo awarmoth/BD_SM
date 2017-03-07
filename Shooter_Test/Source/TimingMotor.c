@@ -93,7 +93,8 @@ static uint16_t PulseWidth;
 static uint8_t forward = 1;
 static uint16_t Launcher_RPS = 0;
 static uint32_t Last_Launcher_Time = 0;
-static uint8_t Launcher_Command = 30;
+static uint8_t Launcher_Command = 80;
+static uint8_t CommandVal = 30;
 static uint16_t ServoUpPosition = 300;
 static uint16_t ServoDownPosition = 2000;
 
@@ -125,7 +126,8 @@ bool InitTimingMotor ( uint8_t Priority )
   MyPriority = Priority;
 	
 	// initialize PWM port
-	InitServoPWM();
+	//InitServoPWM();
+	Init_Launcher_Controller();
 	
 	
   // put us into the Initial PseudoState
@@ -133,15 +135,15 @@ bool InitTimingMotor ( uint8_t Priority )
 	
 	// Enable the pin for the vibration motor
 	// Enable Port F
-	HWREG(SYSCTL_RCGCGPIO) |= GPIO_PIN_5; 
+	//HWREG(SYSCTL_RCGCGPIO) |= GPIO_PIN_5; 
 	
 	// Make sure the peripheral clock has been set up
-	while((HWREG(SYSCTL_PRGPIO) & BIT5HI) != BIT5HI)
+	//while((HWREG(SYSCTL_PRGPIO) & BIT5HI) != BIT5HI)
 	
 		;
 	// Make PF4 digital and output
-	HWREG(GPIO_PORTF_BASE+GPIO_O_DEN) |= (GPIO_PIN_4);
-	HWREG(GPIO_PORTF_BASE+GPIO_O_DIR) |= (GPIO_PIN_4);
+	//HWREG(GPIO_PORTF_BASE+GPIO_O_DEN) |= (GPIO_PIN_4);
+	//HWREG(GPIO_PORTF_BASE+GPIO_O_DIR) |= (GPIO_PIN_4);
 	printf("\rHardware Initialized\r\n");
   
 	// post the initial transition event
@@ -209,12 +211,12 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
 					{
 					// Put motor into initial position
 						SetServoPosition(ServoUpPosition);
-						printf("MOVED TO SERVO UP POSITION\r\n");
+						printf("MOVED TO SERVO UP POSITION: %d\r\n", ServoUpPosition);
 					} 
 					else if(ThisEvent.EventParam == '2')
 					{
 						SetServoPosition(ServoDownPosition);
-						printf("MOVED TO SERVO DOWN POSITION\r\n");
+						printf("MOVED TO SERVO DOWN POSITION: %d\r\n", ServoDownPosition);
 					}
 					else if(ThisEvent.EventParam == '3')
 					{
@@ -222,7 +224,7 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
 						if(ServoUpPosition > 3000)
 						{
 							ServoUpPosition = 3000;
-							printf("SERVO IS AT 3000 LIMIT");
+							printf("SERVO IS AT 3000 LIMIT\r\n");
 						}
 						SetServoPosition(ServoUpPosition);
 						printf("NEW SERVO UP POSITION = %d\r\n", ServoUpPosition);
@@ -233,8 +235,11 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
 						if(ServoUpPosition >= 10)
 						{
 							ServoUpPosition = ServoUpPosition - 10;
+						}
+						else
+						{
 							ServoUpPosition = 0;
-							printf("SERVO IS AT 0 LIMIT");
+							printf("SERVO IS AT 0 LIMIT\r\n");
 						}
 						SetServoPosition(ServoUpPosition);
 						printf("NEW SERVO UP POSITION = %d\r\n", ServoUpPosition);
@@ -246,23 +251,63 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
 						if(ServoDownPosition > 3000)
 						{
 							ServoDownPosition = 3000;
-							printf("SERVO IS AT 3000 LIMIT");
+							printf("SERVO IS AT 3000 LIMIT\r\n");
 						}
 						SetServoPosition(ServoDownPosition);
 						printf("NEW SERVO DOWN POSITION = %d\r\n", ServoDownPosition);
 					}
 					else if (ThisEvent.EventParam == '6')
 					{
-						if(ServoUpPosition >= 10)
+						if(ServoDownPosition >= 10)
 						{
-							ServoUpPosition = ServoUpPosition - 10;
-							ServoUpPosition = 0;
-							printf("SERVO IS AT 0 LIMIT");
+							ServoDownPosition = ServoDownPosition - 10;
+						}
+						else
+						{
+							ServoDownPosition = 0;
+							printf("SERVO IS AT 0 LIMIT\r\n");
 						}
 						SetServoPosition(ServoDownPosition);
 						printf("NEW SERVO DOWN POSITION = %d\r\n", ServoDownPosition);
 					}
-			 
+					else if(ThisEvent.EventParam == '7')
+					{
+						SetLauncherCommand(0);
+						printf("LAUNCHER TURNED OFF\r\n");
+					}
+					else if(ThisEvent.EventParam == '8')
+					{
+						SetLauncherCommand(CommandVal);
+						printf("LAUNCHER TURNED ON\r\n");
+					}
+					else if(ThisEvent.EventParam == '9')
+					{
+						if(CommandVal > 133)
+						{
+							CommandVal = 138;
+							SetLauncherCommand(CommandVal);
+						}
+						else
+						{
+							CommandVal = CommandVal + 5;
+							SetLauncherCommand(CommandVal);
+						}
+						printf("LAUNCHER COMMAND = %d\r\n", Launcher_Command);
+					}
+					else if(ThisEvent.EventParam == '0')
+					{
+						if(CommandVal < 5)
+						{
+							CommandVal = 0;
+							SetLauncherCommand(CommandVal);
+						}
+						else
+						{
+							CommandVal = CommandVal - 5;
+							SetLauncherCommand(CommandVal);
+						}
+						printf("LAUNCHER COMMAND = %d\r\n", Launcher_Command);
+					}						
 				}//end ES_NEW_KEY block
 				break;
 			}//end case block
@@ -355,8 +400,8 @@ void Launcher_Controller_ISR (void)
 	HWREG(WTIMER3_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	SetFlywheelDuty(Launcher_Command);
 		//error is command minus RPM
-	static float Kp = 50; //50
-	static float Ki = 0.5;	//2
+	static float Kp = 20; //100
+	static float Ki = 0.05;	//5
 	static float Last_Launcher_Error = 0;
 	static float Last_Launcher_Control = 0;
 	float Launcher_Error = Launcher_Command - Launcher_RPS;
@@ -383,11 +428,32 @@ void Launcher_Controller_ISR (void)
 	Last_Launcher_Control = Launcher_Control;
 	//write control to motors
 	SetFlywheelDuty((uint8_t)Launcher_Control);
-	printf("\r\nRPS: %d\t Command: %d\r\n", Launcher_RPS, Launcher_Command);
+}
+
+int main(void)
+{
+ 	SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN
+ 			| SYSCTL_XTAL_16MHZ);
+ 	TERMIO_Init();
+ 	clrScrn();
+ 	printf("\r\nInitPWM\r\n");
+  InitFlywheelPWM();
+ 	Init_Launcher_Controller();
+ 	Launcher_Encoder_Init();
+ 	while(1)
+ 	{
+ 	}
 }
 
 void SetLauncherCommand(uint8_t InputCommand)
 {
 	Launcher_Command = InputCommand;
-=======
+	if(InputCommand != 0)
+	{
+		HWREG(WTIMER3_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBEN|TIMER_CTL_TBSTALL);
+	}
+	else
+	{
+		HWREG(WTIMER3_BASE+TIMER_O_CTL)&=~(TIMER_CTL_TBEN);
+	}
 }
