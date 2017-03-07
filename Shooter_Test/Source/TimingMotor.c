@@ -190,9 +190,10 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
 					}
 					else if(ThisEvent.EventParam == '4')
 					{
-						ServoUpPosition = ServoUpPosition - 10;
-						if(ServoUpPosition < 0)
+						
+						if(ServoUpPosition >= 10)
 						{
+							ServoUpPosition = ServoUpPosition - 10;
 							ServoUpPosition = 0;
 							printf("SERVO IS AT 0 LIMIT");
 						}
@@ -213,10 +214,10 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
 					}
 					else if (ThisEvent.EventParam == '6')
 					{
-						ServoDownPosition = ServoDownPosition - 10;
-						if(ServoDownPosition < 0)
+						if(ServoUpPosition >= 10)
 						{
-							ServoDownPosition = 0;
+							ServoUpPosition = ServoUpPosition - 10;
+							ServoUpPosition = 0;
 							printf("SERVO IS AT 0 LIMIT");
 						}
 						SetServoPosition(ServoDownPosition);
@@ -229,7 +230,3 @@ ES_Event RunTimingMotorSM( ES_Event ThisEvent )
 	}//end switch
 	return ReturnEvent;
 }
-
-
-
-   
