@@ -95,8 +95,8 @@ static uint16_t Launcher_RPS = 0;
 static uint32_t Last_Launcher_Time = 0;
 static uint8_t Launcher_Command = 0;
 static uint8_t CommandVal = 30;
-static uint16_t ServoUpPosition = 300;
-static uint16_t ServoDownPosition = 2000;
+static uint16_t ServoUpPosition = 770;
+static uint16_t ServoDownPosition = 1540;
 
 
 
