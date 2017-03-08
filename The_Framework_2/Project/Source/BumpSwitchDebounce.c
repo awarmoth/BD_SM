@@ -70,7 +70,7 @@ bool CheckBumpSwitchEvents(void) {
       // Set CurrentBumpSwitchState to state read from port pin
       CurrentBumpSwitchState = HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS));
       // If the CurrentBumpSwitchState is different from the LastBumpSwitchState
-      if ((CurrentBumpSwitchState & BUMP_SENSOR_MASK) == (LastBumpSwitchState & BUMP_SENSOR_MASK)) {
+      if ((CurrentBumpSwitchState & BUMP_SENSOR_MASK) != (LastBumpSwitchState & BUMP_SENSOR_MASK)) {
             ReturnVal = true;
             // If the CurrentBumpSwitchState is down
         ES_Event ThisEvent;    
@@ -85,6 +85,7 @@ bool CheckBumpSwitchEvents(void) {
         }
       }
       // Set LastBumpSwitchState to the CurrentBumpSwitchState
+			LastBumpSwitchState = CurrentBumpSwitchState;
 return ReturnVal;
 }
 //End of CheckBumpSwitchEvents
@@ -110,18 +111,19 @@ ES_Event RunBumpSwitchDebounceSM (ES_Event ThisEvent) {
                   // If EventType is BumpSwitchUp
                   if (ThisEvent.EventType == DBBumpSwitchUp) {
                         // Start debounce timer
-                        ES_Timer_InitTimer(BUMP_DEBOUNCE_TIMER,20);
+                        ES_Timer_InitTimer(BUMP_DEBOUNCE_TIMER,50);
                         // Set CurrentState to DEBOUNCING_BUMP
                         CurrentState = DEBOUNCING_BUMP;
                   }
                   //If EventType is BumpSwitchDown
                   if (ThisEvent.EventType == DBBumpSwitchDown) {
                         // Start debounce timer
-                        ES_Timer_InitTimer(BUMP_DEBOUNCE_TIMER,20);
+                        ES_Timer_InitTimer(BUMP_DEBOUNCE_TIMER,50);
                         // Set CurrentState to DEBOUNCING_BUMP
                         CurrentState = DEBOUNCING_BUMP;
                         // Post DBBumpSwitchDown to MorseElements & DecodeMorse queues
                         Event2Post.EventType = ES_FRONT_BUMP_DETECTED;
+//												printf("bump detected");
                         PostMasterSM(Event2Post);
                   }
                   break;

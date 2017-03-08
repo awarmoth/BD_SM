@@ -3,14 +3,12 @@
 
  ****************************************************************************/
  #define CheckOff3 0
- #define SM_TEST 1
+ #define SM_TEST 0
  #define TEAM_COLOR RED
  #define NO_LOC 0
  #define BALL_TRACKING 0
  #define TAPE_TEST 0
- 
- #define GAME_TIMEOUT 20*1000 // change to 105? *1000 (need to use interrupt 32-bit wide timer: correspondes to 107 seconds
- 
+   
  // Commands
  #define STATUS_COMMAND 0xc0
  #define REPORT_COMMAND 0x80

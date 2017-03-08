@@ -298,8 +298,10 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					/*****************Stop driving******************/
 					SetDutyA(0);
 					SetDutyB(0);
+					LastStation = 0;
 					
 					// Set ReturnEvent to ES_ArrivedAtReload	
+					if (getBallCount() == MAX_BALLS)
 					ReturnEvent.EventType = ES_ARRIVED_AT_RELOAD;
 				}					
 				// End ES_Front_Bump_Detected block
@@ -416,7 +418,8 @@ static ES_Event DuringDriving2Station(ES_Event ThisEvent)
 	{
 		// Turn on Controller
 		
-		SetMotorController(DRIVE_ON_TAPE_FORWARD);
+		if (Direction == FORWARD) SetMotorController(DRIVE_ON_TAPE_FORWARD);
+		else SetMotorController(DRIVE_ON_TAPE_REVERSE);
 	}
 	// EndIf
 	
@@ -450,7 +453,8 @@ static ES_Event DuringDriving2Reload(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 			// Turn on Controller
-		SetMotorController(DRIVE_ON_TAPE_FORWARD);
+		if (Direction == FORWARD) SetMotorController(DRIVE_ON_TAPE_FORWARD);
+		else SetMotorController(DRIVE_ON_TAPE_REVERSE);
 	}
 	// EndIf
 	

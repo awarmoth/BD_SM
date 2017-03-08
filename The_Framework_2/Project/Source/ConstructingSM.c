@@ -575,29 +575,37 @@ ES_Event DuringReloading(ES_Event ThisEvent)
 
 	// Initialize ReturnEvent to ThisEvent
 	ReturnEvent = ThisEvent;
-	
+
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if ((ThisEvent.EventType == ES_ENTRY) ||
 		(ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		// Set Event2Post type to ES_RELOAD_START
-		Event2Post.EventType = ES_RELOAD_START;
-		// Post Event2Post to ReloadService
-		PostReloadingService(Event2Post);
-		SetLED(LED_SOLID_MODE,ORANGE_LED);
+		if (getBallCount() == 5){
+			// Set Event2Post type to ES_RELOAD_START
+			Event2Post.EventType = ES_RELOAD_COMPLETE;
+			// Post Event2Post to ReloadService
+			PostMasterSM(Event2Post);
+		} else {
+			// Set Event2Post type to ES_RELOAD_START
+			Event2Post.EventType = ES_RELOAD_START;
+			// Post Event2Post to ReloadService
+			PostReloadingService(Event2Post);
+			SetLED(LED_SOLID_MODE,ORANGE_LED);
+		}
 	}
 	// Else If ThisEvent is ES_EXIT
 	else if (ThisEvent.EventType == ES_EXIT)
 	{
+			uint8_t TeamColor = getTeamColor();
+			if (TeamColor == GREEN) SetLED(LED_SOLID_MODE, GREEN_LED);
+			if (TeamColor == RED) SetLED(LED_SOLID_MODE, RED_LED);
 		// If normalgame timeout flag set
 		if (GameTimeoutFlag)
 		{
 			//post ES_Norm_Game_Complete to Master
 			Event2Post.EventType = ES_NORM_GAME_COMPLETE;
 			PostMasterSM(Event2Post);
-			uint8_t TeamColor = getTeamColor();
-			if (TeamColor == GREEN) SetLED(LED_SOLID_MODE, GREEN_LED);
-			if (TeamColor == RED) SetLED(LED_SOLID_MODE, RED_LED);
+
 		}
 	}
 	// EndIf

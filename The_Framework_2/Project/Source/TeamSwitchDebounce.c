@@ -70,7 +70,7 @@ bool CheckTeamSwitchEvents(void) {
       // Set CurrentTeamSwitchState to state read from port pin
       CurrentTeamSwitchState = HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS));
       // If the CurrentTeamSwitchState is different from the LastTeamSwitchState
-      if ((CurrentTeamSwitchState & TEAM_COLOR_MASK) == (LastTeamSwitchState & TEAM_COLOR_MASK)) {
+      if ((CurrentTeamSwitchState & TEAM_COLOR_MASK) != (LastTeamSwitchState & TEAM_COLOR_MASK)) {
             ReturnVal = true;
             // If the CurrentTeamSwitchState is down
         ES_Event ThisEvent;    
@@ -85,6 +85,7 @@ bool CheckTeamSwitchEvents(void) {
         }
       }
       // Set LastTeamSwitchState to the CurrentTeamSwitchState
+			LastTeamSwitchState = CurrentTeamSwitchState;
 return ReturnVal;
 }
 //End of CheckTeamSwitchEvents

@@ -59,6 +59,7 @@ static uint8_t SB3_Byte;
 static uint8_t RR_Byte;
 static uint8_t RS_Byte;
 static uint8_t BallCount;
+static uint8_t timeoutCount=0;
 
 static void TurnOnLEDs(uint8_t TeamColor);
 
@@ -74,7 +75,7 @@ bool InitMasterSM(uint8_t Priority)
 	InitSPI_Comm();
 	InitializePins();
 	BallCount = BALL_START_COUNT;
-	TeamColor = (HWREG(GPIO_PORTB_BASE+(GPIO_O_DATA+ALL_BITS)) & TEAM_COLOR_MASK) >> TEAM_COLOR_SHIFT;
+	TeamColor = RED;
 	// Call StartMasterSM with ThisEvent as the passed parameter
 	StartMasterSM(ThisEvent);
 	// Return true
@@ -121,6 +122,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to ES_NO_EVENT
 	ReturnEvent.EventType = ES_NO_EVENT;
+	printf("CurrentEvent.EventType = %d\r\n", CurrentEvent.EventType);
 	
 	switch (CurrentState)
 	{
@@ -166,9 +168,9 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				{
 					// Set MakeTransition to true
 					MakeTransition = true;
-				} else if ((CurrentEvent.EventType == ES_TIMEOUT) && (CurrentEvent.EventParam == ISR_TIMER)){
-					//printf("flag %i", getISRFlag());
-					ES_Timer_InitTimer(ISR_TIMER,ISR_TIMEOUT);
+					if (TeamColor == GREEN) TeamColor = RED;
+					else TeamColor = GREEN;
+					printf("team color = %i", TeamColor);
 				}
 				// EndIf
 			}
@@ -193,27 +195,43 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_NORMAL_GAME_COMPLETE
 				if (CurrentEvent.EventType == ES_NORMAL_GAME_COMPLETE)
 				{
-					// Post ES_START_FREE_4_ALL to Master
-					ES_Event Event2Post;
-					Event2Post.EventType = ES_START_FREE_4_ALL;
-					PostMasterSM(Event2Post);
-					// Set MakeTransition to true
-					MakeTransition = true;
-					// Set NextState to Free4All
-					NextState = Free4All;
+					if (timeoutCount == 0){
+						ES_Timer_InitTimer(GAME_TIMER, 1000*60);
+						timeoutCount++;
+					} else if (timeoutCount == 1) {
+						ES_Timer_InitTimer(GAME_TIMER, 1000*20);
+						timeoutCount++;
+					} else {
+						// Post ES_START_FREE_4_ALL to Master
+						ES_Event Event2Post;
+						Event2Post.EventType = ES_START_FREE_4_ALL;
+						PostMasterSM(Event2Post);
+						// Set MakeTransition to true
+						MakeTransition = true;
+						// Set NextState to Free4All
+						NextState = Waiting2Start;
+					}
 				}
 				// Else If CurrentEvent is ES_TIMEOUT from GAME_TIMER
 				else if ((CurrentEvent.EventType == ES_TIMEOUT) &&
 						(CurrentEvent.EventParam == GAME_TIMER))
-				{
-					// Post ES_START_FREE_4_ALL to Master
-					ES_Event Event2Post;
-					Event2Post.EventType = ES_START_FREE_4_ALL;
-					PostMasterSM(Event2Post);
-					// Set MakeTransition to true
-					MakeTransition = true;
-					// Set NextState to Free4All
-					NextState = Free4All;
+				{					
+					if (timeoutCount == 0){
+						ES_Timer_InitTimer(GAME_TIMER, 1000*60);
+						timeoutCount++;
+					} else if (timeoutCount == 1) {
+						ES_Timer_InitTimer(GAME_TIMER, 1000*20);
+						timeoutCount++;
+					} else {
+						// Post ES_START_FREE_4_ALL to Master
+						ES_Event Event2Post;
+						Event2Post.EventType = ES_START_FREE_4_ALL;
+						PostMasterSM(Event2Post);
+						// Set MakeTransition to true
+						MakeTransition = true;
+						// Set NextState to Free4All
+						NextState = Waiting2Start;
+					}
 				}
 				// EndIf
 			}
@@ -299,11 +317,11 @@ static ES_Event DuringWaiting2Start(ES_Event ThisEvent)
 	{
 		//if (SM_TEST) printf("Master: Entering Waiting2Start\r\n");
 		// Set TeamColor
-		TeamColor = HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) & TEAM_COLOR_MASK >> TEAM_COLOR_SHIFT;
+		//TeamColor = HWREG(GPIO_PORTE_BASE+(GPIO_O_DATA+ALL_BITS)) & TEAM_COLOR_MASK >> TEAM_COLOR_SHIFT;
 		// Turn on respective LEDs
 		if (TeamColor == GREEN) SetLED(LED_BLINK_MODE, GREEN_LED);
 		else SetLED(LED_BLINK_MODE, RED_LED);
-		printf("setting LED blink, tc: %i", TeamColor);
+		//printf("setting LED blink, tc: %i", TeamColor);
 		// Set Event2Post type to ES_COMMAND
 		Event2Post.EventType = ES_COMMAND;
 		// Set Byte2Write to status byte
@@ -333,14 +351,14 @@ static ES_Event DuringConstructing(ES_Event ThisEvent)
 		// Start one shot timer
 		HWREG(WTIMER3_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
 //		
-if (TEAM_COLOR == GREEN) SetLED(LED_SOLID_MODE, GREEN_LED);
+if (TeamColor == GREEN) SetLED(LED_SOLID_MODE, GREEN_LED);
 else 	SetLED(LED_SOLID_MODE, RED_LED);
 		printf("setting LED, tc: %i", TeamColor);
 		// Start ConstructingSM
 		StartConstructingSM(ThisEvent);
-		
+		uint32_t GAME_TIMEOUT = 60*1000;
 		// Start GAME_TIMER
-		//ES_Timer_InitTimer(GAME_TIMER,GAME_TIMEOUT);
+		ES_Timer_InitTimer(GAME_TIMER,GAME_TIMEOUT);
 	}
 	// Else
 	else if (ThisEvent.EventType == ES_EXIT){

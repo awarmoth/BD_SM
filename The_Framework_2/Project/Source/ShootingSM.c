@@ -354,6 +354,7 @@ static ES_Event DuringAlignToGoal(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		printf("align to goal entry");
+		
 		HWREG(WTIMER0_BASE+TIMER_O_CTL) |= TIMER_CTL_TBEN;
 		// Start rotating // direction based on team color
 		uint8_t TeamColor = getTeamColor();
