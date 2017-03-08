@@ -479,6 +479,24 @@ void SetMotorController(uint8_t control){
 	}
 }
 
+void SetMotorSensorDirection(uint8_t dir)
+{
+	// if the bot needs to travel forward
+	if (dir == FORWARD_DIR)
+	{
+		//set the active resonance sensors forward
+		RightResonanceSensor = FORWARD_RIGHT_RESONANCE_AD;
+		LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
+	}
+	// else if the bot needs to travel in reverse
+	else if (dir == BACKWARD_DIR)
+	{
+		//set the active resonance sensors backwards
+		RightResonanceSensor = REVERSE_RIGHT_RESONANCE_AD;
+		LeftResonanceSensor = REVERSE_LEFT_RESONANCE_AD;
+	}
+}
+
 void FindTape(void)
 {
 	// Set a flag to watch for tape crossings
