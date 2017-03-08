@@ -50,7 +50,7 @@
  #define ALL_GOALS_ACTIVE 0x07
  #define ALL_STAGES_ACTIVE 0x07
  
- #define MAX_BAD_RESPONSES 4
+ #define MAX_BAD_RESPONSES 20
  #define RESPONSE_NOT_READY 0
  #define RESPONSE_READY 0xAA
  
@@ -104,18 +104,18 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 60
-#define RIGHT_MAX_DUTY 60
-#define RIGHT_CCW_COMMAND 35
-#define RIGHT_CW_COMMAND 35
-#define LEFT_CCW_COMMAND 35
-#define LEFT_CW_COMMAND 35
+#define LEFT_MAX_DUTY 65
+#define RIGHT_MAX_DUTY 65
+#define RIGHT_CCW_COMMAND 45
+#define RIGHT_CW_COMMAND 40
+#define LEFT_CCW_COMMAND 45
+#define LEFT_CW_COMMAND 40
 #define COMMAND_DIFF 0
 
-#define RIGHT_CCW_DIR 1
-#define RIGHT_CW_DIR 0
-#define LEFT_CCW_DIR 0
-#define LEFT_CW_DIR 1
+#define RIGHT_CCW_DIR 0
+#define RIGHT_CW_DIR 1
+#define LEFT_CCW_DIR 1
+#define LEFT_CW_DIR 0
 #define FORWARD_DIR 0
 #define REVERSE_DIR 1
 
@@ -146,9 +146,9 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 
 //define ball counters
-#define BALL_START_COUNT 0
+#define BALL_START_COUNT 4
 #define NO_BALLS 0
-#define MAX_BALLS 50
+#define MAX_BALLS 5
 
 #define WARM_UP_TIME 5000
 #define SHOT_CLOCK_TIME 20000

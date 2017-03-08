@@ -334,8 +334,8 @@ ES_Event RunConstructingSM(ES_Event CurrentEvent)
 				// If CurrentEvent is ES_RELOAD_COMPLETE
 				if (CurrentEvent.EventType == ES_RELOAD_COMPLETE)
 				{
-					// If BallCount < 5
-					if (getBallCount() < 5)
+					// If BallCount < MAX_BALLS
+					if (getBallCount() < MAX_BALLS)
 					{
 						// Set MakeTransition to true
 						MakeTransition = true;
@@ -580,7 +580,7 @@ ES_Event DuringReloading(ES_Event ThisEvent)
 	if ((ThisEvent.EventType == ES_ENTRY) ||
 		(ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		if (getBallCount() == 5){
+		if (getBallCount() == MAX_BALLS){
 			// Set Event2Post type to ES_RELOAD_START
 			Event2Post.EventType = ES_RELOAD_COMPLETE;
 			// Post Event2Post to ReloadService
@@ -690,7 +690,8 @@ void HallEffect_ISR( void )
 		
 		//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
 		//	and HasLeftStage is true
-		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 15) {
+		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 1
+			) {
 		//	Post ES_StationDetected Event
 			PostEvent.EventType = ES_STATION_DETECTED;
 			Throwaway = 0;

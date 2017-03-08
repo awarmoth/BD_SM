@@ -249,8 +249,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							BadResponseCounter++;
 							// Set MakeTransition to true
 							MakeTransition = true;
-							// Set NextState to Reporting_2
-							NextState = Reporting_2;
+							// Set NextState to Reporting_1
+							NextState = Reporting_1;
 						}
 						// EndIf
 					}

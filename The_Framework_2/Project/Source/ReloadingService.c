@@ -134,7 +134,7 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 			// If ThisEvent is ES_TIMEOUT and PulseCounter is less than NUM_PULSES
 			if ((ThisEvent.EventType == ES_TIMEOUT) && 
 				(ThisEvent.EventParam == IR_PULSE_TIMER) &&
-				 (PulseCounter < NUM_PULSES)){
+				 (PulseCounter <= NUM_PULSES)){
 				// Enable the IR Emitter
 				Enable_IR_Emitter();
 				// Set NextState to Emitting_High
@@ -144,7 +144,7 @@ ES_Event RunReloadingService(ES_Event ThisEvent)
 			// Else If ThisEvent is ES_TIMEOUT and PulseCounter is equal to NUM_PULSES
 			} else if ((ThisEvent.EventType == ES_TIMEOUT) && 
 				(ThisEvent.EventParam == IR_PULSE_TIMER) &&
-				 (PulseCounter == NUM_PULSES)){
+				 (PulseCounter > NUM_PULSES)){
 				// Set NextState to Wait4Delivery
 				NextState = Wait4Delivery;
 				// Clear PulseCounter
