@@ -479,6 +479,24 @@ void SetMotorController(uint8_t control){
 	}
 }
 
+void SetMotorSensorDirection(uint8_t dir)
+{
+	// if the bot needs to travel forward
+	if (dir == FORWARD_DIR)
+	{
+		//set the active resonance sensors forward
+		RightResonanceSensor = FORWARD_RIGHT_RESONANCE_AD;
+		LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
+	}
+	// else if the bot needs to travel in reverse
+	else if (dir == BACKWARD_DIR)
+	{
+		//set the active resonance sensors backwards
+		RightResonanceSensor = REVERSE_RIGHT_RESONANCE_AD;
+		LeftResonanceSensor = REVERSE_LEFT_RESONANCE_AD;
+	}
+}
+
 void FindTape(void)
 {
 	// Set a flag to watch for tape crossings
@@ -670,30 +688,29 @@ void Launcher_Controller_ISR (void)
 {
 	//clear interrupt
 	HWREG(WTIMER3_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
-	SetFlywheelDuty(Launcher_Command);
-		//error is command minus RPM
+	//error is command minus RPM
 	static float Kp = 20; //100
 	static float Ki = .05;	//5
 	static float Last_Launcher_Error = 0;
 	static float Last_Launcher_Control = 0;
 	float Launcher_Error = Launcher_Command - Launcher_RPS;
-		//control is u[k]=(Kp+KiT/2)e[k]-(KiT/2-Kp)e[k-1]+u[k-1]
+	//control is u[k]=(Kp+KiT/2)e[k]-(KiT/2-Kp)e[k-1]+u[k-1]
 	float Launcher_Control = (Kp+Ki)*Launcher_Error + (Kp - Ki)*Last_Launcher_Error + Last_Launcher_Control;
-		//if control is greater than nominal
+	//if control is greater than nominal
 	if (Launcher_Control > 100)
 	{
-			//control equals nominal
+		//control equals nominal
 		Launcher_Control = 100;
-			//update last control as nominal
-		//Launcher_Error = Last_Launcher_Error;
+		//update last control as nominal
+		Launcher_Error = Last_Launcher_Error;
 	}
 		//else if control is less than 0
 	else if (Launcher_Control < 0)
 	{
-			//control is 0
+		//control is 0
 		Launcher_Control = 0;
-			//update last control as 0
-		//Launcher_Error = Last_Launcher_Error;
+		//update last control as 0
+		Launcher_Error = Last_Launcher_Error;
 	}
 	//update previous errors and controls
 	Last_Launcher_Error = Launcher_Error;
