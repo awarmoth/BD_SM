@@ -8,6 +8,8 @@
  #define NO_LOC 0
  #define BALL_TRACKING 0
  #define TAPE_TEST 0
+ 
+ #define MAX_COUNTER 5
     
  // Commands
  #define STATUS_COMMAND 0xc0
@@ -205,4 +207,4 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 #define LAUNCHER_PULSE_PER_REV 3
 
-#define FIRING_SPEED 70
+#define FIRING_SPEED 50

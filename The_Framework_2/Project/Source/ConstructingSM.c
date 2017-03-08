@@ -42,6 +42,7 @@
 #define ALL_BITS (0xff<<2)
 #endif
 
+#define BIN_WIDTH 56
 
 // readability defines
 
@@ -59,6 +60,7 @@ static uint32_t LastPeriod, DeltaAvg;
 static uint8_t HasLeftStage = true;
 static bool GameTimeoutFlag = false;
 static bool initHallEffect = true;
+static uint8_t ActiveCode;
 
 static ES_Event DuringGettingTargetStation( ES_Event Event);
 static ES_Event DuringDrivingAlongTape( ES_Event Event);
@@ -634,27 +636,10 @@ void UpdateStatus( void )
 
 void HallEffect_ISR( void )
 {
-	//	Static local variable LastTen array initialized to ten zeros
-	static uint32_t LastTen[RUN_AVERAGE_LENGTH];
-	static uint32_t LastDeltas[RUN_AVERAGE_LENGTH];
-	static uint16_t Throwaway = 0;
-	if (initHallEffect){
-		for (int i=0;i<RUN_AVERAGE_LENGTH;i++){
-			LastTen[i] = 0;
-			LastDeltas[i] = 0;
-			Throwaway = 0;
-		}
-		initHallEffect = false;
-	}
-	if (Throwaway< MAX_THROWAWAY){
-		Throwaway++;
-		return;
-	}
-	//	Static local variable 8 bit integer counter initialized to 0
 	static uint8_t counter = 0;
-	static uint8_t deltacounter = 0;
+
 	ES_Event PostEvent;
-	uint32_t ThisCapture, CurrentPeriod;
+	uint32_t ThisCapture, CurrentPeriod, CurrentCode;
 		
 	// Clear source of interrupt
 	HWREG(WTIMER2_BASE+TIMER_O_ICR) = TIMER_ICR_CAECINT;
@@ -669,57 +654,40 @@ void HallEffect_ISR( void )
 	//	Set CurrentPeriod to subtract LastCapture from ThisCapture
 	ThisCapture = HWREG(WTIMER2_BASE+TIMER_O_TAR);
 	CurrentPeriod = ThisCapture - LastCapture;
-	
-	LastTen[deltacounter] = CurrentPeriod;
-	for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
-		DeltaAvg += LastDeltas[i];
-	}
-	
-	if(deltacounter == RUN_AVERAGE_LENGTH-1){
-		deltacounter = 0;
-	} else {
-		deltacounter++;
-	}
-	DeltaAvg /= RUN_AVERAGE_LENGTH;
-	//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
-	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) && (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
-		//	Update counter position in LastTen to CurrentPeriod
-		LastTen[counter] = CurrentPeriod;
-		
-		//	Set HallSensorPeriod to average of LastTen
-		for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
-			HallSensorPeriod += LastTen[i];
-		}
-		HallSensorPeriod = HallSensorPeriod/RUN_AVERAGE_LENGTH;
-		
-		//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
-		//	and HasLeftStage is true
-		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 15) {
-		//	Post ES_StationDetected Event
-			PostEvent.EventType = ES_STATION_DETECTED;
-			Throwaway = 0;
-			
-			PostMasterSM(PostEvent);
-			//printf("Good Frequency: %i\r\n", HallSensorPeriod);
-			for(int j = 0; j < RUN_AVERAGE_LENGTH; j++)
-			{
-				LastTen[j] = 0;
-				LastDeltas[j] = 0;
-			}
-			HasLeftStage = false;
-		} else if(HasLeftStage){
-			//printf("Bad Period: %i\r\n", HallSensorPeriod);
-		}
-		//	If counter equals 9
-		if(counter == RUN_AVERAGE_LENGTH-1){
-			counter = 0;
+
+// if the period is a valid period
+if ((CurrentPeriod <= MAX_ALLOWABLE_PER) && (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
+		// Get the code that relates to this frequency
+		CurrentCode = getPeriodCode(CurrentPeriod);
+		//if we don't have any data points yet
+		if (counter == 0){
+			//set our active code to the current code
+			ActiveCode = CurrentCode;
+			// increment counter
+			counter++;
+		// else if current code doesn't match active code
+		} else if (CurrentCode != ActiveCode)		{
+			// update active code
+			ActiveCode = CurrentCode;
+			//reset counter to 1 data point
+			counter = 1;
+		// else (current code is active code)
 		} else {
 			counter++;
 		}
-	}
+		//if we have enough consecutive data points
+		if (counter == MAX_COUNTER) {
+				if (HasLeftStage == true) {
+				//Post Station Detected to master
+				PostEvent.EventType = ES_STATION_DETECTED;
+				PostMasterSM(PostEvent);
+				// Indicate that we are at a station to prevent event overflow
+				HasLeftStage = false;
+				}
+			counter = 0;
+		}
 	LastCapture = ThisCapture;
-	
-	LastPeriod = CurrentPeriod;
+	}
 }
 
 void HallEffectOneShotTimer_ISR( void )
@@ -741,6 +709,11 @@ void HallEffectOneShotTimer_ISR( void )
 uint32_t getPeriod( void )
 {
 	return HallSensorPeriod;
+}
+
+uint8_t getActiveCode( void )
+{
+	return ActiveCode;
 }
 
 uint8_t incrementScore(void){

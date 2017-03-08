@@ -308,7 +308,7 @@ static ES_Event DuringReporting_1(ES_Event ThisEvent)
 	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		// Period = getPeriod // ISR is constantly updating
-		Period = getPeriod();
+		uint8_t Code = getActiveCode();
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
 		Byte2Write += getPeriodCode(Period);

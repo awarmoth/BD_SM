@@ -25,6 +25,7 @@ void setGameTimeoutFlag(bool flag);
 bool getGameTimeoutFlag(void);
 bool getHasLeftStage (void);
 void setInitHallEffect(bool value);
+uint8_t getActiveCode( void );
 
 
 #endif /*ConstructingSM_H */
