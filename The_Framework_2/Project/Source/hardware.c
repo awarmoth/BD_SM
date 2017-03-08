@@ -20,6 +20,7 @@ Module file for exectuing all hardware initialization
 #include "driverlib/timer.h"
 #include "constants.h"
 #include "PWM10Tiva.h"
+#include "hardware.h"
 
 #include "ADMulti.h"
 #include "PWM_Module.h"
@@ -43,13 +44,11 @@ static void AD_Init(void);
 static void Init_Beacon_Receiver(void);
 static void MagneticTimerInit(void);
 static void OneShotTimerInit(void);
-static void LoadingMotorInit(void);
 static void Launcher_Encoder_Init(void);
 static void Init_Launcher_Controller(void);
-//static void LoadingMotorInit(void);
-static void InitLEDs(void);
-static void InitIR_Emitter(void);
 static void Init_LED(void);
+static void InitIR_Emitter(void);
+
 
 static uint8_t Controller = CONTROLLER_OFF;
 static uint8_t LastController = POSITION_CONTROLLER;
@@ -62,22 +61,26 @@ static uint32_t RightResonanceHistory[TAPE_WATCH_WINDOW] = {0};
 static uint32_t LeftResonanceHistory[TAPE_WATCH_WINDOW] = {0};
 static bool ISR_Flag = false;
 static uint32_t Last_Launcher_Time = 0;
-static uint16_t Launcher_RPM = 0;
+static uint16_t Launcher_RPS = 0;
 static uint16_t Launcher_Command = 0;
+static bool BlinkState = false;
+static uint8_t ActiveLED = LED_OFF;
+
 
 void InitializePins(void) {
 	Init_Controller();
 	AD_Init();
 	Init_Beacon_Receiver();
 	InitPWM();
-	//InitFlywheelPWM();
-	//SetFlywheelDuty(0);
+	InitFlywheelPWM();
+	InitServoPWM();
+	SetFlywheelDuty(0);
 	MagneticTimerInit();
 	OneShotTimerInit();
-	//Launcher_Encoder_Init();
-	//Init_Launcher_Controller();
-	//InitIR_Emitter();
+	Launcher_Encoder_Init();
+	Init_Launcher_Controller();
 	Init_LED();
+	InitIR_Emitter();
 }
 
 static void Init_Controller(void)
@@ -554,7 +557,7 @@ void Beacon_Receiver_ISR(void)
 	else counter /= 2;
 	printf("%i.",counter);
 	//printf("%i\r\n",Frequency);
-	if (counter == 10) {
+	if (counter == 4) {
 		//Disable Beacon Detection
 		HWREG(WTIMER0_BASE+TIMER_O_CTL)&=(~TIMER_CTL_TBEN);
 		//printf("Beacon Detected");
@@ -622,6 +625,8 @@ static void Launcher_Encoder_Init(void)
 	HWREG(WTIMER1_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBSTALL|TIMER_CTL_TBEN);
 }
 
+
+
 void Launcher_Encoder_ISR(void)
 {
 	//clear interupt
@@ -629,7 +634,7 @@ void Launcher_Encoder_ISR(void)
 	//get interupt timer
 	uint32_t Launcher_Time = HWREG(WTIMER1_BASE+TIMER_O_TBR);
 	//calculate new RPM
-	Launcher_RPM = TICKS_PER_S/LAUNCHER_PULSE_PER_REV*S_PER_MIN/(Launcher_Time-Last_Launcher_Time);
+	Launcher_RPS = ((TICKS_PER_S/LAUNCHER_PULSE_PER_REV)/(Launcher_Time-Last_Launcher_Time));
 	//update time of last interupt
 	Last_Launcher_Time=Launcher_Time;
 	//Ignore RPM = 0 case
@@ -658,28 +663,57 @@ static void Init_Launcher_Controller(void)
 	HWREG(NVIC_PRI25)=(HWREG(NVIC_PRI25)&~NVIC_PRI25_INTB_M)|(0x6<<NVIC_PRI25_INTB_S);
 	//enable the timer
 	HWREG(WTIMER3_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBEN|TIMER_CTL_TBSTALL);
-	
+	SetLauncherCommand(0);
 }
 
 void Launcher_Controller_ISR (void)
 {
 	//clear interrupt
 	HWREG(WTIMER3_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
+	SetFlywheelDuty(Launcher_Command);
 		//error is command minus RPM
+	static float Kp = 20; //100
+	static float Ki = .05;	//5
+	static float Last_Launcher_Error = 0;
+	static float Last_Launcher_Control = 0;
+	float Launcher_Error = Launcher_Command - Launcher_RPS;
 		//control is u[k]=(Kp+KiT/2)e[k]-(KiT/2-Kp)e[k-1]+u[k-1]
-		//update previous errors and controls
+	float Launcher_Control = (Kp+Ki)*Launcher_Error + (Kp - Ki)*Last_Launcher_Error + Last_Launcher_Control;
 		//if control is greater than nominal
+	if (Launcher_Control > 100)
+	{
 			//control equals nominal
+		Launcher_Control = 100;
 			//update last control as nominal
-		//else if control is less than 005
+		//Launcher_Error = Last_Launcher_Error;
+	}
+		//else if control is less than 0
+	else if (Launcher_Control < 0)
+	{
 			//control is 0
+		Launcher_Control = 0;
 			//update last control as 0
+		//Launcher_Error = Last_Launcher_Error;
+	}
+	//update previous errors and controls
+	Last_Launcher_Error = Launcher_Error;
+	Last_Launcher_Control = Launcher_Control;
 	//write control to motors
+	SetFlywheelDuty((uint8_t)Launcher_Control);
 }
 
-void Set_Launcher_Command(uint16_t Requested_Command)
+void SetLauncherCommand(uint8_t InputCommand)
 {
-	Launcher_Command = Requested_Command;
+	Launcher_Command = InputCommand;
+	if(InputCommand != 0)
+	{
+		HWREG(WTIMER3_BASE+TIMER_O_CTL)|=(TIMER_CTL_TBEN|TIMER_CTL_TBSTALL);
+	}
+	else
+	{
+		SetFlywheelDuty(0);
+		HWREG(WTIMER3_BASE+TIMER_O_CTL)&=~(TIMER_CTL_TBEN);
+	}
 }
 
 static void Init_LED(void)
@@ -694,7 +728,7 @@ static void Init_LED(void)
 	//set 32 bit wide mode
 	HWREG(WTIMER4_BASE+TIMER_O_CFG)=TIMER_CFG_16_BIT;
 	//set up periodic mode
-	HWREG(WTIMER4_BASE+TIMER_O_TAMR)=(HWREG(WTIMER34_BASE+TIMER_O_TAMR)&~TIMER_TAMR_TAMR_M)|TIMER_TAMR_TAMR_PERIOD;
+	HWREG(WTIMER4_BASE+TIMER_O_TAMR)=(HWREG(WTIMER4_BASE+TIMER_O_TAMR)&~TIMER_TAMR_TAMR_M)|TIMER_TAMR_TAMR_PERIOD;
 	//set timeout to 500 ms
 	HWREG(WTIMER4_BASE+TIMER_O_TAILR)=(uint32_t)LED_BLINK_TIME_US*TICKS_PER_US;
 	//enable local interupt
@@ -706,7 +740,7 @@ static void Init_LED(void)
 	//set the LED pins low
 	HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) &= ~(GPIO_PIN_2|GPIO_PIN_3);
 	//enable NVIC interupt
-	HWREG(NVIC_EN4)|=(BIT6HI);
+	HWREG(NVIC_EN3)|=(BIT6HI);
 	//globally enable interrupts
 	__enable_irq();
 	
@@ -729,6 +763,7 @@ void SetLED(uint8_t Mode, uint8_t LED)
 	//else if mode is blink
 	else if (Mode == LED_BLINK_MODE)
 	{
+		printf("setblink");
 		//clear LEDS
 		HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) &= ~(LED_MASK);
 		//clear blink state
@@ -741,19 +776,23 @@ void SetLED(uint8_t Mode, uint8_t LED)
 void LED_Blink_ISR(void)
 {
 	//clear the source of the interrupt
-	HWREG(WTIMER4_BASE+TIMER_O_ICR)=TIMER_ICR_CAECINT;
+	HWREG(WTIMER4_BASE+TIMER_O_ICR)=TIMER_ICR_TATOCINT;
 	//if last blink state was hi
 	if (BlinkState == true)
 	{
 		//write lo
 		HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) &= ~ActiveLED;
+		BlinkState = false;
 	}
 	//else if last blink state was low
 	else if (BlinkState == false)
 	{
 		//write hi
 		HWREG(GPIO_PORTF_BASE+(ALL_BITS+GPIO_O_DATA)) |= ActiveLED;
+		BlinkState = true;
 	}
-	//toggle blink state
-	BlinkState = ~BlinkState;
 }
+
+
+
+
