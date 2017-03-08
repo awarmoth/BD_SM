@@ -52,12 +52,11 @@
 
 #include "BITDEFS.H"
 
-#define LOAD_SERVO_UP 300
-#define LOAD_SERVO_DOWN 2000
+#define LOAD_SERVO_UP 770
+#define LOAD_SERVO_DOWN 1540
 #define LOAD_UP_TIME 500
 #define LOAD_WAIT_TIME 1000
 #define LOAD_DOWN_TIME 500
-
 
 static uint8_t MyPriority;
 static FiringState_t CurrentState;

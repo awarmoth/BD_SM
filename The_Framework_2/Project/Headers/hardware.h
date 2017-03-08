@@ -7,3 +7,4 @@ bool getISRFlag(void);
 void Set_Launcher_Command(uint16_t Requested_Command);
 void FindTape(void);
 void SetLED(uint8_t Mode, uint8_t LED);
+void SetLauncherCommand(uint8_t InputCommand);

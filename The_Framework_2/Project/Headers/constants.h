@@ -5,7 +5,7 @@
  #define CheckOff3 0
  #define SM_TEST 1
  #define TEAM_COLOR RED
- #define NO_LOC 1
+ #define NO_LOC 0
  #define BALL_TRACKING 0
  #define TAPE_TEST 0
  
@@ -148,11 +148,11 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 
 //define ball counters
-#define BALL_START_COUNT 3
+#define BALL_START_COUNT 5
 #define NO_BALLS 0
 #define MAX_BALLS 5
 
-#define WARM_UP_TIME 2000
+#define WARM_UP_TIME 5000
 #define SHOT_CLOCK_TIME 20000
 #define BALL_AIR_TIME 4000 //will probably want to lower this
 
@@ -176,11 +176,35 @@
 #define TEAM_COLOR_MASK (BIT5HI)
 #define TEAM_COLOR_SHIFT 5
 
-#define LED_BLINK_TIME_US 5000000
+#define LED_BLINK_TIME_US 500000
 #define LED_OFF 0x00
-#define RED_LED 0x02
-#define GREEN_LED 0x04
-#define ORANGE_LED 0x06
-#define LED_MASK 0x06
+#define RED_LED GPIO_PIN_3
+#define GREEN_LED GPIO_PIN_2
+#define ORANGE_LED GPIO_PIN_2 | GPIO_PIN_3
+#define LED_MASK ORANGE_LED
 #define LED_SOLID_MODE 0
 #define LED_BLINK_MODE 1
+
+#define BITS_PER_NIBBLE 4
+#define TICKS_PER_S 40000000
+
+#ifndef ALL_BITS
+#define ALL_BITS (0xff<<2)
+#endif
+
+
+/*----------------------------- Module Defines ----------------------------*/
+#define NUM_MOTOR 1
+#define MAX_MOT_POS 3200
+#define MOT_FREQ 25000
+#define INCREMENT 60
+#define MOTOR_PERIOD 		250
+#define TIMING_CHANNEL 	0
+#define TIME_MOT_GROUP 	0
+#define VIB_MOT_ON			1
+#define VIB_MOT_OFF			0
+#define S_PER_MIN 60
+#define LAUNCHER_CONTROLLER_TIME_US 2000
+#define LAUNCHER_PULSE_PER_REV 3
+
+#define FIRING_SPEED 69
