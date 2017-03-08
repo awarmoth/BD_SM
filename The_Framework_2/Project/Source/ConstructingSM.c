@@ -642,6 +642,7 @@ void HallEffect_ISR( void )
 		for (int i=0;i<RUN_AVERAGE_LENGTH;i++){
 			LastTen[i] = 0;
 			LastDeltas[i] = 0;
+			Throwaway = 0;
 		}
 		initHallEffect = false;
 	}
@@ -693,16 +694,13 @@ void HallEffect_ISR( void )
 		
 		//	If HallSensorPeriod is less than MaxAllowablePer and greater than LeastAllowablePer 
 		//	and HasLeftStage is true
-		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 1
-			) {
+		if((HallSensorPeriod <= MAX_ALLOWABLE_PER) && (HallSensorPeriod >= MIN_ALLOWABLE_PER) && HasLeftStage && DeltaAvg < 15) {
 		//	Post ES_StationDetected Event
 			PostEvent.EventType = ES_STATION_DETECTED;
 			Throwaway = 0;
 			
 			PostMasterSM(PostEvent);
 			//printf("Good Frequency: %i\r\n", HallSensorPeriod);
-			
-		//	HasLeftStage is false
 			for(int j = 0; j < RUN_AVERAGE_LENGTH; j++)
 			{
 				LastTen[j] = 0;
@@ -770,4 +768,8 @@ bool getGameTimeoutFlag(void)
 
 bool getHasLeftStage(void) {
 	return HasLeftStage;
+}
+
+void setInitHallEffect(bool value){
+	initHallEffect = value;
 }

@@ -3,7 +3,7 @@
 
  ****************************************************************************/
  #define CheckOff3 0
- #define SM_TEST 0
+ #define SM_TEST 0  
  #define TEAM_COLOR RED
  #define NO_LOC 0
  #define BALL_TRACKING 0
@@ -87,7 +87,7 @@
  
  // Magnetic sensors
  #define RUN_AVERAGE_LENGTH 20
- #define MAX_THROWAWAY 20
+ #define MAX_THROWAWAY 15
  #define TICKS_PER_USEC 40
  #define MAX_ALLOWABLE_PER (TICKS_PER_USEC*1361)
  #define MIN_ALLOWABLE_PER (TICKS_PER_USEC*472)
@@ -106,10 +106,10 @@
 //define controller constants
 #define LEFT_MAX_DUTY 80
 #define RIGHT_MAX_DUTY 80
-#define RIGHT_CCW_COMMAND 46
-#define RIGHT_CW_COMMAND 46
-#define LEFT_CCW_COMMAND 40
-#define LEFT_CW_COMMAND 40
+#define RIGHT_CCW_COMMAND 45
+#define RIGHT_CW_COMMAND 45
+#define LEFT_CCW_COMMAND 55
+#define LEFT_CW_COMMAND 55
 #define COMMAND_DIFF 0
 
 #define RIGHT_CCW_DIR 0
@@ -205,4 +205,4 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 #define LAUNCHER_PULSE_PER_REV 3
 
-#define FIRING_SPEED 35
+#define FIRING_SPEED 70

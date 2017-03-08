@@ -249,8 +249,8 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 							BadResponseCounter++;
 							// Set MakeTransition to true
 							MakeTransition = true;
-							// Set NextState to Reporting_1
-							NextState = Reporting_1;
+							// Set NextState to Reporting_2
+							NextState = Reporting_2;
 						}
 						// EndIf
 					}
@@ -372,6 +372,7 @@ static ES_Event DuringReporting_2(ES_Event ThisEvent)
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if ((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
+		//setInitHallEffect(true);
 		// Period = getPeriod // ISR is constantly updating
 		Period = getPeriod();
 		// Set Byte2Write to report byte based on Period

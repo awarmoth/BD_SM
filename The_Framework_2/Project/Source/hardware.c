@@ -77,8 +77,8 @@ void InitializePins(void) {
 	SetFlywheelDuty(0);
 	MagneticTimerInit();
 	OneShotTimerInit();
-	Launcher_Encoder_Init();
-	Init_Launcher_Controller();
+//	Launcher_Encoder_Init();
+	//Init_Launcher_Controller();
 	Init_LED();
 	InitIR_Emitter();
 }
@@ -265,8 +265,8 @@ void Motor_Controller_ISR(void)
 	HWREG(WTIMER2_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	static float LastError_POS = 0;
 	static float LastControl_POS = 0;
-	static float Kp_POS = 10 ;
-	static float Kd_POS = 2;
+	static float Kp_POS = 40 ;
+	static float Kd_POS = 0.5;
 	int8_t LeftControl = 0;
 	int8_t RightControl = 0;
 	

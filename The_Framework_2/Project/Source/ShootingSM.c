@@ -383,7 +383,7 @@ static ES_Event DuringWarmingUp(ES_Event ThisEvent) {
 	// If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
-		SetLauncherCommand(FIRING_SPEED);
+		SetFlywheelDuty(FIRING_SPEED);
 		ES_Timer_InitTimer(WARM_UP_TIMER, WARM_UP_TIME);
 	}// EndIf
 	

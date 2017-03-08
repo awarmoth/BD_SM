@@ -199,7 +199,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 						ES_Timer_InitTimer(GAME_TIMER, 1000*60);
 						timeoutCount++;
 					} else if (timeoutCount == 1) {
-						ES_Timer_InitTimer(GAME_TIMER, 1000*20);
+						ES_Timer_InitTimer(GAME_TIMER, 1000*19);
 						timeoutCount++;
 					} else {
 						// Post ES_START_FREE_4_ALL to Master
