@@ -3,9 +3,9 @@
 
  ****************************************************************************/
  #define CheckOff3 0
- #define SM_TEST 0
+ #define SM_TEST 1
  #define TEAM_COLOR RED
- #define NO_LOC 0
+ #define NO_LOC 1
  #define BALL_TRACKING 0
  #define TAPE_TEST 0
    
@@ -146,9 +146,9 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 
 //define ball counters
-#define BALL_START_COUNT 5
+#define BALL_START_COUNT 0
 #define NO_BALLS 0
-#define MAX_BALLS 5
+#define MAX_BALLS 50
 
 #define WARM_UP_TIME 5000
 #define SHOT_CLOCK_TIME 20000

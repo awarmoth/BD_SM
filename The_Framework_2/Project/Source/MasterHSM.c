@@ -122,7 +122,7 @@ ES_Event RunMasterSM(ES_Event CurrentEvent)
 	EntryEvent.EventType = ES_ENTRY;
 	// Initialize ReturnEvent to ES_NO_EVENT
 	ReturnEvent.EventType = ES_NO_EVENT;
-	printf("CurrentEvent.EventType = %d\r\n", CurrentEvent.EventType);
+	//printf("CurrentEvent.EventType = %d\r\n", CurrentEvent.EventType);
 	
 	switch (CurrentState)
 	{

@@ -678,7 +678,7 @@ void HallEffect_ISR( void )
 	}
 	DeltaAvg /= RUN_AVERAGE_LENGTH;
 	//printf("period = %i, this=%i, Last=%i\r\n",CurrentPeriod,ThisCapture,LastCapture);
-	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) || (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
+	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) && (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
 		//	Update counter position in LastTen to CurrentPeriod
 		LastTen[counter] = CurrentPeriod;
 		
@@ -699,6 +699,11 @@ void HallEffect_ISR( void )
 			//printf("Good Frequency: %i\r\n", HallSensorPeriod);
 			
 		//	HasLeftStage is false
+			for(int j = 0; j < RUN_AVERAGE_LENGTH; j++)
+			{
+				LastTen[j] = 0;
+				LastDeltas[j] = 0;
+			}
 			HasLeftStage = false;
 		} else if(HasLeftStage){
 			//printf("Bad Period: %i\r\n", HallSensorPeriod);

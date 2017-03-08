@@ -301,7 +301,6 @@ ES_Event RunDrivingAlongTapeSM(ES_Event CurrentEvent)
 					LastStation = 0;
 					
 					// Set ReturnEvent to ES_ArrivedAtReload	
-					if (getBallCount() == MAX_BALLS)
 					ReturnEvent.EventType = ES_ARRIVED_AT_RELOAD;
 				}					
 				// End ES_Front_Bump_Detected block
