@@ -104,8 +104,8 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 80
-#define RIGHT_MAX_DUTY 80
+#define LEFT_MAX_DUTY 70
+#define RIGHT_MAX_DUTY 70
 #define RIGHT_CCW_COMMAND 45
 #define RIGHT_CW_COMMAND 45
 #define LEFT_CCW_COMMAND 55
@@ -146,7 +146,7 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 
 //define ball counters
-#define BALL_START_COUNT 3
+#define BALL_START_COUNT 5
 #define NO_BALLS 0
 #define MAX_BALLS 5
 
@@ -205,4 +205,4 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 #define LAUNCHER_PULSE_PER_REV 3
 
-#define FIRING_SPEED 70
+#define FIRING_SPEED 50

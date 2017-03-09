@@ -20,6 +20,7 @@
  static ES_Event DuringWaitForResponse_1 ( ES_Event ThisEvent );
  static ES_Event DuringReporting_2 ( ES_Event ThisEvent );
  static ES_Event DuringWaitForResponse_2 ( ES_Event ThisEvent );
+ static int8_t interval = 0;
 
 
 void StartCheckInSM(ES_Event CurrentEvent)
@@ -114,10 +115,17 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					// Else If BadResponseCounter > MaxBadResponses
 					}
 					else if (BadResponseCounter > MAX_BAD_RESPONSES)
-					{ 
-						// Transform ReturnEvent to ES_Reorient
-						ReturnEvent.EventType = ES_REORIENT;
-						BadResponseCounter = 0;
+					{
+						if (BadResponseCounter == MAX_BAD_RESPONSES + 1) {
+							interval = 1;
+						} else if (BadResponseCounter == MAX_BAD_RESPONSES + 2) {
+							interval = -1;
+						} else {
+							// Transform ReturnEvent to ES_Reorient
+							ReturnEvent.EventType = ES_REORIENT;
+							BadResponseCounter = 0;
+							interval = 0;
+						}
 					// Else
 					}
 					else
@@ -129,6 +137,7 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 						{
 							// Reset BadResponseCounter
 							BadResponseCounter = 0;
+							interval = 0;
 							// Set MakeTransition to true
 							MakeTransition = true;
 							// Set NextState to Reporting_2
@@ -223,9 +232,16 @@ ES_Event RunCheckInSM(ES_Event CurrentEvent)
 					}
 					else if (BadResponseCounter > MAX_BAD_RESPONSES)
 					{
-						// Transform ReturnEvent to ES_Reorient
-						ReturnEvent.EventType = ES_REORIENT;
-						BadResponseCounter = 0;
+						if (BadResponseCounter == MAX_BAD_RESPONSES + 1) {
+							interval = 1;
+						} else if (BadResponseCounter == MAX_BAD_RESPONSES + 2) {
+							interval = -1;
+						} else {
+							// Transform ReturnEvent to ES_Reorient
+							ReturnEvent.EventType = ES_REORIENT;
+							BadResponseCounter = 0;
+							interval = 0;
+						}
 					}
 					// Else
 					else
@@ -311,7 +327,7 @@ static ES_Event DuringReporting_1(ES_Event ThisEvent)
 		Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
-		Byte2Write += getPeriodCode(Period);
+		Byte2Write += getPeriodCode(Period)+interval;
 		// if (SM_TEST) printf("Period:%i\r\n",getPeriodCode(Period));
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
 		Event2Post.EventType = ES_COMMAND;
@@ -377,7 +393,7 @@ static ES_Event DuringReporting_2(ES_Event ThisEvent)
 		Period = getPeriod();
 		// Set Byte2Write to report byte based on Period
 		Byte2Write = REPORT_COMMAND;
-		uint8_t code = getPeriodCode(Period);
+		uint8_t code = getPeriodCode(Period)+interval;
 		Byte2Write += code;
 		printf("c:%i\r\n",code);
 		// Post ES_COMMAND to LOC w/ parameter: Byte2Write
@@ -456,7 +472,7 @@ uint8_t getPeriodCode(uint32_t Period) {
 //	Elseif Period is less than or equal to 916 and greater than 861
 	}else if(Period <= 916*TICKS_PER_USEC && Period > 861*TICKS_PER_USEC){
 //		Return 0x08
-	return 0x09;
+	return 0x08;
 //	Elseif Period is less than or equal to 861 and greater than 805
 	}else if(Period <= 861*TICKS_PER_USEC && Period > 805*TICKS_PER_USEC){
 //		Return 0x09

@@ -544,14 +544,14 @@ static ES_Event DuringAlignToTape(ES_Event ThisEvent)
 	if((ThisEvent.EventType == ES_ENTRY) || (ThisEvent.EventType == ES_ENTRY_HISTORY))
 	{
 		SetLauncherCommand(0);
+		SetMotorSensorDirection(FORWARD_DIR);
+		FindTape();
 		uint8_t TeamColor = getTeamColor();
 		if (TeamColor == GREEN) {
 			SetMotorController(ROTATE_CCW);
 		} else {
 			SetMotorController(ROTATE_CW);
 		}
-		SetMotorSensorDirection(FORWARD_DIR);
-		FindTape();
 		// direction based on team color, opposite of AlignToGoal
 	}// EndIf
 	if (ThisEvent.EventType == ES_EXIT) {
@@ -685,7 +685,7 @@ void HallEffect_ISR( void )
 	if ((CurrentPeriod <= MAX_ALLOWABLE_PER) && (CurrentPeriod >= MIN_ALLOWABLE_PER)) {
 		//	Update counter position in LastTen to CurrentPeriod
 		LastTen[counter] = CurrentPeriod;
-		
+		printf("%i.",CurrentPeriod);
 		//	Set HallSensorPeriod to average of LastTen
 		for(int i = 0; i <RUN_AVERAGE_LENGTH; i++){
 			HallSensorPeriod += LastTen[i];
@@ -698,6 +698,7 @@ void HallEffect_ISR( void )
 		//	Post ES_StationDetected Event
 			PostEvent.EventType = ES_STATION_DETECTED;
 			Throwaway = 0;
+			//printf("%i.",HallSensorPeriod);
 			
 			PostMasterSM(PostEvent);
 			//printf("Good Frequency: %i\r\n", HallSensorPeriod);
