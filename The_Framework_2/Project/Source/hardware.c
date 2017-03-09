@@ -265,8 +265,8 @@ void Motor_Controller_ISR(void)
 	HWREG(WTIMER2_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	static float LastError_POS = 0;
 	static float LastControl_POS = 0;
-	static float Kp_POS = 0.05;
-	static float Kd_POS = 0.005;
+	static float Kp_POS = 10 ;
+	static float Kd_POS = 2;
 	int8_t LeftControl = 0;
 	int8_t RightControl = 0;
 	
@@ -489,7 +489,7 @@ void SetMotorSensorDirection(uint8_t dir)
 		LeftResonanceSensor = FORWARD_LEFT_RESONANCE_AD;
 	}
 	// else if the bot needs to travel in reverse
-	else if (dir == BACKWARD_DIR)
+	else if (dir == REVERSE_DIR)
 	{
 		//set the active resonance sensors backwards
 		RightResonanceSensor = REVERSE_RIGHT_RESONANCE_AD;
@@ -689,8 +689,8 @@ void Launcher_Controller_ISR (void)
 	//clear interrupt
 	HWREG(WTIMER3_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	//error is command minus RPM
-	static float Kp = 20; //100
-	static float Ki = .05;	//5
+	static float Kp = 40; //100
+	static float Ki = 4;	//5
 	static float Last_Launcher_Error = 0;
 	static float Last_Launcher_Control = 0;
 	float Launcher_Error = Launcher_Command - Launcher_RPS;
@@ -702,7 +702,7 @@ void Launcher_Controller_ISR (void)
 		//control equals nominal
 		Launcher_Control = 100;
 		//update last control as nominal
-		Launcher_Error = Last_Launcher_Error;
+		//Launcher_Error = Last_Launcher_Error;
 	}
 		//else if control is less than 0
 	else if (Launcher_Control < 0)
@@ -710,7 +710,7 @@ void Launcher_Controller_ISR (void)
 		//control is 0
 		Launcher_Control = 0;
 		//update last control as 0
-		Launcher_Error = Last_Launcher_Error;
+		//Launcher_Error = Last_Launcher_Error;
 	}
 	//update previous errors and controls
 	Last_Launcher_Error = Launcher_Error;

@@ -550,6 +550,7 @@ static ES_Event DuringAlignToTape(ES_Event ThisEvent)
 		} else {
 			SetMotorController(ROTATE_CW);
 		}
+		SetMotorSensorDirection(FORWARD_DIR);
 		FindTape();
 		// direction based on team color, opposite of AlignToGoal
 	}// EndIf
@@ -605,6 +606,8 @@ ES_Event DuringReloading(ES_Event ThisEvent)
 			//post ES_Norm_Game_Complete to Master
 			Event2Post.EventType = ES_NORM_GAME_COMPLETE;
 			PostMasterSM(Event2Post);
+			SetMotorSensorDirection(REVERSE_DIR);
+			FindTape();
 
 		}
 	}

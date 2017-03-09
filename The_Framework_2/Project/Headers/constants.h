@@ -3,12 +3,12 @@
 
  ****************************************************************************/
  #define CheckOff3 0
- #define SM_TEST 1
+ #define SM_TEST 0
  #define TEAM_COLOR RED
- #define NO_LOC 1
+ #define NO_LOC 0
  #define BALL_TRACKING 0
  #define TAPE_TEST 0
-   
+    
  // Commands
  #define STATUS_COMMAND 0xc0
  #define REPORT_COMMAND 0x80
@@ -86,8 +86,8 @@
  #define ONE_SHOT_TIMEOUT 20000000
  
  // Magnetic sensors
- #define RUN_AVERAGE_LENGTH 15
- #define MAX_THROWAWAY 3
+ #define RUN_AVERAGE_LENGTH 20
+ #define MAX_THROWAWAY 20
  #define TICKS_PER_USEC 40
  #define MAX_ALLOWABLE_PER (TICKS_PER_USEC*1361)
  #define MIN_ALLOWABLE_PER (TICKS_PER_USEC*472)
@@ -104,11 +104,11 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 65
-#define RIGHT_MAX_DUTY 65
-#define RIGHT_CCW_COMMAND 45
-#define RIGHT_CW_COMMAND 40
-#define LEFT_CCW_COMMAND 45
+#define LEFT_MAX_DUTY 80
+#define RIGHT_MAX_DUTY 80
+#define RIGHT_CCW_COMMAND 46
+#define RIGHT_CW_COMMAND 46
+#define LEFT_CCW_COMMAND 40
 #define LEFT_CW_COMMAND 40
 #define COMMAND_DIFF 0
 
@@ -146,13 +146,13 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 
 //define ball counters
-#define BALL_START_COUNT 4
+#define BALL_START_COUNT 3
 #define NO_BALLS 0
 #define MAX_BALLS 5
 
-#define WARM_UP_TIME 5000
+#define WARM_UP_TIME 9000
 #define SHOT_CLOCK_TIME 20000
-#define BALL_AIR_TIME 4000 //will probably want to lower this
+#define BALL_AIR_TIME 2000 //will probably want to lower this
 
 //Servo motor constants
 #define NUM_MOTOR 1
@@ -205,4 +205,4 @@
 #define LAUNCHER_CONTROLLER_TIME_US 2000
 #define LAUNCHER_PULSE_PER_REV 3
 
-#define FIRING_SPEED 69
+#define FIRING_SPEED 35
