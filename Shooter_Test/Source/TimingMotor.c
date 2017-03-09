@@ -403,10 +403,9 @@ void Launcher_Controller_ISR (void)
 {
 	//clear interrupt
 	HWREG(WTIMER3_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
-	SetFlywheelDuty(Launcher_Command);
 		//error is command minus RPM
-	static float Kp = 20; //100
-	static float Ki = .05;	//5
+	static float Kp = 10; //100
+	static float Ki = 0.1;	//5
 	static float Last_Launcher_Error = 0;
 	static float Last_Launcher_Control = 0;
 	float Launcher_Error = Launcher_Command - Launcher_RPS;
@@ -433,6 +432,7 @@ void Launcher_Controller_ISR (void)
 	Last_Launcher_Control = Launcher_Control;
 	//write control to motors
 	SetFlywheelDuty((uint8_t)Launcher_Control);
+	//printf("\r\nRPS: %d, Command: %d, Control: %d", (uint16_t) Launcher_RPS, Launcher_Command, (uint8_t)Launcher_Control);
 }
 
 /*int main(void)

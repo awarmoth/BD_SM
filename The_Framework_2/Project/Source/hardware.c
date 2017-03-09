@@ -689,8 +689,8 @@ void Launcher_Controller_ISR (void)
 	//clear interrupt
 	HWREG(WTIMER3_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	//error is command minus RPM
-	static float Kp = 40; //100
-	static float Ki = 4;	//5
+	static float Kp = 10; //100
+	static float Ki = 0.1;	//5
 	static float Last_Launcher_Error = 0;
 	static float Last_Launcher_Control = 0;
 	float Launcher_Error = Launcher_Command - Launcher_RPS;
