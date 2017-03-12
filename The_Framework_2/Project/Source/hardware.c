@@ -265,7 +265,7 @@ void Motor_Controller_ISR(void)
 	HWREG(WTIMER2_BASE+TIMER_O_ICR)=TIMER_ICR_TBTOCINT;
 	static float LastError_POS = 0;
 	static float LastControl_POS = 0;
-	static float Kp_POS = 1 ;
+	static float Kp_POS = .05 ;
 	static float Kd_POS = 0.005;
 	int8_t LeftControl = 0;
 	int8_t RightControl = 0;

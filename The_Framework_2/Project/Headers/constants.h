@@ -104,8 +104,8 @@
 #define TICKS_PER_MS 40000
 
 //define controller constants
-#define LEFT_MAX_DUTY 70
-#define RIGHT_MAX_DUTY 70
+#define LEFT_MAX_DUTY 60
+#define RIGHT_MAX_DUTY 60
 #define RIGHT_CCW_COMMAND 45
 #define RIGHT_CW_COMMAND 45
 #define LEFT_CCW_COMMAND 55
