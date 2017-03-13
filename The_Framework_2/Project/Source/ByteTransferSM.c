@@ -182,13 +182,11 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 		//If CurrentEvent is not ES_NO_EVENT
 			if(CurrentEvent.EventType != ES_NO_EVENT)
 			{
-			//ElseIf CurrentEvent is ES_EOT and ByteCounter is 5
+			//ElseIf CurrentEvent is ES_EOT
 				if(CurrentEvent.EventType == ES_EOT)
 				{
 				//Set MakeTransition to true
 					MakeTransition = true;
-				//Store value written by LOC in BytesArray element corresponding to ByteCounter - 1
-				//EventParam is a uint16_t, so we have to cast it down to a uint8_t
 				//Set NextState to BT_Wait4Timeout
 					NextState = BT_Wait4Timeout;
 				}

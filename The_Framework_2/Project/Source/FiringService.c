@@ -1,4 +1,6 @@
-//module level variables: MyPriority, CurrentState
+//FiringService.c
+
+///module level variables: MyPriority, CurrentState
 //FiringState_t: WaitingFire, SendingUp, SendingDown, Idling
 //Module level functions: InitLoadServo, SendLoadServo
 //Module defines: LATCH_SERVO, LATCH_DOWN, LATCH_DOWN_TIME, LATCH_UP, LATCH_UP_TIME, LATCH_SERVO_TIMER, PUSHER_SERVO, PUSHER_DOWN, PUSHER_DOWN_TIME, PUSHER_UP
@@ -64,7 +66,23 @@ static FiringState_t CurrentState;
 static void InitLoadServo(void);
 static void SendLoadServo(uint16_t position);
 
+/****************************************************************************
+ Function
+     InitFiringService
 
+ Parameters
+     uint8_t a priority number
+
+ Returns
+     None
+
+ Description
+     Performs the initialization sequence within the framework
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 bool InitFiringService(uint8_t Priority)
 {
 	// Initialize MyPriority to Priority
@@ -81,7 +99,23 @@ bool InitFiringService(uint8_t Priority)
 }
 
 
+/****************************************************************************
+ Function
+     PostFiringService
 
+ Parameters
+     ES_Event the event to post
+
+ Returns
+     bool if posted successfully
+
+ Description
+     Posts the event parameter to the associated event queue
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 bool PostFiringService(ES_Event ThisEvent)
 {
 	// Return ThisEvent posted successfully to the service associated with MyPriority
@@ -89,8 +123,23 @@ bool PostFiringService(ES_Event ThisEvent)
 }
 
 
+/****************************************************************************
+ Function
+    RunFiringService
 
+ Parameters
+   ES_Event: the event to process
 
+ Returns
+   ES_Event: an event to return
+
+ Description
+   Runs the state machine that handles moving the launch servo into the flywheel to shoot a ball
+ Notes
+   uses nested switch/case to implement the machine.
+ Author
+   Adam Warmoth
+****************************************************************************/
 ES_Event RunFiringService(ES_Event ThisEvent)
 {
 	// local variable NextState

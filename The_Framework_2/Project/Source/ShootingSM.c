@@ -1,3 +1,5 @@
+//ShootingSM.c
+
 //module level variables: MyPriority, CurrentState, ShootingTimeoutFlag GameTimeoutFlag, ExitFlag, Score, BallCount
 //ShootingState_t: AlignToGoal; 
 
@@ -62,7 +64,23 @@ static ES_Event DuringWarmingUp(ES_Event ThisEvent);
 
 static uint8_t getFlywheelDuty(uint8_t TargetGoal,uint8_t LastStation);
 
+/****************************************************************************
+ Function
+     StartShootingSM
 
+ Parameters
+     None
+
+ Returns
+     None
+
+ Description
+     Does any required initialization for this state machine
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 void StartShootingSM(ES_Event CurrentEvent)  
 {
 	// Set CurrentState to AlignToGoal
@@ -72,7 +90,23 @@ void StartShootingSM(ES_Event CurrentEvent)
 }
 //End StartShootingSM
 
+/****************************************************************************
+ Function
+    RunShootingSM
 
+ Parameters
+   ES_Event: the event to process
+
+ Returns
+   ES_Event: an event to return
+
+ Description
+   Runs the shooting state machine which handles aligning to the goal and commanding a shot to fire
+ Notes
+   uses nested switch/case to implement the machine.
+ Author
+   Adam Warmoth
+****************************************************************************/
 ES_Event RunShootingSM(ES_Event CurrentEvent)
 {
 	// local variable MakeTransition

@@ -1,3 +1,5 @@
+//MasterHSM.c
+
 #include "MasterHSM.h"
 #include "SPI_Module.h"
 #include "ByteTransferSM.h"
@@ -63,6 +65,23 @@ static uint8_t timeoutCount=0;
 
 static void TurnOnLEDs(uint8_t TeamColor);
 
+/****************************************************************************
+ Function
+     InitMasterSM
+
+ Parameters
+     uint8_t a priority number
+
+ Returns
+     None
+
+ Description
+     Performs the initialization sequence within the framework
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 bool InitMasterSM(uint8_t Priority)
 {
 	// local variable ThisEvent
@@ -84,6 +103,23 @@ bool InitMasterSM(uint8_t Priority)
 // End InitMasterSM
 
 
+/****************************************************************************
+ Function
+     PostMasterSM
+
+ Parameters
+     ES_Event the event to post
+
+ Returns
+     bool if posted successfully
+
+ Description
+     Posts the event parameter to the associated event queue
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 bool PostMasterSM(ES_Event ThisEvent)
 {
 	// Return ThisEvent posted successfully to the service associated with MyPriority
@@ -92,6 +128,23 @@ bool PostMasterSM(ES_Event ThisEvent)
 // End PostMasterSM
 
 
+/****************************************************************************
+ Function
+     StartMasterSM
+
+ Parameters
+     None
+
+ Returns
+     None
+
+ Description
+     Does any required initialization for this state machine
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 void StartMasterSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to Waiting2Start
@@ -103,6 +156,23 @@ void StartMasterSM(ES_Event CurrentEvent)
 // End StartMasterSM
 
 
+/****************************************************************************
+ Function
+    RunMasterSM
+
+ Parameters
+   ES_Event: the event to process
+
+ Returns
+   ES_Event: an event to return
+
+ Description
+   Runs the highest level state machine of the construction heirarchy
+ Notes
+   uses nested switch/case to implement the machine.
+ Author
+   Adam Warmoth
+****************************************************************************/
 ES_Event RunMasterSM(ES_Event CurrentEvent)
 {
 	// local variable MakeTransition

@@ -1,0 +1,117 @@
+
+/****************************************************************************
+ Function
+     InitSPI_Comm
+
+ Parameters
+     None
+
+ Returns
+     Nothing
+
+ Description
+     Initializes the registers to set up SSI0 on the TIVA for SPI communication
+ Notes
+
+ Author
+     B. Glasner
+****************************************************************************/
+void InitSPI_Comm(void)
+{
+	
+	//Enable the clock to GPIO Port A
+	//Enable the clock to SSI module
+
+	//Wait for GPIO Port A to be ready
+	//Program PA2, PA3, PA4, PA5 to use the alternate function
+
+	//Set mux position (2) in GPIOPCTL to select the SSI use of the pins
+
+	//PA2 = SSI0Clk
+	//PA3 = SSI0Fss
+	//PA4 = SSI0Rx
+	//PA5 = SSI0Tx	
+	
+	//Set PA2. PA3, PA4, PA5 as digital
+	//Set PA2, PA3, PA5 as outputs
+	//Set PA4 as an input
+
+	//Program the pull-up on the clock line (Set GPIOPUR HI for PA2))
+	//Wait for the SSI0 to be ready
+	
+	//Make sure that the SSI is disabled before programming mode bits
+	
+	//Select master mode (MS) & TXRIS indicating End of Transmit (EOT)
+	
+	//Configure the SSI clock source to the system clock
+	//Configure the clock pre-scaler to a value of 50 (CPSDVSR = 50)
+	
+	//Configure clock rate (SCR = 59), phase & polarity (SPH = 1, SPO = 1), mode (FRF = 0), 
+	//data size (DSS = 8 bits, must be right justified?)
+	
+	//Locally enable interrupts (TXIM in SSIIM)
+	
+	//globally enable interrupts
+	
+	//Make sure that the SSI is enabled for operation
+}
+
+
+/****************************************************************************
+ Function
+     EOT_Response_ISR
+
+ Parameters
+     None
+
+ Returns
+     Nothing
+
+ Description
+     Reads the command from the slave device stored in the data register of the master
+		 when an end of transmission interrupt is triggered.
+ Notes
+
+ Author
+     B. Glasner
+****************************************************************************/
+void EOT_Response_ISR(void)
+{
+	//disable the interrupt in the NVIC
+	//read the all 5 values from the SSI Data Register
+		//store read values in the bytes array
+	
+
+	//Post an ES_EOT Event to the ByteTransferSM with the event parameter being the value read
+	//Post to LOC_SM	
+}
+
+
+/****************************************************************************
+ Function
+     QueryCommandGen
+
+ Parameters
+     None
+
+ Returns
+     Nothing
+
+ Description
+     Writes a query command to the slave to see what command the slave is storing
+ Notes
+
+ Author
+     B. Glasner
+****************************************************************************/
+void QueryLOC(uint8_t QueryVal)
+{
+	//enable the interrupt in the NVIC
+	
+	//write QueryVal to the SSI Data Register
+	//write 4 consecutive 0 values to the data register
+
+	//enable the interrupt in the NVIC
+}
+
+

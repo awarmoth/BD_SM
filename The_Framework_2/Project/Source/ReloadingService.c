@@ -1,3 +1,5 @@
+//ReloadingService.c
+
 #include "MasterHSM.h"
 #include "SPI_Module.h"
 #include "ByteTransferSM.h"
@@ -56,6 +58,23 @@ static void Disable_IR_Emitter (void);
 //Module level functions: Enable_IR_Emitter, Disable_IR_Emitter
 //Module defines: PULSE_HIGH_TIME, PULSE_LOW_TIME, NUM_PULSES, DELIVERY_TIME
 
+/****************************************************************************
+ Function
+     InitReloadingService
+
+ Parameters
+     uint8_t a priority number
+
+ Returns
+     None
+
+ Description
+     Performs the initialization sequence within the framework
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 bool InitReloadingService(uint8_t Priority)
 {
 //	Initialize MyPriority to Priority
@@ -70,7 +89,23 @@ bool InitReloadingService(uint8_t Priority)
 //End InitReloadingService
 
 
+/****************************************************************************
+ Function
+     PostReloadingService
 
+ Parameters
+     ES_Event the event to post
+
+ Returns
+     bool if posted successfully
+
+ Description
+     Posts the event parameter to the associated event queue
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 bool PostReloadingService(ES_Event ThisEvent)
 {
 //	Return ThisEvent posted successfully to the service associated with MyPriority
@@ -80,7 +115,24 @@ bool PostReloadingService(ES_Event ThisEvent)
 
 
 
+/****************************************************************************
+ Function
+    RunFiringService
 
+ Parameters
+   ES_Event: the event to process
+
+ Returns
+   ES_Event: an event to return
+
+ Description
+   Runs the state machine that sends the IR pulses to communicate with
+   the reload station
+ Notes
+   uses nested switch/case to implement the machine.
+ Author
+   Adam Warmoth
+****************************************************************************/
 ES_Event RunReloadingService(ES_Event ThisEvent)
 {
 //	local variable NextState

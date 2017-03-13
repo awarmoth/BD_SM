@@ -1,3 +1,5 @@
+//ShootingSM.h
+
 //ShootingState_t: AlignToGoal, Firing, WaitForShotResult, WaitForScoreUpdate, AlignToTape
 //Module level functions: DuringAlignToGoal, DuringFiring, DuringWaitForShotResult, DuringWaitForScoreUpdate
 

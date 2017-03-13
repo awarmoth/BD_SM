@@ -1,6 +1,6 @@
 /****************************************************************************
  Template header file for Hierarchical Sate Machines AKA StateCharts
-
+ LOC_HSM.h
  ****************************************************************************/
 
 #ifndef LOC_HSM_H

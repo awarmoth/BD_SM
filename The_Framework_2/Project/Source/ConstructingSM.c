@@ -1,3 +1,5 @@
+//ConstructingSM.c
+
 #include "MasterHSM.h"
 #include "CheckInSM.h"
 #include "LOC_HSM.h"
@@ -68,6 +70,24 @@ static ES_Event DuringShooting( ES_Event Event);
 static ES_Event DuringAlignToTape (ES_Event Event);
 static ES_Event DuringReloading(ES_Event ThisEvent);
 
+
+/****************************************************************************
+ Function
+     StartConstructingSM
+
+ Parameters
+     None
+
+ Returns
+     None
+
+ Description
+     Does any required initialization for this state machine
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 void StartConstructingSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to GettingTargetStation
@@ -79,7 +99,23 @@ void StartConstructingSM(ES_Event CurrentEvent)
 }
 // End StartConstructingSM
 
+/****************************************************************************
+ Function
+    RunConstructingSM
 
+ Parameters
+   ES_Event: the event to process
+
+ Returns
+   ES_Event: an event to return
+
+ Description
+   Runs the game active state machine within the HSM
+ Notes
+   uses nested switch/case to implement the machine.
+ Author
+   Adam Warmoth
+****************************************************************************/
 ES_Event RunConstructingSM(ES_Event CurrentEvent)
 {
 	// local variable MakeTransition

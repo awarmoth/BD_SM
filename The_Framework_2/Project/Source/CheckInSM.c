@@ -1,3 +1,5 @@
+//CheckInSM.c
+
 #include "MasterHSM.h"
 #include "ConstructingSM.h"
 #include "CheckInSM.h"
@@ -22,7 +24,23 @@
  static ES_Event DuringWaitForResponse_2 ( ES_Event ThisEvent );
 // static int8_t interval = 0;
 
+/****************************************************************************
+ Function
+     StartCheckInSM
 
+ Parameters
+     None
+
+ Returns
+     None
+
+ Description
+     Does any required initialization for this state machine
+ Notes
+
+ Author
+     Adam Warmoth
+****************************************************************************/
 void StartCheckInSM(ES_Event CurrentEvent)
 {
 	// Set CurrentState to Reporting_1
@@ -33,6 +51,24 @@ void StartCheckInSM(ES_Event CurrentEvent)
 // End StartCheckInSM
 
 
+/****************************************************************************
+ Function
+    RunCheckInSM
+
+ Parameters
+   ES_Event: the event to process
+
+ Returns
+   ES_Event: an event to return
+
+ Description
+   Runs the state machine that interfaces the construction mode with the LOC communication to 
+   check into a staging area
+ Notes
+   uses nested switch/case to implement the machine.
+ Author
+   Adam Warmoth
+****************************************************************************/
 ES_Event RunCheckInSM(ES_Event CurrentEvent)
 {
 	// local variable MakeTransition

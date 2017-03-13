@@ -1,0 +1,390 @@
+/****************************************************************************
+Module file for exectuing all hardware initialization
+
+ ****************************************************************************/
+
+
+static void Init_Controller(void)
+{
+	//enable clock to the timer (WTIMER2B)
+	//disable the timer
+	//set 32 bit wide mode
+	//set up periodic mode
+	//set timeout to 2 ms
+	//enable local interupt
+	//enable NVIC interupt
+	//globally enable interrupts
+	//set priority to 6 (anything more important than the other ISRs)
+	//enable the timer	
+}
+
+
+static void AD_Init(void)
+{
+	//set up AD pin
+	//call init function for AD converter
+	//ask for 4 pins
+}
+
+/****************************************************************************
+ Function
+    MagneticTimerInit
+
+ Parameters
+   None
+
+ Returns
+   None
+
+ Description
+   Function that sets up the encoder timer system
+ Author
+   Matthew Miller			1/19/17
+****************************************************************************/
+static void MagneticTimerInit(void)
+{
+	// Enable the clock to the timer
+	// Enable the clock to Port D
+	// Make sure the timer is disabled before configuring
+	// Set up timer in 32 bit wide mode
+	// Initialize the interval load register to max/default value
+	// Set up timer in capture mode
+	// Set up timer for edge time
+	// Set up timer for up-counting
+	// Set the event to rising edge
+	// Set up the alternate function for Port D0
+	// Map bit 0’s alternate function
+	// Enable pin on port D for digital I/O
+	// Make pin 0 on port D into input
+	// Enable local capture interrupt
+	// Enable timer A in NVIC
+	// Enable interrupts globally
+	// Enable timer and enable to stall when stopped by debugger
+}
+
+
+/****************************************************************************
+ Function
+    OneShotTimerInit
+
+ Parameters
+   None
+
+ Returns
+   None
+
+ Description
+   Function that sets up the one shot timer system to determine if the robot has passed a station
+ Author
+   Matthew Miller			1/19/17
+****************************************************************************/
+static void OneShotTimerInit(void)
+{
+	// Enable the clock to the timer
+	// Make sure the clock has gotten going	
+	// Make sure the timer is disabled before configuring
+	// Set up timer in 32 bit wide mode
+	// Set up timer in one shot mode
+	// Set the timeout
+	// Enable a local timeout interrupt
+	// Enable timer A in NVIC
+	// Enable interrupts globally
+	// Enable timer and enable to stall when stopped by debugger
+}
+
+
+void Motor_Controller_ISR(void)
+{
+	// clear interrupt
+	// initialize the last error
+	// initialize the last position
+	// Set the proportional gain
+	// Set the derivative gain
+	// Initialize the duty cycles for the left and right motors
+	
+	//write requested commands
+	//if desired control is no controller
+		// Disable the interrupt
+		//if the last controller was not off
+
+			//stop motors
+	
+	//else if desired control is velocity 
+		//initialize the tape counter
+		// if the last controller was not velocity
+			// clear the counter
+		// endif
+		//write the command values directly (open loop)
+
+		// if there is a flag for watching the tape
+			// shift the resonance sensor history
+			// read the resonance sensors and store history
+			// if the counter is less than the averaging window
+				// increment the counter
+			// else
+				// reset the averages
+				// calculate the average of the latest and oldest periods
+				// if the average has decreased by at least the threshold
+					// clear the flag
+					// clear the counter
+					// post a tape detected event
+
+
+	//elseif we want position control
+		//read sensor values
+		//error is the difference between the command and (Left - Right) (error is positive for rightward drift)
+		//control is u[k]=(Kp+2Kd/T)*e[k]+(Kp-2Kd/T)e[k-1]-u[k-2]
+		//if last controller was not position controller
+			//clear all error/command history
+		//endif 
+		
+		//if control is positive, want L-R to increase: slow L
+
+			//left control is the nominal - control
+			//right control is the nominal
+			//if the left control is < 0
+				//left control is 0
+				//update control as nominal value
+		//else if control is negative, want L-R to decrease: slow R
+			//left control is the nominal
+			//right control is the nominal + control
+			//if the right control is < 0
+				//right control is 0
+				//update last control as the nominal*-1
+		//endif
+		
+		//update previous errors and controls
+		//write control values (A is Right, B is Left)
+	//endif
+	
+	//update controller history
+}
+
+void SetMotorController(uint8_t control){
+	//Enable interrupts
+	// if rotation is set
+	// adjust motor commands
+	// adjust motor directions
+	// if controller is velocity
+		// Set the direction for each motor
+		// Set the command to each motor
+		// Set the controller to velocity control
+	
+	//elseif we want to control clockwise rotation
+		// Set the direction for the motors
+		// Set the command for the motors
+		// Set the controller to celocity control
+
+	// else if driving on tape is set
+		// direction is forward
+		// adjust selected ResonanceSensors
+		// controller is position
+
+	// else if driving on tape is set
+		// direction is reverse
+		// adjust selected ResonanceSensors
+		// controller is position
+	
+	//else
+		//turn off the controller
+	//endif
+}
+
+void SetMotorSensorDirection(uint8_t dir)
+{
+	// if the bot needs to travel forward
+		//set the active resonance sensors forward
+		
+	// else if the bot needs to travel in reverse
+		//set the active resonance sensors backwards
+
+}
+
+void FindTape(void)
+{
+	// Set a flag to watch for tape crossings
+	// Initialize the Resonance sensor history
+
+}
+
+
+static void Init_Beacon_Receiver(void)
+{
+	//enable clock to timer
+	//enable clock to port C
+	//wait for clock to connect
+
+	//disable the Timer B
+	//enable 32 bit mode
+	//load the full value for timeout
+	//set up timer B for capture mode, edge timer, periodic, and up counting
+	//set event to rising edge
+	//set up the alternate function for Pin C5
+	//set up C5 alternate function as WTIMER0
+	//digitally enable C5
+	//set C5 to input
+	//enable local capture interupt on the timer
+	//enable timer interupt in the NVIC
+	//enable interupts globally
+	//set priority to 6
+	// add debugging stalls
+	// NOTE: not enabling interrupts yet
+}
+
+
+void Beacon_Receiver_ISR(void)
+{
+	//clear the source of the interrupt
+	//capture the time at which the beacon was detected
+	//calculate the frequency
+
+	//if the frequency of detection matches the expected beacon frequency
+
+		//printf("Beacon Detected");
+		//post a beacon detected event
+	
+	//update the last time of detection
+
+}
+
+void InitIR_Emitter(void) {
+	// enable the clock to the Port F
+
+	// wait for Port F to be ready
+
+	// Enable PF4 as digitally
+	// Enable PF4 as an output
+
+	//	Set the IR Emitter line LOW
+}
+
+
+bool getISRFlag(void) {
+	//return the ISR flag
+}
+
+static void Launcher_Encoder_Init(void)
+{
+	//enable clock to timer
+	//enable clock to port C
+	//wait for clock to connect
+
+	//disable the Timer B
+	//set up 32 bit mode
+	//load the full value for timeout
+	//set up timer B for capture mode, edge timer, periodic, and up counting
+	//set event to rising edge
+	//set up the alternate function for Pin C7
+	//set up C4 alternate function as WTIMER0
+	//digitally enable C7
+	//set C7 to input
+	//enable local capture interupt on the timer
+	//enable timer interupt in the NVIC
+	//enable interupts globally
+	//set priority to 7
+	//enable the timer and add debugging stalls
+	}
+
+
+
+void Launcher_Encoder_ISR(void)
+{
+	//clear interupt
+	//get interupt timer
+	//calculate new RPM
+	//update time of last interupt
+	//Ignore RPM = 0 case
+}
+
+static void Init_Launcher_Controller(void)
+{
+	//enable clock to the timer (WTIMER3B)
+	//disable the timer
+	//set 32 bit wide mode
+	//set up periodic mode
+	//set timeout to 2 ms
+	//enable local interupt
+	//enable NVIC interupt
+	//globally enable interrupts
+	//set priority to 6 (anything more important than the other ISRs)
+	//enable the timer
+	//write the initial command to the launcher to be off
+}
+
+void Launcher_Controller_ISR (void)
+{
+	// clear interrupt
+	// error is command minus RPM
+
+	// control is u[k]=(Kp+KiT/2)e[k]-(KiT/2-Kp)e[k-1]+u[k-1]
+	// if control is greater than nominal
+
+		//control equals nominal
+		//update last control as nominal
+		//Launcher_Error = Last_Launcher_Error;
+
+	// else if control is less than 0
+
+		//control is 0
+		//update last control as 0
+		//Launcher_Error = Last_Launcher_Error;
+
+	// update previous errors and controls
+	// write control to motor
+}
+
+void SetLauncherCommand(uint8_t InputCommand)
+{
+	// Set the command value to the written value
+	//if the command is not zero
+	 	//write the value to the timer
+	// else
+		// write 0 duty to the motor
+		// disable the timer
+	// endif
+}
+
+static void Init_LED(void)
+{
+	//enable clock to the timer (WTIMER3B)
+	//enable clock to port f
+	//disable the timer
+	//set 32 bit wide mode
+	//set up periodic mode
+	//set timeout to 500 ms
+	//enable local interupt
+	//digitally enable the LED lines
+	//set up the LED Pins as output
+	//set the LED pins low
+	//enable NVIC interupt
+	//globally enable interrupts	
+}
+
+void SetLED(uint8_t Mode, uint8_t LED)
+{
+	//set active led to LED
+	//if Mode is solid
+		//turn off timer
+		//clear LEDs
+		//write active LED
+	//else if mode is blink
+		//clear LEDS
+		//clear blink state
+		//activate timer
+	//endif
+}
+
+void LED_Blink_ISR(void)
+{
+	//clear the source of the interrupt
+	//if last blink state was hi
+		//write lo
+
+	//else if last blink state was low
+		//write hi
+	//endif
+}
+
+
+
+

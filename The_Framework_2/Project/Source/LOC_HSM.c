@@ -252,7 +252,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
 }
 /****************************************************************************
  Function
-     StartMasterSM
+     StartLOC_SM
 
  Parameters
      ES_Event CurrentEvent
@@ -265,7 +265,7 @@ ES_Event RunLOC_SM( ES_Event CurrentEvent )
  Notes
 
  Author
-     J. Edward Carryer, 02/06/12, 22:15
+     Brett Glasner
 ****************************************************************************/
 void StartLOC_SM ( ES_Event CurrentEvent )
 {

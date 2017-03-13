@@ -32,6 +32,7 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 			If CurrentEvent is ES_Command
 				Set MakeTransition to true
 				Set NextState to Wait4EOT
+				Write the command to the SPI Module
 			End ES_Command block
 				
 		Else
@@ -45,10 +46,8 @@ ES_Event RunByteTransferSM(ES_Event CurrentEvent)
 		Run DuringWait4EOT and store the output in CurrentEvent
 		
 		If CurrentEvent is not ES_NO_EVENT
-			If CurrentEvent is ES_EOT and ByteCounter is less than 5
-				Set MakeTransition to true
 			
-			ElseIf CurrentEvent is ES_EOT and ByteCounter is 5
+			If CurrentEvent is ES_EOT
 				Set MakeTransition to true
 				Set NextState to Wait4Timeout
 			EndIf
@@ -120,11 +119,10 @@ static ES_Event DuringWaitEOT(ES_Event ThisEvent)
 	Initialize ReturnEvent to ThisEvent
 	
 	If ThisEvent is ES_ENTRY or ES_ENTRY_HISTORY
-		Write command to SPI module
-		Increment ByteCounter
+		//do nothing
 		
 	ElseIf ThisEvent is ES_EXIT
-		Read byte values sent back from LOC and store results in module variables
+		//do nothing
 		
 	Else
 		//do nothing

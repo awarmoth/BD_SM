@@ -175,12 +175,12 @@ void EOT_Response_ISR(void)
 	//printf("EOT INTERRUPT TRIGGERED\r\n");
 	//disable the interrupt in the NVIC
 	HWREG(NVIC_EN0) &= ~(BIT7HI);
-	//read the value from the SSI Data Register
+	//read the all 5 values from the SSI Data Register
 	for (int i = 0; i<5;i++){
+		//store read values in the bytes array
 		SetBytesArray(HWREG(SSI0_BASE+SSI_O_DR),i);
 	}
 
-	//printf("Command = %d\r\n",command);
 	//Post an ES_EOT Event to the ByteTransferSM with the event parameter being the value read
 	ES_Event ThisEvent;
 	ThisEvent.EventType = ES_EOT;
@@ -212,8 +212,8 @@ void QueryLOC(uint8_t QueryVal)
 	//enable the interrupt in the NVIC
 	
 	//write QueryVal to the SSI Data Register
-	// printf("QueryVal = %i\r\n",QueryVal);
 	HWREG(SSI0_BASE+SSI_O_DR) = QueryVal;
+	//write 4 consecutive 0 values to the data register
 	for (int i=0;i<4;i++){
 		HWREG(SSI0_BASE+SSI_O_DR) = 0;
 	}

@@ -1,3 +1,5 @@
+//CheckInSM.h
+
 // CheckInState_t: Reporting_1, WaitForResponse_1, Reporting_2, WaitForResponse_2
 // Module level functions: DuringReporting_1, DuringWaitForResponse_1, DuringReporting_2, DuringWaitForResponse_2
 

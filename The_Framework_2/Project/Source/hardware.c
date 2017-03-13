@@ -1,5 +1,6 @@
 /****************************************************************************
-Module file for exectuing all hardware initialization
+Module file for executing all hardware initialization
+//hardware.c
 
  ****************************************************************************/
  

@@ -125,3 +125,111 @@ void SetDirectionB(uint8_t dir) {
 		// clear hi/lo pin
 }
 
+
+///////////////////////////////////////
+// Flywheel PWM Initialization Function
+// Initializes the PWM module variables and hardware for the pins associated with driving the flywheel
+// Takes:
+// 			void
+// Returns:
+// 			void
+///////////////////////////////////////
+
+void InitFlywheelPWM(void)
+{
+	// Enable the clock to the PWM Module	
+	// Enable the clock to Port D
+	// Select the system clock/32	
+	// Make sure that the PWM module clock has gotten going
+	// Disable the PWM generator while initializing
+	// We are using PWM generator 3
+	// Set the restore flag to know if we are in normal duty or at one of the extremes
+	// Set generator to go to 1 at rising B, 0 on falling 
+	// Set the load to ½ the desired period of 5 ms since going up and down
+	// Set the initial duty cycle on B to 50%
+	// Enable the PWM outputs
+	// Select the alternate function for PD1
+	// Choose to map PWM to those pins
+	// Enable pin1 on Port D as digital output
+	// Set the up/down count mode
+	// Enable the PWM generator
+	// Make generator updates locally synchronized to zero count
+}
+
+
+///////////////////////////////////////
+// Duty Setting Function for Flywheel Motor
+// Sets the comparator value for the generator
+// Takes:
+// 			uint8_t duty: desired duty cycle
+// Returns:
+// 			void
+///////////////////////////////////////
+
+void SetFlywheelDuty(uint8_t duty) 
+{
+	// local variable newCmp New Value for comparator to set duty cycle
+	//scale comparator value to a percentage relative to the load value to get the correct duty cycle
+
+	//If the duty cycle is at one of the extremes (100 or 0)
+		// set the restore flag
+
+		//If the duty is 100
+			// To program 100% DC, simply set the action on Zero to set the output to one
+		//Else the duty myst be 0
+			// To program 0% DC, simply set the action on Zero to set the output to zero
+		//EndIf
+		
+	//Else we are between 0 and 100
+		// if returning from 0 or 100
+			//clear the restore flag
+			// restore normal operation
+		// write new comparator value to register
+	//EndIf
+}
+
+
+///////////////////////////////////////
+// Servo PWM Initialization Function
+// Initializes the PWM module variables and hardware for the pins associated with driving the servo
+// Takes:
+// 			void
+// Returns:
+// 			void
+///////////////////////////////////////
+
+void InitServoPWM(void)
+{
+	// Enable the clock to the PWM Module
+	// Enable the clock to Port B
+	// Select the system clock/32
+	// Make sure that the PWM module clock has gotten going
+	// Disable the PWM generator while initializing
+	// We are using PWM generator 1
+	// Set generator to go to 1 at rising A, 0 on falling 	
+	// Set the load to ½ the desired period of 20ms since going up and down
+	// Set the initial duty cycle on WT1A to 5%
+	// Enable the PWM outputs
+	// Select the alternate function for PB4
+	// Choose to map PWM to those pins	
+	// Enable pin4 on Port B as digital output
+	// Set the up/down count mode
+	// Enable the PWM generator
+	// Make generator updates locally synchronized to zero count
+}
+
+///////////////////////////////////////
+// Pulse Width setting function for servo
+// Sets the comparator value for the servo
+// Takes:
+// 			uint8_t position: desired servo position
+// Returns:
+// 			void
+///////////////////////////////////////
+void SetServoPosition(uint16_t position) 
+{
+	// parameter position New Value for comparator to set
+	//scale the comparator value to a 50Hz frequency with 1-2ms HI time
+	// write new comparator value to register
+}
+
